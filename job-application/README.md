@@ -3,10 +3,12 @@
 Takes a job posting, filters the stored CV data for what matters, generates a CV and a cover
 letter, renders them through a LaTeX service and reports progress over Telegram.
 
-![Job Application Pipeline canvas](../images/job-application-pipeline.png)
+[![Job Application Pipeline canvas](../images/job-application-pipeline.png)](../images/job-application-pipeline-full.png)
 
 The canvas above shows all 169 nodes of the main workflow, from the form trigger on the left
-to the rendered CV and cover letter on the right.
+to the rendered CV and cover letter on the right. The image links to the full resolution
+render, and the [repository README](../README.md#detail-views) holds four 2x cuts of the same
+canvas, one per stage.
 
 ## Workflows
 

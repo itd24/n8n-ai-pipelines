@@ -8,11 +8,12 @@ builds the profile vectors the job flow matches against.
 This repository is the public copy of these workflows. All private data, API keys and sample
 payloads were taken out before publishing.
 
-[![Job Application Pipeline canvas](images/job-application-pipeline.png)](images/job-application-pipeline.png)
+[![Job Application Pipeline canvas](images/job-application-pipeline.png)](images/job-application-pipeline-full.png)
 
 The `job-application` flow from end to end: 169 nodes, starting at the form trigger on the
-left and ending with the rendered CV and cover letter on the right. The canvas is a wide
-strip, so open the image in a new tab if you want to read the node names.
+left and ending with the rendered CV and cover letter on the right. The canvas is 25360
+pixels wide, so the overview only shows the shape of the flow. Open it in a new tab for the
+full resolution render, or read the four cuts below.
 
 ## Highlights
 
@@ -26,6 +27,34 @@ strip, so open the image in a new tab if you want to read the node names.
 - `ai-utility` is the shared agent itself. One workflow holds the prompt, the JSON parsing and
   the retries, and a parameter picks Anthropic, OpenAI or DeepSeek, so no caller has to carry
   its own copy of the agent.
+
+## Detail views
+
+Four cuts from the same canvas export, rendered at twice the canvas size so the node names
+stay readable.
+
+**Reading the posting** — the newest profile vector is loaded and converted to JSON, and the
+job description is handed to the `AI Json Agent`. The agent behind that call runs on DeepSeek
+with its own structured output parser.
+
+![Job description extraction agent with its model and output parser](images/job-application-pipeline-detail-reading.png)
+
+**Scoring** — two agents score the match, one for fit and one for desire. The cut shows the
+desire score agent with its model and parser, the normalized data it runs on and the merge
+that combines both scores.
+
+![Fit and desire score agents with the merge that joins them](images/job-application-pipeline-detail-scoring.png)
+
+**Rendering and delivery** — the CV is converted to LaTeX, rendered to PDF, uploaded to Drive
+and announced over Telegram, while the cover letter decision and its own branch start in
+parallel.
+
+![LaTeX render, Drive upload and the Telegram notification](images/job-application-pipeline-detail-rendering.png)
+
+**Self review** — the AI pattern detector sends weak text through the surgical rewrite and the
+polisher, and `Prepare for next attempt` loops back until it passes.
+
+![Surgical rewrite and polisher review loop](images/job-application-pipeline-detail-review.png)
 
 ## Repository layout
 
@@ -134,7 +163,9 @@ Both expect the `x-api-key` header set to `MATCHING_API_KEY`.
 - Contact details, date of birth, nationality, location and profile links from the early job
   pipeline prototype. That prototype is not part of this repository.
 - Host names, the Telegram chat ID and the workflow author name. Hosts are now placeholder
-  domains, the chat ID is a `TELEGRAM_CHAT_ID` expression and the author field is empty.
+  domains, the chat ID is a `TELEGRAM_CHAT_ID` expression and the author field is empty. The
+  canvas export behind the screenshots carried the same host name in two node subtitles, so it
+  was sanitized before rendering.
 
 ## Notes before you reuse this
 
