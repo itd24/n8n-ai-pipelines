@@ -1,0 +1,1458 @@
+[
+    {
+        "updatedAt": "2026-07-19T11:56:18.336Z",
+        "createdAt": "2026-07-03T10:15:39.984Z",
+        "id": "0uWPJg8m7HT9PyLT",
+        "name": "SUBSET - Import Data to Firefly",
+        "active": true,
+        "isArchived": false,
+        "nodes": [
+            {
+                "parameters": {
+                    "workflowInputs": {
+                        "values": [
+                            {
+                                "name": "data",
+                                "type": "array"
+                            },
+                            {
+                                "name": "static_data",
+                                "type": "object"
+                            }
+                        ]
+                    }
+                },
+                "type": "n8n-nodes-base.executeWorkflowTrigger",
+                "typeVersion": 1.1,
+                "position": [
+                    -432,
+                    528
+                ],
+                "id": "dabfe726-f8be-4fb1-bac3-90f5160e1b94",
+                "name": "When Executed by Another Workflow"
+            },
+            {
+                "parameters": {
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.splitInBatches",
+                "typeVersion": 3,
+                "position": [
+                    16,
+                    528
+                ],
+                "id": "28fa68a8-e39c-4767-9aa7-3a7e56945e81",
+                "name": "Loop Over Items"
+            },
+            {
+                "parameters": {
+                    "method": "POST",
+                    "url": "https://api.example.com/matching/transactions/check",
+                    "sendHeaders": true,
+                    "headerParameters": {
+                        "parameters": [
+                            {
+                                "name": "x-api-user",
+                                "value": "system.user@local.local"
+                            },
+                            {
+                                "name": "x-api-key",
+                                "value": "={{ $env.MATCHING_API_KEY }}"
+                            }
+                        ]
+                    },
+                    "sendBody": true,
+                    "specifyBody": "=json",
+                    "bodyParameters": {
+                        "parameters": [
+                            {}
+                        ]
+                    },
+                    "jsonBody": "={\n  \"id\": \"{{ $json.currentElement.id }}\"\n}",
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.httpRequest",
+                "typeVersion": 4.4,
+                "position": [
+                    464,
+                    384
+                ],
+                "id": "589d49b5-3545-4cdf-8053-82377e737375",
+                "name": "check Transaction",
+                "retryOnFail": true,
+                "waitBetweenTries": 5000
+            },
+            {
+                "parameters": {
+                    "conditions": {
+                        "options": {
+                            "caseSensitive": true,
+                            "leftValue": "",
+                            "typeValidation": "strict",
+                            "version": 3
+                        },
+                        "conditions": [
+                            {
+                                "id": "79a0fe9d-0641-4759-9b01-9d7a1025d331",
+                                "leftValue": "={{ $json.exists }}",
+                                "rightValue": false,
+                                "operator": {
+                                    "type": "boolean",
+                                    "operation": "true",
+                                    "singleValue": true
+                                }
+                            }
+                        ],
+                        "combinator": "and"
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.if",
+                "typeVersion": 2.3,
+                "position": [
+                    688,
+                    464
+                ],
+                "id": "854098fa-e30d-42d7-9f99-fbf1735a73c8",
+                "name": "If Transaction already exists"
+            },
+            {
+                "parameters": {
+                    "assignments": {
+                        "assignments": [
+                            {
+                                "id": "c93e6681-bd59-4bfa-abdf-0ee1152c38ff",
+                                "name": "currentElement",
+                                "value": "={{ $json }}",
+                                "type": "object"
+                            }
+                        ]
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.set",
+                "typeVersion": 3.4,
+                "position": [
+                    240,
+                    384
+                ],
+                "id": "e98fc462-2d06-430a-a9ed-d1d5982ba2ad",
+                "name": "Set Current Element"
+            },
+            {
+                "parameters": {
+                    "jsCode": "let ctd = $('Set Current Element').first().json.currentElement;\nlet bestMatch = $('Get Best Match').first().json;\nlet staticData = $('When Executed by Another Workflow').first().json.static_data;\n\nfunction toFireflyDate(date) {\n    return `${date}T00:00:00+01:00`;\n}\n\nfunction isWithdrawal() {\n  return ctd.type === 'withdrawal';\n}\n\nlet foreign_data = {};\nif(ctd.foreign_amount)\n  foreign_data.foreign_amount = ctd.foreign_amount;\nif(ctd.foreign_currency_code)\n  foreign_data.foreign_currency_code = ctd.foreign_currency_code;\n\nlet budget_data = {};\nif(bestMatch.budget)\n  budget_data.budget_name = bestMatch.budget;\n\nlet category_data = {};\nif(bestMatch.category)\n  category_data.category_name = bestMatch.category;\n\nlet tag_data = {};\nif(bestMatch.tags && bestMatch.tags.length > 0)\n  tag_data.tags = bestMatch.tags;\n\n// ----------------- set transaction flow info ------------\nlet tfi = {};\nif(isWithdrawal()){\n  tfi.source_id = staticData[ctd.account];\n  tfi.destination_name = bestMatch.merchant;\n}\nelse{\n  tfi.destination_id = staticData[ctd.account];\n  tfi.source_name = bestMatch.merchant;\n}\n// --------------------------------------------------------\n\nlet transaction = {\n  \"error_if_duplicate_hash\": false,\n  \"apply_rules\": true,\n  \"fire_webhooks\": false,\n  \"group_title\": null,\n  \"transactions\": [\n    {\n      \"type\": ctd.type,\n      \"date\": toFireflyDate(ctd.date),\n      \"amount\": ctd.amount,\n      \"description\": ctd.description,\n      \"order\": 0,\n      \"currency_code\": ctd.currency_code,\n      ...foreign_data,\n      ...budget_data,\n      ...category_data,\n      ...tfi,\n      \"reconciled\": true,\n      //\"piggy_bank_id\": 0,\n      //\"piggy_bank_name\": \"string\",\n      //\"bill_id\": \"112\",\n      //\"bill_name\": \"Monthly rent\",\n      ...tag_data,\n      \"notes\": ctd.notes,\n      \"internal_reference\": \"string\",\n      \"external_id\": ctd.id,\n      //\"external_url\": \"string\",\n      //\"sepa_cc\": \"string\",\n      //\"sepa_ct_op\": \"string\",\n      //\"sepa_ct_id\": \"string\",\n      //\"sepa_db\": \"string\",\n      //\"sepa_country\": \"string\",\n      //\"sepa_ep\": \"string\",\n      //\"sepa_ci\": \"string\",\n      //\"sepa_batch_id\": \"string\",\n      //\"interest_date\": \"2026-06-21T08:18:46.199Z\",\n      \"book_date\": toFireflyDate(ctd.book_date),\n      \"process_date\": toFireflyDate(ctd.date),\n      //\"due_date\": \"2026-06-21T08:18:46.199Z\",\n      \"payment_date\": toFireflyDate(ctd.payment_date),\n      //\"invoice_date\": \"2026-06-21T08:18:46.199Z\"\n    }\n  ]\n};\n\nreturn [{json:{transaction}}]"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    1136,
+                    464
+                ],
+                "id": "e083eb9c-c602-4131-a07b-c5a61c0d9fbe",
+                "name": "Prepare Transaction"
+            },
+            {
+                "parameters": {
+                    "workflowId": {
+                        "__rl": true,
+                        "value": "oszZ1Ud4sQlpltZ3",
+                        "mode": "list",
+                        "cachedResultUrl": "/workflow/oszZ1Ud4sQlpltZ3",
+                        "cachedResultName": "Get Best Match"
+                    },
+                    "workflowInputs": {
+                        "mappingMode": "defineBelow",
+                        "value": {
+                            "transaction": "={{ $('Set Current Element').item.json.currentElement }}"
+                        },
+                        "matchingColumns": [
+                            "transaction"
+                        ],
+                        "schema": [
+                            {
+                                "id": "transaction",
+                                "displayName": "transaction",
+                                "required": false,
+                                "defaultMatch": false,
+                                "display": true,
+                                "canBeUsedToMatch": true,
+                                "type": "object",
+                                "removed": false
+                            }
+                        ],
+                        "attemptToConvertTypes": false,
+                        "convertFieldsToString": true
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.executeWorkflow",
+                "typeVersion": 1.3,
+                "position": [
+                    912,
+                    464
+                ],
+                "id": "945b0bfb-af95-4441-8852-dee7f32b7212",
+                "name": "Get Best Match"
+            },
+            {
+                "parameters": {
+                    "jsCode": "return [{json:JSON.parse($input.all()[0].json.data)}];"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    3376,
+                    464
+                ],
+                "id": "16b69ece-cd59-48b9-bc7c-c0a9895989b0",
+                "name": "Code in JavaScript"
+            },
+            {
+                "parameters": {
+                    "method": "POST",
+                    "url": "https://api.example.com/matching/transactions",
+                    "sendHeaders": true,
+                    "headerParameters": {
+                        "parameters": [
+                            {
+                                "name": "x-api-user",
+                                "value": "system.user@local.local"
+                            },
+                            {
+                                "name": "x-api-key",
+                                "value": "={{ $env.MATCHING_API_KEY }}"
+                            }
+                        ]
+                    },
+                    "sendBody": true,
+                    "specifyBody": "=json",
+                    "bodyParameters": {
+                        "parameters": [
+                            {}
+                        ]
+                    },
+                    "jsonBody": "={\n  \"id\": \"{{ $json.data.attributes.transactions[0].external_id }}\",\n  \"firefly_transaction_id\": \"{{ $json.data.id }}\"\n}",
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.httpRequest",
+                "typeVersion": 4.4,
+                "position": [
+                    3600,
+                    528
+                ],
+                "id": "33d358d2-89e5-42c9-9ce2-9a304d8d8d6a",
+                "name": "save Transaction To Imported Transactions",
+                "retryOnFail": true,
+                "waitBetweenTries": 5000
+            },
+            {
+                "parameters": {
+                    "method": "POST",
+                    "url": "https://firefly.example.com/api/v1/transactions",
+                    "authentication": "genericCredentialType",
+                    "genericAuthType": "httpBearerAuth",
+                    "sendBody": true,
+                    "specifyBody": "json",
+                    "jsonBody": "={{ JSON.stringify($json.transaction) }}",
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.httpRequest",
+                "typeVersion": 4.4,
+                "position": [
+                    3152,
+                    464
+                ],
+                "id": "84aae0f9-83b7-40d8-a4a2-5e82d44b62b4",
+                "name": "Save Transaction to Firefly",
+                "retryOnFail": true,
+                "waitBetweenTries": 5000,
+                "credentials": {
+                    "httpBearerAuth": {
+                        "id": "Mr8LJ3qGvajPXTc3",
+                        "name": "Firefly III Personal Access Token"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "conditions": {
+                        "options": {
+                            "caseSensitive": true,
+                            "leftValue": "",
+                            "typeValidation": "strict",
+                            "version": 3
+                        },
+                        "conditions": [
+                            {
+                                "id": "78a757fc-72ff-43b7-b1d3-3efd0301e36b",
+                                "leftValue": "={{ $json.transaction.transactions[0].budget_name }}",
+                                "rightValue": "",
+                                "operator": {
+                                    "type": "string",
+                                    "operation": "notEmpty",
+                                    "singleValue": true
+                                }
+                            }
+                        ],
+                        "combinator": "and"
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.if",
+                "typeVersion": 2.3,
+                "position": [
+                    1360,
+                    464
+                ],
+                "id": "8eb6daa9-8939-4c13-8260-438f84bea9cd",
+                "name": "If Budget Exists"
+            },
+            {
+                "parameters": {
+                    "conditions": {
+                        "options": {
+                            "caseSensitive": true,
+                            "leftValue": "",
+                            "typeValidation": "strict",
+                            "version": 3
+                        },
+                        "conditions": [
+                            {
+                                "id": "2c987af5-7bf0-49d5-9abb-6ab8830c09cb",
+                                "leftValue": "={{ $json.transaction.transactions[0].category_name }}",
+                                "rightValue": "",
+                                "operator": {
+                                    "type": "string",
+                                    "operation": "notEmpty",
+                                    "singleValue": true
+                                }
+                            }
+                        ],
+                        "combinator": "and"
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.if",
+                "typeVersion": 2.3,
+                "position": [
+                    2256,
+                    464
+                ],
+                "id": "11e30903-a714-4a8f-b39e-937bd03071e7",
+                "name": "If Category Exists"
+            },
+            {
+                "parameters": {
+                    "method": "POST",
+                    "url": "https://api.example.com/firefly/categories",
+                    "sendHeaders": true,
+                    "headerParameters": {
+                        "parameters": [
+                            {
+                                "name": "x-api-user",
+                                "value": "system.user@local.local"
+                            },
+                            {
+                                "name": "x-api-key",
+                                "value": "={{ $env.MATCHING_API_KEY }}"
+                            }
+                        ]
+                    },
+                    "sendBody": true,
+                    "bodyParameters": {
+                        "parameters": [
+                            {
+                                "name": "name",
+                                "value": "={{ $('Prepare Transaction').item.json.transaction.transactions[0].category_name }}"
+                            }
+                        ]
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.httpRequest",
+                "typeVersion": 4.4,
+                "position": [
+                    2480,
+                    384
+                ],
+                "id": "4b319f4e-1de4-4961-80f5-cb184b9eebc3",
+                "name": "Create Category If Not Exists In Firefly",
+                "retryOnFail": true,
+                "waitBetweenTries": 5000
+            },
+            {
+                "parameters": {
+                    "method": "POST",
+                    "url": "https://api.example.com/firefly/budgets",
+                    "sendHeaders": true,
+                    "headerParameters": {
+                        "parameters": [
+                            {
+                                "name": "x-api-user",
+                                "value": "system.user@local.local"
+                            },
+                            {
+                                "name": "x-api-key",
+                                "value": "={{ $env.MATCHING_API_KEY }}"
+                            }
+                        ]
+                    },
+                    "sendBody": true,
+                    "bodyParameters": {
+                        "parameters": [
+                            {
+                                "name": "name",
+                                "value": "={{ $('Prepare Transaction').item.json.transaction.transactions[0].budget_name }}"
+                            }
+                        ]
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.httpRequest",
+                "typeVersion": 4.4,
+                "position": [
+                    1584,
+                    384
+                ],
+                "id": "d1ab5c85-1c8a-43b1-8526-b7aedad3fd92",
+                "name": "Create Budget If Not Exists In Firefly",
+                "retryOnFail": true,
+                "waitBetweenTries": 5000
+            },
+            {
+                "parameters": {
+                    "jsCode": "let transaction = $('Prepare Transaction').first().json.transaction;\n\ntransaction.transactions[0].budget_id = $input.first().json.id;\ndelete transaction.transactions[0].budget_name;\nreturn [{json:{\n  transaction\n}}]"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    1808,
+                    384
+                ],
+                "id": "b515789f-faea-475f-a075-da5f59c813a9",
+                "name": "populate transaction with budget id"
+            },
+            {
+                "parameters": {
+                    "jsCode": "let transaction = $('If Category Exists').first().json.transaction;\ntransaction.transactions[0].category_id = $input.first().json.id;\ndelete transaction.transactions[0].category_name;\n\nreturn [{json:{\n  transaction\n}}]"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    2704,
+                    384
+                ],
+                "id": "10606069-015e-4117-a6ef-98cc3dcbd1d1",
+                "name": "populate transaction with category id"
+            },
+            {
+                "parameters": {},
+                "type": "n8n-nodes-base.merge",
+                "typeVersion": 3.2,
+                "position": [
+                    2032,
+                    464
+                ],
+                "id": "147d715e-3eee-4692-a4ec-27db4d690ed0",
+                "name": "Merge"
+            },
+            {
+                "parameters": {},
+                "type": "n8n-nodes-base.merge",
+                "typeVersion": 3.2,
+                "position": [
+                    2928,
+                    464
+                ],
+                "id": "5dfa7a42-6d02-4d1e-86db-71cdd662dae0",
+                "name": "Merge1"
+            },
+            {
+                "parameters": {
+                    "jsCode": "let result = [];\nfor(var item of $input.all()){\n  console.log(item);\n  for(var data of item.json.data){\n    result.push({\n      json: data\n    });\n  }  \n}\n\nreturn result;"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    -208,
+                    528
+                ],
+                "id": "c39ec1d9-405a-49ab-ad64-7b456e933a32",
+                "name": "convert to loopable object"
+            }
+        ],
+        "connections": {
+            "When Executed by Another Workflow": {
+                "main": [
+                    [
+                        {
+                            "node": "convert to loopable object",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Loop Over Items": {
+                "main": [
+                    [],
+                    [
+                        {
+                            "node": "Set Current Element",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "check Transaction": {
+                "main": [
+                    [
+                        {
+                            "node": "If Transaction already exists",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "If Transaction already exists": {
+                "main": [
+                    [
+                        {
+                            "node": "Loop Over Items",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ],
+                    [
+                        {
+                            "node": "Get Best Match",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Set Current Element": {
+                "main": [
+                    [
+                        {
+                            "node": "check Transaction",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Prepare Transaction": {
+                "main": [
+                    [
+                        {
+                            "node": "If Budget Exists",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Get Best Match": {
+                "main": [
+                    [
+                        {
+                            "node": "Prepare Transaction",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Code in JavaScript": {
+                "main": [
+                    [
+                        {
+                            "node": "save Transaction To Imported Transactions",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "save Transaction To Imported Transactions": {
+                "main": [
+                    [
+                        {
+                            "node": "Loop Over Items",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Save Transaction to Firefly": {
+                "main": [
+                    [
+                        {
+                            "node": "Code in JavaScript",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "If Budget Exists": {
+                "main": [
+                    [
+                        {
+                            "node": "Create Budget If Not Exists In Firefly",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ],
+                    [
+                        {
+                            "node": "Merge",
+                            "type": "main",
+                            "index": 1
+                        }
+                    ]
+                ]
+            },
+            "If Category Exists": {
+                "main": [
+                    [
+                        {
+                            "node": "Create Category If Not Exists In Firefly",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ],
+                    [
+                        {
+                            "node": "Merge1",
+                            "type": "main",
+                            "index": 1
+                        }
+                    ]
+                ]
+            },
+            "Create Category If Not Exists In Firefly": {
+                "main": [
+                    [
+                        {
+                            "node": "populate transaction with category id",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Create Budget If Not Exists In Firefly": {
+                "main": [
+                    [
+                        {
+                            "node": "populate transaction with budget id",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "populate transaction with budget id": {
+                "main": [
+                    [
+                        {
+                            "node": "Merge",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "populate transaction with category id": {
+                "main": [
+                    [
+                        {
+                            "node": "Merge1",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Merge": {
+                "main": [
+                    [
+                        {
+                            "node": "If Category Exists",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Merge1": {
+                "main": [
+                    [
+                        {
+                            "node": "Save Transaction to Firefly",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "convert to loopable object": {
+                "main": [
+                    [
+                        {
+                            "node": "Loop Over Items",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            }
+        },
+        "settings": {
+            "executionOrder": "v1",
+            "binaryMode": "separate"
+        },
+        "staticData": null,
+        "meta": null,
+        "pinData": {},
+        "versionId": "c7d19d00-d5f0-47e3-a179-2c5d3a00efc0",
+        "activeVersionId": "c7d19d00-d5f0-47e3-a179-2c5d3a00efc0",
+        "triggerCount": 0,
+        "shared": [
+            {
+                "updatedAt": "2026-07-03T10:15:39.984Z",
+                "createdAt": "2026-07-03T10:15:39.984Z",
+                "role": "workflow:owner",
+                "workflowId": "0uWPJg8m7HT9PyLT",
+                "projectId": "FlGQaEMmWQfoeLfg"
+            }
+        ],
+        "activeVersion": {
+            "updatedAt": "2026-07-19T11:57:26.485Z",
+            "createdAt": "2026-07-19T11:56:18.337Z",
+            "versionId": "c7d19d00-d5f0-47e3-a179-2c5d3a00efc0",
+            "workflowId": "0uWPJg8m7HT9PyLT",
+            "nodes": [
+                {
+                    "parameters": {
+                        "workflowInputs": {
+                            "values": [
+                                {
+                                    "name": "data",
+                                    "type": "array"
+                                },
+                                {
+                                    "name": "static_data",
+                                    "type": "object"
+                                }
+                            ]
+                        }
+                    },
+                    "type": "n8n-nodes-base.executeWorkflowTrigger",
+                    "typeVersion": 1.1,
+                    "position": [
+                        -432,
+                        528
+                    ],
+                    "id": "dabfe726-f8be-4fb1-bac3-90f5160e1b94",
+                    "name": "When Executed by Another Workflow"
+                },
+                {
+                    "parameters": {
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.splitInBatches",
+                    "typeVersion": 3,
+                    "position": [
+                        16,
+                        528
+                    ],
+                    "id": "28fa68a8-e39c-4767-9aa7-3a7e56945e81",
+                    "name": "Loop Over Items"
+                },
+                {
+                    "parameters": {
+                        "method": "POST",
+                        "url": "https://api.example.com/matching/transactions/check",
+                        "sendHeaders": true,
+                        "headerParameters": {
+                            "parameters": [
+                                {
+                                    "name": "x-api-user",
+                                    "value": "system.user@local.local"
+                                },
+                                {
+                                    "name": "x-api-key",
+                                    "value": "={{ $env.MATCHING_API_KEY }}"
+                                }
+                            ]
+                        },
+                        "sendBody": true,
+                        "specifyBody": "=json",
+                        "bodyParameters": {
+                            "parameters": [
+                                {}
+                            ]
+                        },
+                        "jsonBody": "={\n  \"id\": \"{{ $json.currentElement.id }}\"\n}",
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.httpRequest",
+                    "typeVersion": 4.4,
+                    "position": [
+                        464,
+                        384
+                    ],
+                    "id": "589d49b5-3545-4cdf-8053-82377e737375",
+                    "name": "check Transaction",
+                    "retryOnFail": true,
+                    "waitBetweenTries": 5000
+                },
+                {
+                    "parameters": {
+                        "conditions": {
+                            "options": {
+                                "caseSensitive": true,
+                                "leftValue": "",
+                                "typeValidation": "strict",
+                                "version": 3
+                            },
+                            "conditions": [
+                                {
+                                    "id": "79a0fe9d-0641-4759-9b01-9d7a1025d331",
+                                    "leftValue": "={{ $json.exists }}",
+                                    "rightValue": false,
+                                    "operator": {
+                                        "type": "boolean",
+                                        "operation": "true",
+                                        "singleValue": true
+                                    }
+                                }
+                            ],
+                            "combinator": "and"
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.if",
+                    "typeVersion": 2.3,
+                    "position": [
+                        688,
+                        464
+                    ],
+                    "id": "854098fa-e30d-42d7-9f99-fbf1735a73c8",
+                    "name": "If Transaction already exists"
+                },
+                {
+                    "parameters": {
+                        "assignments": {
+                            "assignments": [
+                                {
+                                    "id": "c93e6681-bd59-4bfa-abdf-0ee1152c38ff",
+                                    "name": "currentElement",
+                                    "value": "={{ $json }}",
+                                    "type": "object"
+                                }
+                            ]
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.set",
+                    "typeVersion": 3.4,
+                    "position": [
+                        240,
+                        384
+                    ],
+                    "id": "e98fc462-2d06-430a-a9ed-d1d5982ba2ad",
+                    "name": "Set Current Element"
+                },
+                {
+                    "parameters": {
+                        "jsCode": "let ctd = $('Set Current Element').first().json.currentElement;\nlet bestMatch = $('Get Best Match').first().json;\nlet staticData = $('When Executed by Another Workflow').first().json.static_data;\n\nfunction toFireflyDate(date) {\n    return `${date}T00:00:00+01:00`;\n}\n\nfunction isWithdrawal() {\n  return ctd.type === 'withdrawal';\n}\n\nlet foreign_data = {};\nif(ctd.foreign_amount)\n  foreign_data.foreign_amount = ctd.foreign_amount;\nif(ctd.foreign_currency_code)\n  foreign_data.foreign_currency_code = ctd.foreign_currency_code;\n\nlet budget_data = {};\nif(bestMatch.budget)\n  budget_data.budget_name = bestMatch.budget;\n\nlet category_data = {};\nif(bestMatch.category)\n  category_data.category_name = bestMatch.category;\n\nlet tag_data = {};\nif(bestMatch.tags && bestMatch.tags.length > 0)\n  tag_data.tags = bestMatch.tags;\n\n// ----------------- set transaction flow info ------------\nlet tfi = {};\nif(isWithdrawal()){\n  tfi.source_id = staticData[ctd.account];\n  tfi.destination_name = bestMatch.merchant;\n}\nelse{\n  tfi.destination_id = staticData[ctd.account];\n  tfi.source_name = bestMatch.merchant;\n}\n// --------------------------------------------------------\n\nlet transaction = {\n  \"error_if_duplicate_hash\": false,\n  \"apply_rules\": true,\n  \"fire_webhooks\": false,\n  \"group_title\": null,\n  \"transactions\": [\n    {\n      \"type\": ctd.type,\n      \"date\": toFireflyDate(ctd.date),\n      \"amount\": ctd.amount,\n      \"description\": ctd.description,\n      \"order\": 0,\n      \"currency_code\": ctd.currency_code,\n      ...foreign_data,\n      ...budget_data,\n      ...category_data,\n      ...tfi,\n      \"reconciled\": true,\n      //\"piggy_bank_id\": 0,\n      //\"piggy_bank_name\": \"string\",\n      //\"bill_id\": \"112\",\n      //\"bill_name\": \"Monthly rent\",\n      ...tag_data,\n      \"notes\": ctd.notes,\n      \"internal_reference\": \"string\",\n      \"external_id\": ctd.id,\n      //\"external_url\": \"string\",\n      //\"sepa_cc\": \"string\",\n      //\"sepa_ct_op\": \"string\",\n      //\"sepa_ct_id\": \"string\",\n      //\"sepa_db\": \"string\",\n      //\"sepa_country\": \"string\",\n      //\"sepa_ep\": \"string\",\n      //\"sepa_ci\": \"string\",\n      //\"sepa_batch_id\": \"string\",\n      //\"interest_date\": \"2026-06-21T08:18:46.199Z\",\n      \"book_date\": toFireflyDate(ctd.book_date),\n      \"process_date\": toFireflyDate(ctd.date),\n      //\"due_date\": \"2026-06-21T08:18:46.199Z\",\n      \"payment_date\": toFireflyDate(ctd.payment_date),\n      //\"invoice_date\": \"2026-06-21T08:18:46.199Z\"\n    }\n  ]\n};\n\nreturn [{json:{transaction}}]"
+                    },
+                    "type": "n8n-nodes-base.code",
+                    "typeVersion": 2,
+                    "position": [
+                        1136,
+                        464
+                    ],
+                    "id": "e083eb9c-c602-4131-a07b-c5a61c0d9fbe",
+                    "name": "Prepare Transaction"
+                },
+                {
+                    "parameters": {
+                        "workflowId": {
+                            "__rl": true,
+                            "value": "oszZ1Ud4sQlpltZ3",
+                            "mode": "list",
+                            "cachedResultUrl": "/workflow/oszZ1Ud4sQlpltZ3",
+                            "cachedResultName": "Get Best Match"
+                        },
+                        "workflowInputs": {
+                            "mappingMode": "defineBelow",
+                            "value": {
+                                "transaction": "={{ $('Set Current Element').item.json.currentElement }}"
+                            },
+                            "matchingColumns": [
+                                "transaction"
+                            ],
+                            "schema": [
+                                {
+                                    "id": "transaction",
+                                    "displayName": "transaction",
+                                    "required": false,
+                                    "defaultMatch": false,
+                                    "display": true,
+                                    "canBeUsedToMatch": true,
+                                    "type": "object",
+                                    "removed": false
+                                }
+                            ],
+                            "attemptToConvertTypes": false,
+                            "convertFieldsToString": true
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.executeWorkflow",
+                    "typeVersion": 1.3,
+                    "position": [
+                        912,
+                        464
+                    ],
+                    "id": "945b0bfb-af95-4441-8852-dee7f32b7212",
+                    "name": "Get Best Match"
+                },
+                {
+                    "parameters": {
+                        "jsCode": "return [{json:JSON.parse($input.all()[0].json.data)}];"
+                    },
+                    "type": "n8n-nodes-base.code",
+                    "typeVersion": 2,
+                    "position": [
+                        3376,
+                        464
+                    ],
+                    "id": "16b69ece-cd59-48b9-bc7c-c0a9895989b0",
+                    "name": "Code in JavaScript"
+                },
+                {
+                    "parameters": {
+                        "method": "POST",
+                        "url": "https://api.example.com/matching/transactions",
+                        "sendHeaders": true,
+                        "headerParameters": {
+                            "parameters": [
+                                {
+                                    "name": "x-api-user",
+                                    "value": "system.user@local.local"
+                                },
+                                {
+                                    "name": "x-api-key",
+                                    "value": "={{ $env.MATCHING_API_KEY }}"
+                                }
+                            ]
+                        },
+                        "sendBody": true,
+                        "specifyBody": "=json",
+                        "bodyParameters": {
+                            "parameters": [
+                                {}
+                            ]
+                        },
+                        "jsonBody": "={\n  \"id\": \"{{ $json.data.attributes.transactions[0].external_id }}\",\n  \"firefly_transaction_id\": \"{{ $json.data.id }}\"\n}",
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.httpRequest",
+                    "typeVersion": 4.4,
+                    "position": [
+                        3600,
+                        528
+                    ],
+                    "id": "33d358d2-89e5-42c9-9ce2-9a304d8d8d6a",
+                    "name": "save Transaction To Imported Transactions",
+                    "retryOnFail": true,
+                    "waitBetweenTries": 5000
+                },
+                {
+                    "parameters": {
+                        "method": "POST",
+                        "url": "https://firefly.example.com/api/v1/transactions",
+                        "authentication": "genericCredentialType",
+                        "genericAuthType": "httpBearerAuth",
+                        "sendBody": true,
+                        "specifyBody": "json",
+                        "jsonBody": "={{ JSON.stringify($json.transaction) }}",
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.httpRequest",
+                    "typeVersion": 4.4,
+                    "position": [
+                        3152,
+                        464
+                    ],
+                    "id": "84aae0f9-83b7-40d8-a4a2-5e82d44b62b4",
+                    "name": "Save Transaction to Firefly",
+                    "retryOnFail": true,
+                    "waitBetweenTries": 5000,
+                    "credentials": {
+                        "httpBearerAuth": {
+                            "id": "Mr8LJ3qGvajPXTc3",
+                            "name": "Firefly III Personal Access Token"
+                        }
+                    }
+                },
+                {
+                    "parameters": {
+                        "conditions": {
+                            "options": {
+                                "caseSensitive": true,
+                                "leftValue": "",
+                                "typeValidation": "strict",
+                                "version": 3
+                            },
+                            "conditions": [
+                                {
+                                    "id": "78a757fc-72ff-43b7-b1d3-3efd0301e36b",
+                                    "leftValue": "={{ $json.transaction.transactions[0].budget_name }}",
+                                    "rightValue": "",
+                                    "operator": {
+                                        "type": "string",
+                                        "operation": "notEmpty",
+                                        "singleValue": true
+                                    }
+                                }
+                            ],
+                            "combinator": "and"
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.if",
+                    "typeVersion": 2.3,
+                    "position": [
+                        1360,
+                        464
+                    ],
+                    "id": "8eb6daa9-8939-4c13-8260-438f84bea9cd",
+                    "name": "If Budget Exists"
+                },
+                {
+                    "parameters": {
+                        "conditions": {
+                            "options": {
+                                "caseSensitive": true,
+                                "leftValue": "",
+                                "typeValidation": "strict",
+                                "version": 3
+                            },
+                            "conditions": [
+                                {
+                                    "id": "2c987af5-7bf0-49d5-9abb-6ab8830c09cb",
+                                    "leftValue": "={{ $json.transaction.transactions[0].category_name }}",
+                                    "rightValue": "",
+                                    "operator": {
+                                        "type": "string",
+                                        "operation": "notEmpty",
+                                        "singleValue": true
+                                    }
+                                }
+                            ],
+                            "combinator": "and"
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.if",
+                    "typeVersion": 2.3,
+                    "position": [
+                        2256,
+                        464
+                    ],
+                    "id": "11e30903-a714-4a8f-b39e-937bd03071e7",
+                    "name": "If Category Exists"
+                },
+                {
+                    "parameters": {
+                        "method": "POST",
+                        "url": "https://api.example.com/firefly/categories",
+                        "sendHeaders": true,
+                        "headerParameters": {
+                            "parameters": [
+                                {
+                                    "name": "x-api-user",
+                                    "value": "system.user@local.local"
+                                },
+                                {
+                                    "name": "x-api-key",
+                                    "value": "={{ $env.MATCHING_API_KEY }}"
+                                }
+                            ]
+                        },
+                        "sendBody": true,
+                        "bodyParameters": {
+                            "parameters": [
+                                {
+                                    "name": "name",
+                                    "value": "={{ $('Prepare Transaction').item.json.transaction.transactions[0].category_name }}"
+                                }
+                            ]
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.httpRequest",
+                    "typeVersion": 4.4,
+                    "position": [
+                        2480,
+                        384
+                    ],
+                    "id": "4b319f4e-1de4-4961-80f5-cb184b9eebc3",
+                    "name": "Create Category If Not Exists In Firefly",
+                    "retryOnFail": true,
+                    "waitBetweenTries": 5000
+                },
+                {
+                    "parameters": {
+                        "method": "POST",
+                        "url": "https://api.example.com/firefly/budgets",
+                        "sendHeaders": true,
+                        "headerParameters": {
+                            "parameters": [
+                                {
+                                    "name": "x-api-user",
+                                    "value": "system.user@local.local"
+                                },
+                                {
+                                    "name": "x-api-key",
+                                    "value": "={{ $env.MATCHING_API_KEY }}"
+                                }
+                            ]
+                        },
+                        "sendBody": true,
+                        "bodyParameters": {
+                            "parameters": [
+                                {
+                                    "name": "name",
+                                    "value": "={{ $('Prepare Transaction').item.json.transaction.transactions[0].budget_name }}"
+                                }
+                            ]
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.httpRequest",
+                    "typeVersion": 4.4,
+                    "position": [
+                        1584,
+                        384
+                    ],
+                    "id": "d1ab5c85-1c8a-43b1-8526-b7aedad3fd92",
+                    "name": "Create Budget If Not Exists In Firefly",
+                    "retryOnFail": true,
+                    "waitBetweenTries": 5000
+                },
+                {
+                    "parameters": {
+                        "jsCode": "let transaction = $('Prepare Transaction').first().json.transaction;\n\ntransaction.transactions[0].budget_id = $input.first().json.id;\ndelete transaction.transactions[0].budget_name;\nreturn [{json:{\n  transaction\n}}]"
+                    },
+                    "type": "n8n-nodes-base.code",
+                    "typeVersion": 2,
+                    "position": [
+                        1808,
+                        384
+                    ],
+                    "id": "b515789f-faea-475f-a075-da5f59c813a9",
+                    "name": "populate transaction with budget id"
+                },
+                {
+                    "parameters": {
+                        "jsCode": "let transaction = $('If Category Exists').first().json.transaction;\ntransaction.transactions[0].category_id = $input.first().json.id;\ndelete transaction.transactions[0].category_name;\n\nreturn [{json:{\n  transaction\n}}]"
+                    },
+                    "type": "n8n-nodes-base.code",
+                    "typeVersion": 2,
+                    "position": [
+                        2704,
+                        384
+                    ],
+                    "id": "10606069-015e-4117-a6ef-98cc3dcbd1d1",
+                    "name": "populate transaction with category id"
+                },
+                {
+                    "parameters": {},
+                    "type": "n8n-nodes-base.merge",
+                    "typeVersion": 3.2,
+                    "position": [
+                        2032,
+                        464
+                    ],
+                    "id": "147d715e-3eee-4692-a4ec-27db4d690ed0",
+                    "name": "Merge"
+                },
+                {
+                    "parameters": {},
+                    "type": "n8n-nodes-base.merge",
+                    "typeVersion": 3.2,
+                    "position": [
+                        2928,
+                        464
+                    ],
+                    "id": "5dfa7a42-6d02-4d1e-86db-71cdd662dae0",
+                    "name": "Merge1"
+                },
+                {
+                    "parameters": {
+                        "jsCode": "let result = [];\nfor(var item of $input.all()){\n  console.log(item);\n  for(var data of item.json.data){\n    result.push({\n      json: data\n    });\n  }  \n}\n\nreturn result;"
+                    },
+                    "type": "n8n-nodes-base.code",
+                    "typeVersion": 2,
+                    "position": [
+                        -208,
+                        528
+                    ],
+                    "id": "c39ec1d9-405a-49ab-ad64-7b456e933a32",
+                    "name": "convert to loopable object"
+                }
+            ],
+            "connections": {
+                "When Executed by Another Workflow": {
+                    "main": [
+                        [
+                            {
+                                "node": "convert to loopable object",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Loop Over Items": {
+                    "main": [
+                        [],
+                        [
+                            {
+                                "node": "Set Current Element",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "check Transaction": {
+                    "main": [
+                        [
+                            {
+                                "node": "If Transaction already exists",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "If Transaction already exists": {
+                    "main": [
+                        [
+                            {
+                                "node": "Loop Over Items",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ],
+                        [
+                            {
+                                "node": "Get Best Match",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Set Current Element": {
+                    "main": [
+                        [
+                            {
+                                "node": "check Transaction",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Prepare Transaction": {
+                    "main": [
+                        [
+                            {
+                                "node": "If Budget Exists",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Get Best Match": {
+                    "main": [
+                        [
+                            {
+                                "node": "Prepare Transaction",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Code in JavaScript": {
+                    "main": [
+                        [
+                            {
+                                "node": "save Transaction To Imported Transactions",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "save Transaction To Imported Transactions": {
+                    "main": [
+                        [
+                            {
+                                "node": "Loop Over Items",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Save Transaction to Firefly": {
+                    "main": [
+                        [
+                            {
+                                "node": "Code in JavaScript",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "If Budget Exists": {
+                    "main": [
+                        [
+                            {
+                                "node": "Create Budget If Not Exists In Firefly",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ],
+                        [
+                            {
+                                "node": "Merge",
+                                "type": "main",
+                                "index": 1
+                            }
+                        ]
+                    ]
+                },
+                "If Category Exists": {
+                    "main": [
+                        [
+                            {
+                                "node": "Create Category If Not Exists In Firefly",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ],
+                        [
+                            {
+                                "node": "Merge1",
+                                "type": "main",
+                                "index": 1
+                            }
+                        ]
+                    ]
+                },
+                "Create Category If Not Exists In Firefly": {
+                    "main": [
+                        [
+                            {
+                                "node": "populate transaction with category id",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Create Budget If Not Exists In Firefly": {
+                    "main": [
+                        [
+                            {
+                                "node": "populate transaction with budget id",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "populate transaction with budget id": {
+                    "main": [
+                        [
+                            {
+                                "node": "Merge",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "populate transaction with category id": {
+                    "main": [
+                        [
+                            {
+                                "node": "Merge1",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Merge": {
+                    "main": [
+                        [
+                            {
+                                "node": "If Category Exists",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Merge1": {
+                    "main": [
+                        [
+                            {
+                                "node": "Save Transaction to Firefly",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "convert to loopable object": {
+                    "main": [
+                        [
+                            {
+                                "node": "Loop Over Items",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                }
+            },
+            "authors": "",
+            "name": "Version c7d19d00",
+            "description": "",
+            "autosaved": true
+        },
+        "tags": []
+    }
+]

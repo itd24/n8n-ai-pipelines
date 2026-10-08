@@ -1,0 +1,301 @@
+[
+    {
+        "updatedAt": "2026-06-21T10:31:57.513Z",
+        "createdAt": "2026-06-19T14:31:09.281Z",
+        "id": "zc62SIi0Evmqxtza",
+        "name": "Read And Structure Revolut",
+        "active": true,
+        "isArchived": false,
+        "nodes": [
+            {
+                "parameters": {
+                    "inputSource": "passthrough"
+                },
+                "type": "n8n-nodes-base.executeWorkflowTrigger",
+                "typeVersion": 1.1,
+                "position": [
+                    0,
+                    0
+                ],
+                "id": "7184e6f5-e89f-438d-ae49-f90f62c7cb9a",
+                "name": "When Executed by Another Workflow"
+            },
+            {
+                "parameters": {
+                    "assignments": {
+                        "assignments": [
+                            {
+                                "id": "82eec283-8685-4a82-a227-dce4cb29541e",
+                                "name": "DriveFolder",
+                                "value": "1NWWEUFkOB18fD51mHpGhr7mG3gsvphxp",
+                                "type": "string"
+                            }
+                        ]
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.set",
+                "typeVersion": 3.4,
+                "position": [
+                    208,
+                    0
+                ],
+                "id": "48ca286a-b6d5-4beb-b63b-9bd2003716e5",
+                "name": "Edit Fields"
+            },
+            {
+                "parameters": {
+                    "workflowId": {
+                        "__rl": true,
+                        "value": "Z5f5YMUT4TtBXlpA",
+                        "mode": "list",
+                        "cachedResultUrl": "/workflow/Z5f5YMUT4TtBXlpA",
+                        "cachedResultName": "Read CSV Files from Google Drive Folder (Subworkflow)"
+                    },
+                    "workflowInputs": {
+                        "mappingMode": "defineBelow",
+                        "value": {
+                            "folderId": "={{ $json.DriveFolder }}"
+                        },
+                        "matchingColumns": [
+                            "folderId"
+                        ],
+                        "schema": [
+                            {
+                                "id": "folderId",
+                                "displayName": "folderId",
+                                "required": false,
+                                "defaultMatch": false,
+                                "display": true,
+                                "canBeUsedToMatch": true,
+                                "type": "string",
+                                "removed": false
+                            }
+                        ],
+                        "attemptToConvertTypes": false,
+                        "convertFieldsToString": true
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.executeWorkflow",
+                "typeVersion": 1.3,
+                "position": [
+                    416,
+                    0
+                ],
+                "id": "55ebb829-88a5-41d9-867d-0e3e5c7652fa",
+                "name": "Call 'Read CSV Files from Google Drive Folder (Subworkflow)'"
+            },
+            {
+                "parameters": {
+                    "mode": "runOnceForEachItem",
+                    "jsCode": "// n8n Code node - \"Run Once for All Items\" mode\n\nfunction parseDateOnly(dateTimeStr) {\n  if (!dateTimeStr) return null;\n  return dateTimeStr.split(' ')[0]; // \"2025-04-18 13:37:32\" -> \"2025-04-18\"\n}\n\nfunction parseNumber(value) {\n  if (typeof value !== 'string') return NaN;\n\n  const hasComma = value.includes(',');\n  const hasDot = value.includes('.');\n\n  let normalized = value;\n\n  if (hasComma && hasDot) {\n    // assume dot = thousand separator, comma = decimal\n    normalized = value.replace(/\\./g, '').replace(',', '.');\n  } else if (hasComma) {\n    // comma as decimal\n    normalized = value.replace(',', '.');\n  }\n\n  return parseFloat(normalized);\n}\n\nfunction mapType(amountStr) {\n  const amount = parseFloat(amountStr);\n  if (isNaN(amount)) return 'withdrawal';\n  return amount < 0 ? 'withdrawal' : 'deposit';\n}\n\n// cyrb53 - fast, deterministic, dependency-free 53-bit hash\n// (no crypto module needed, works in n8n's sandboxed Code node)\nfunction cyrb53(str, seed = 0) {\n  let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;\n  for (let i = 0, ch; i < str.length; i++) {\n    ch = str.charCodeAt(i);\n    h1 = Math.imul(h1 ^ ch, 2654435761);\n    h2 = Math.imul(h2 ^ ch, 1597334677);\n  }\n  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507);\n  h1 ^= Math.imul(h2 ^ (h2 >>> 13), 3266489909);\n  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507);\n  h2 ^= Math.imul(h1 ^ (h1 >>> 13), 3266489909);\n  return 4294967296 * (h2 >>> 0) + (h1 >>> 0);\n}\n\nfunction generateExternalId(raw) {\n  const seed = [\n    raw['Type'],\n    raw['Started Date'],\n    raw['Completed Date'],\n    raw['Description'],\n    raw['Amount'],\n    raw['Fee'],\n    raw['Currency'],\n    raw['Balance'],\n  ].join('|');\n  const num = cyrb53(seed);\n  return num.toString().padStart(10, '0').slice(-10);\n}\n\nfunction buildAccountName(product) {\n  return `revolut-${(product || 'account').toString().toLowerCase()}`;\n}\n\nconst results = [];\n\nfor (const raw of $json.data) {\n  \n  const type = mapType(raw['Amount']);\n  const amount = Math.abs(parseNumber(raw['Amount'])).toFixed(2);\n  const date = parseDateOnly(raw['Started Date']);\n  const bookDate = parseDateOnly(raw['Completed Date']);\n  const account = buildAccountName(raw['Product']);\n  const externalId = generateExternalId(raw);\n\n  const counterpartyName = raw['Description'] || 'Revolut';\n  const fee = parseNumber(raw['Fee']);\n\n  const notesParts = [\n    raw['Type'] ? `Type: ${raw['Type']}` : null,\n    raw['State'] && raw['State'] !== 'COMPLETED' ? `State: ${raw['State']}` : null,\n    fee && fee !== 0 ? `Fee: ${fee.toFixed(2)} ${raw['Currency']}` : null,\n    raw['Balance'] ? `Balance after: ${raw['Balance']} ${raw['Currency']}` : null,\n  ].filter(Boolean);\n\n  const normalized = {\n    id: `${account}-${externalId}`,\n    account,\n    type,\n    date,\n    amount,\n    currency_code: raw['Currency'] || null,\n    description: raw['Description'] || '',\n    category_name: null,\n\n    ...(type === 'withdrawal'\n      ? { destination_name: counterpartyName, destination_iban: null, destination_bic: null }\n      : { source_name: counterpartyName, source_iban: null, source_bic: null }),\n\n    external_id: externalId,\n    internal_reference: null,\n\n    payment_date: date,\n    book_date: bookDate,\n\n    tags: raw['Type'] ? [raw['Type']] : [],\n\n    notes: notesParts.length ? notesParts.join(' | ') : null,\n\n    raw,\n  };\n\n  results.push(normalized);\n}\n\nreturn {json:{...$json, data: results}};"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    624,
+                    0
+                ],
+                "id": "2fcee3f4-1ab7-45e0-a5e4-b21ee4441fe6",
+                "name": "Normalize Data"
+            }
+        ],
+        "connections": {
+            "When Executed by Another Workflow": {
+                "main": [
+                    [
+                        {
+                            "node": "Edit Fields",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Edit Fields": {
+                "main": [
+                    [
+                        {
+                            "node": "Call 'Read CSV Files from Google Drive Folder (Subworkflow)'",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Call 'Read CSV Files from Google Drive Folder (Subworkflow)'": {
+                "main": [
+                    [
+                        {
+                            "node": "Normalize Data",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            }
+        },
+        "settings": {
+            "executionOrder": "v1",
+            "binaryMode": "separate",
+            "availableInMCP": false
+        },
+        "staticData": null,
+        "meta": null,
+        "pinData": {},
+        "versionId": "fe8ecd24-0617-47d3-861f-036e401dfbe6",
+        "activeVersionId": "17be9a83-7b94-47bd-878c-fb5123bc3083",
+        "triggerCount": 0,
+        "shared": [
+            {
+                "updatedAt": "2026-06-19T14:31:09.281Z",
+                "createdAt": "2026-06-19T14:31:09.281Z",
+                "role": "workflow:owner",
+                "workflowId": "zc62SIi0Evmqxtza",
+                "projectId": "FlGQaEMmWQfoeLfg"
+            }
+        ],
+        "activeVersion": {
+            "updatedAt": "2026-06-20T13:30:09.868Z",
+            "createdAt": "2026-06-19T14:51:41.538Z",
+            "versionId": "17be9a83-7b94-47bd-878c-fb5123bc3083",
+            "workflowId": "zc62SIi0Evmqxtza",
+            "nodes": [
+                {
+                    "parameters": {
+                        "inputSource": "passthrough"
+                    },
+                    "type": "n8n-nodes-base.executeWorkflowTrigger",
+                    "typeVersion": 1.1,
+                    "position": [
+                        0,
+                        0
+                    ],
+                    "id": "7184e6f5-e89f-438d-ae49-f90f62c7cb9a",
+                    "name": "When Executed by Another Workflow"
+                },
+                {
+                    "parameters": {
+                        "assignments": {
+                            "assignments": [
+                                {
+                                    "id": "82eec283-8685-4a82-a227-dce4cb29541e",
+                                    "name": "DriveFolder",
+                                    "value": "1NWWEUFkOB18fD51mHpGhr7mG3gsvphxp",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.set",
+                    "typeVersion": 3.4,
+                    "position": [
+                        208,
+                        0
+                    ],
+                    "id": "48ca286a-b6d5-4beb-b63b-9bd2003716e5",
+                    "name": "Edit Fields"
+                },
+                {
+                    "parameters": {
+                        "workflowId": {
+                            "__rl": true,
+                            "value": "Z5f5YMUT4TtBXlpA",
+                            "mode": "list",
+                            "cachedResultUrl": "/workflow/Z5f5YMUT4TtBXlpA",
+                            "cachedResultName": "Read CSV Files from Google Drive Folder (Subworkflow)"
+                        },
+                        "workflowInputs": {
+                            "mappingMode": "defineBelow",
+                            "value": {
+                                "folderId": "={{ $json.DriveFolder }}"
+                            },
+                            "matchingColumns": [
+                                "folderId"
+                            ],
+                            "schema": [
+                                {
+                                    "id": "folderId",
+                                    "displayName": "folderId",
+                                    "required": false,
+                                    "defaultMatch": false,
+                                    "display": true,
+                                    "canBeUsedToMatch": true,
+                                    "type": "string",
+                                    "removed": false
+                                }
+                            ],
+                            "attemptToConvertTypes": false,
+                            "convertFieldsToString": true
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.executeWorkflow",
+                    "typeVersion": 1.3,
+                    "position": [
+                        416,
+                        0
+                    ],
+                    "id": "55ebb829-88a5-41d9-867d-0e3e5c7652fa",
+                    "name": "Call 'Read CSV Files from Google Drive Folder (Subworkflow)'"
+                },
+                {
+                    "parameters": {
+                        "mode": "runOnceForEachItem",
+                        "jsCode": "// n8n Code node - \"Run Once for All Items\" mode\n\nfunction parseDateOnly(dateTimeStr) {\n  if (!dateTimeStr) return null;\n  return dateTimeStr.split(' ')[0]; // \"2025-04-18 13:37:32\" -> \"2025-04-18\"\n}\n\nfunction mapType(amountStr) {\n  const amount = parseFloat(amountStr);\n  if (isNaN(amount)) return 'withdrawal';\n  return amount < 0 ? 'withdrawal' : 'deposit';\n}\n\n// cyrb53 - fast, deterministic, dependency-free 53-bit hash\n// (no crypto module needed, works in n8n's sandboxed Code node)\nfunction cyrb53(str, seed = 0) {\n  let h1 = 0xdeadbeef ^ seed, h2 = 0x41c6ce57 ^ seed;\n  for (let i = 0, ch; i < str.length; i++) {\n    ch = str.charCodeAt(i);\n    h1 = Math.imul(h1 ^ ch, 2654435761);\n    h2 = Math.imul(h2 ^ ch, 1597334677);\n  }\n  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507);\n  h1 ^= Math.imul(h2 ^ (h2 >>> 13), 3266489909);\n  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507);\n  h2 ^= Math.imul(h1 ^ (h1 >>> 13), 3266489909);\n  return 4294967296 * (h2 >>> 0) + (h1 >>> 0);\n}\n\nfunction generateExternalId(raw) {\n  const seed = [\n    raw['Type'],\n    raw['Started Date'],\n    raw['Completed Date'],\n    raw['Description'],\n    raw['Amount'],\n    raw['Fee'],\n    raw['Currency'],\n    raw['Balance'],\n  ].join('|');\n  const num = cyrb53(seed);\n  return num.toString().padStart(10, '0').slice(-10);\n}\n\nfunction buildAccountName(product) {\n  return `revolut-${(product || 'account').toString().toLowerCase()}`;\n}\n\nconst results = [];\n\nfor (const raw of $json.data) {\n  \n  const type = mapType(raw['Amount']);\n  const amount = Math.abs(parseFloat(raw['Amount'])).toFixed(2);\n  const date = parseDateOnly(raw['Started Date']);\n  const bookDate = parseDateOnly(raw['Completed Date']);\n  const account = buildAccountName(raw['Product']);\n  const externalId = generateExternalId(raw);\n\n  const counterpartyName = raw['Description'] || 'Revolut';\n  const fee = parseFloat(raw['Fee']);\n\n  const notesParts = [\n    raw['Type'] ? `Type: ${raw['Type']}` : null,\n    raw['State'] && raw['State'] !== 'COMPLETED' ? `State: ${raw['State']}` : null,\n    fee && fee !== 0 ? `Fee: ${fee.toFixed(2)} ${raw['Currency']}` : null,\n    raw['Balance'] ? `Balance after: ${raw['Balance']} ${raw['Currency']}` : null,\n  ].filter(Boolean);\n\n  const normalized = {\n    id: `${account}-${externalId}`,\n    account,\n    type,\n    date,\n    amount,\n    currency_code: raw['Currency'] || null,\n    description: raw['Description'] || '',\n    category_name: null,\n\n    ...(type === 'withdrawal'\n      ? { destination_name: counterpartyName, destination_iban: null, destination_bic: null }\n      : { source_name: counterpartyName, source_iban: null, source_bic: null }),\n\n    external_id: externalId,\n    internal_reference: null,\n\n    payment_date: date,\n    book_date: bookDate,\n\n    tags: raw['Type'] ? [raw['Type']] : [],\n\n    notes: notesParts.length ? notesParts.join(' | ') : null,\n\n    raw,\n  };\n\n  results.push(normalized);\n}\n\nreturn {json:{...$json, data: results}};"
+                    },
+                    "type": "n8n-nodes-base.code",
+                    "typeVersion": 2,
+                    "position": [
+                        624,
+                        0
+                    ],
+                    "id": "2fcee3f4-1ab7-45e0-a5e4-b21ee4441fe6",
+                    "name": "Normalize Data"
+                }
+            ],
+            "connections": {
+                "When Executed by Another Workflow": {
+                    "main": [
+                        [
+                            {
+                                "node": "Edit Fields",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Edit Fields": {
+                    "main": [
+                        [
+                            {
+                                "node": "Call 'Read CSV Files from Google Drive Folder (Subworkflow)'",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Call 'Read CSV Files from Google Drive Folder (Subworkflow)'": {
+                    "main": [
+                        [
+                            {
+                                "node": "Normalize Data",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                }
+            },
+            "authors": "",
+            "name": "Version 17be9a83",
+            "description": "",
+            "autosaved": true
+        },
+        "tags": []
+    }
+]

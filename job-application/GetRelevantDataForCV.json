@@ -1,0 +1,269 @@
+[
+    {
+        "updatedAt": "2026-03-04T15:38:31.693Z",
+        "createdAt": "2025-05-07T10:37:12.330Z",
+        "id": "gj8p6sW1RvqLfsna",
+        "name": "GetRelevantDataForCV",
+        "active": true,
+        "isArchived": false,
+        "nodes": [
+            {
+                "parameters": {
+                    "inputSource": "passthrough"
+                },
+                "type": "n8n-nodes-base.executeWorkflowTrigger",
+                "typeVersion": 1.1,
+                "position": [
+                    0,
+                    0
+                ],
+                "id": "b25d990e-39ae-44be-b1de-0b0639618685",
+                "name": "When Executed by Another Workflow"
+            },
+            {
+                "parameters": {
+                    "workflowId": {
+                        "__rl": true,
+                        "value": "GvVL2xA14QTdda2q",
+                        "mode": "list",
+                        "cachedResultName": "Load-cv-data"
+                    },
+                    "workflowInputs": {
+                        "mappingMode": "defineBelow",
+                        "value": {},
+                        "matchingColumns": [],
+                        "schema": [],
+                        "attemptToConvertTypes": false,
+                        "convertFieldsToString": true
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.executeWorkflow",
+                "typeVersion": 1.2,
+                "position": [
+                    220,
+                    0
+                ],
+                "id": "99a049a9-735c-40bc-8c1d-910357d37dac",
+                "name": "Execute Workflow"
+            },
+            {
+                "parameters": {
+                    "options": {}
+                },
+                "type": "@n8n/n8n-nodes-langchain.agent",
+                "typeVersion": 1.8,
+                "position": [
+                    480,
+                    -340
+                ],
+                "id": "a5eb7ac8-912f-4996-a724-644e492cff12",
+                "name": "AI Agent"
+            },
+            {
+                "parameters": {
+                    "model": {
+                        "__rl": true,
+                        "mode": "list",
+                        "value": "gpt-4o-mini"
+                    },
+                    "options": {}
+                },
+                "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+                "typeVersion": 1.2,
+                "position": [
+                    480,
+                    -160
+                ],
+                "id": "b45a9a23-2836-45ff-8b6e-035c212f0d74",
+                "name": "OpenAI Chat Model",
+                "credentials": {
+                    "openAiApi": {
+                        "id": "41vcpeRIZNLSJWiZ",
+                        "name": "OpenAi account"
+                    }
+                }
+            }
+        ],
+        "connections": {
+            "When Executed by Another Workflow": {
+                "main": [
+                    [
+                        {
+                            "node": "Execute Workflow",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Execute Workflow": {
+                "main": [
+                    [
+                        {
+                            "node": "AI Agent",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "OpenAI Chat Model": {
+                "ai_languageModel": [
+                    [
+                        {
+                            "node": "AI Agent",
+                            "type": "ai_languageModel",
+                            "index": 0
+                        }
+                    ]
+                ]
+            }
+        },
+        "settings": {
+            "executionOrder": "v1"
+        },
+        "staticData": null,
+        "meta": {
+            "templateCredsSetupCompleted": true
+        },
+        "pinData": {},
+        "versionId": "35ac4ea6-f54a-43c9-a146-3c2b39fed1c1",
+        "activeVersionId": "35ac4ea6-f54a-43c9-a146-3c2b39fed1c1",
+        "triggerCount": 0,
+        "shared": [
+            {
+                "updatedAt": "2025-05-07T10:37:12.330Z",
+                "createdAt": "2025-05-07T10:37:12.330Z",
+                "role": "workflow:owner",
+                "workflowId": "gj8p6sW1RvqLfsna",
+                "projectId": "FlGQaEMmWQfoeLfg"
+            }
+        ],
+        "activeVersion": {
+            "updatedAt": "2025-11-26T19:00:58.272Z",
+            "createdAt": "2025-11-26T19:00:58.272Z",
+            "versionId": "35ac4ea6-f54a-43c9-a146-3c2b39fed1c1",
+            "workflowId": "gj8p6sW1RvqLfsna",
+            "nodes": [
+                {
+                    "parameters": {
+                        "inputSource": "passthrough"
+                    },
+                    "type": "n8n-nodes-base.executeWorkflowTrigger",
+                    "typeVersion": 1.1,
+                    "position": [
+                        0,
+                        0
+                    ],
+                    "id": "b25d990e-39ae-44be-b1de-0b0639618685",
+                    "name": "When Executed by Another Workflow"
+                },
+                {
+                    "parameters": {
+                        "workflowId": {
+                            "__rl": true,
+                            "value": "GvVL2xA14QTdda2q",
+                            "mode": "list",
+                            "cachedResultName": "Load-cv-data"
+                        },
+                        "workflowInputs": {
+                            "mappingMode": "defineBelow",
+                            "value": {},
+                            "matchingColumns": [],
+                            "schema": [],
+                            "attemptToConvertTypes": false,
+                            "convertFieldsToString": true
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.executeWorkflow",
+                    "typeVersion": 1.2,
+                    "position": [
+                        220,
+                        0
+                    ],
+                    "id": "99a049a9-735c-40bc-8c1d-910357d37dac",
+                    "name": "Execute Workflow"
+                },
+                {
+                    "parameters": {
+                        "options": {}
+                    },
+                    "type": "@n8n/n8n-nodes-langchain.agent",
+                    "typeVersion": 1.8,
+                    "position": [
+                        480,
+                        -340
+                    ],
+                    "id": "a5eb7ac8-912f-4996-a724-644e492cff12",
+                    "name": "AI Agent"
+                },
+                {
+                    "parameters": {
+                        "model": {
+                            "__rl": true,
+                            "mode": "list",
+                            "value": "gpt-4o-mini"
+                        },
+                        "options": {}
+                    },
+                    "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+                    "typeVersion": 1.2,
+                    "position": [
+                        480,
+                        -160
+                    ],
+                    "id": "b45a9a23-2836-45ff-8b6e-035c212f0d74",
+                    "name": "OpenAI Chat Model",
+                    "credentials": {
+                        "openAiApi": {
+                            "id": "41vcpeRIZNLSJWiZ",
+                            "name": "OpenAi account"
+                        }
+                    }
+                }
+            ],
+            "connections": {
+                "When Executed by Another Workflow": {
+                    "main": [
+                        [
+                            {
+                                "node": "Execute Workflow",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Execute Workflow": {
+                    "main": [
+                        [
+                            {
+                                "node": "AI Agent",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "OpenAI Chat Model": {
+                    "ai_languageModel": [
+                        [
+                            {
+                                "node": "AI Agent",
+                                "type": "ai_languageModel",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                }
+            },
+            "authors": "system migration",
+            "name": null,
+            "description": null,
+            "autosaved": false
+        },
+        "tags": []
+    }
+]

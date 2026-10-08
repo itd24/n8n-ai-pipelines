@@ -1,0 +1,355 @@
+[
+    {
+        "updatedAt": "2026-03-04T15:38:37.972Z",
+        "createdAt": "2025-04-13T18:14:23.535Z",
+        "id": "bbkeCVaxRhO7Ood8",
+        "name": "Add skills",
+        "active": false,
+        "isArchived": false,
+        "nodes": [
+            {
+                "parameters": {},
+                "type": "n8n-nodes-base.manualTrigger",
+                "typeVersion": 1,
+                "position": [
+                    -900,
+                    -440
+                ],
+                "id": "840a8c69-cd50-483d-9edf-59ac4efe73ac",
+                "name": "When clicking ‘Test workflow’"
+            },
+            {
+                "parameters": {
+                    "workflowId": {
+                        "__rl": true,
+                        "value": "GvVL2xA14QTdda2q",
+                        "mode": "list",
+                        "cachedResultName": "Load-cv-data"
+                    },
+                    "workflowInputs": {
+                        "mappingMode": "defineBelow",
+                        "value": {},
+                        "matchingColumns": [],
+                        "schema": [],
+                        "attemptToConvertTypes": false,
+                        "convertFieldsToString": true
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.executeWorkflow",
+                "typeVersion": 1.2,
+                "position": [
+                    -720,
+                    -540
+                ],
+                "id": "356aec95-bd2f-421f-bf7d-b2feffe4f51f",
+                "name": "Execute Workflow"
+            },
+            {
+                "parameters": {
+                    "promptType": "define",
+                    "text": "=You are a career professional, who can help me create my skill set based on my previous work experience and the job I am applying for. You have to create a list of relevant skills and output it in this json format:\n{\n\"skills\":[\n{\n\"skill\": \"name of the skill\",\n\"level\": \"a numeric value representing a skill-level ranging from 0 to 100\",\n\"reason\": \"a description and reasoning on what data you based the decision to add this skill to the list\"\n}\n]\n}\nIt is crucial, that you add only skills, relevant to the job I am applying for. Adding any other skills will result in a penalty. Highly relevant skills will be rewarded.\nYou also must not add any skills I already have in my list. The skills already on my list are: {{ $json.skills }}\n\nthe description of the job I am applying for:\n\"{{ $json.applications[0].content }}\"\n\nmy job experience summarized in my own words and formatted into a json structure, where the property \"from\" represents the month and year I started the job, the property \"to\" represents the month and year I quit the job, the property \"description\" represents the description of the job, what I did and what I achieved,\nthe property \"company\" represents the name of the company, the property \"location\" represents the name of the city I worked in, and the property \"title\" represents the official position I had at this job: \n\n\"{{ $json.jobs.toJsonString() }}\"\n\nYou have to output only the json and nothing else. Adding additional text that would prevent me from parsing the json will result in a penalty.",
+                    "hasOutputParser": true,
+                    "options": {}
+                },
+                "type": "@n8n/n8n-nodes-langchain.agent",
+                "typeVersion": 1.8,
+                "position": [
+                    -160,
+                    -460
+                ],
+                "id": "a66ff63e-ca36-45c4-b10d-60911c6d89fe",
+                "name": "AI Agent"
+            },
+            {
+                "parameters": {
+                    "workflowId": {
+                        "__rl": true,
+                        "value": "vds3gMzBpCwr7hrM",
+                        "mode": "list",
+                        "cachedResultName": "Load-job-description"
+                    },
+                    "workflowInputs": {
+                        "mappingMode": "defineBelow",
+                        "value": {},
+                        "matchingColumns": [],
+                        "schema": [],
+                        "attemptToConvertTypes": false,
+                        "convertFieldsToString": true
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.executeWorkflow",
+                "typeVersion": 1.2,
+                "position": [
+                    -720,
+                    -380
+                ],
+                "id": "13b85ed0-d90d-4223-90da-2a017800d2fc",
+                "name": "Execute Workflow1"
+            },
+            {
+                "parameters": {},
+                "type": "n8n-nodes-base.merge",
+                "typeVersion": 3.1,
+                "position": [
+                    -560,
+                    -460
+                ],
+                "id": "10e92b40-93ed-44d4-b802-947bb82914c1",
+                "name": "Merge"
+            },
+            {
+                "parameters": {
+                    "jsCode": "\nvar skillNames = [];\nvar jobs = [];\nvar applications = [];\nfor (const item of $input.all()) {\n  if(item.json.skills){\n    for(var group in item.json.skills){\n      for(var skill in item.json.skills[group]){\n        skillNames.push(item.json.skills[group][skill].skill);\n      }\n    }\n  }\n  else if(item.json.job){\n    jobs.push(item.json.job);\n  }\n  else if(item.json.application){\n    applications.push({\"content\":item.json.application});\n  }\n}\nskillNames = [...new Set(skillNames)];\n\n\n\nreturn [{\n  json:{\n    skills: skillNames,\n    jobs,\n    applications\n  }\n}]"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    -340,
+                    -460
+                ],
+                "id": "5932c785-72ba-4336-88c7-07caaf62b8e9",
+                "name": "Code"
+            },
+            {
+                "parameters": {
+                    "model": {
+                        "__rl": true,
+                        "mode": "list",
+                        "value": "gpt-4o-mini"
+                    },
+                    "options": {}
+                },
+                "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+                "typeVersion": 1.2,
+                "position": [
+                    -180,
+                    -260
+                ],
+                "id": "e489f895-6fa6-48fe-8d15-f4cca9300fba",
+                "name": "OpenAI Chat Model",
+                "credentials": {
+                    "openAiApi": {
+                        "id": "41vcpeRIZNLSJWiZ",
+                        "name": "OpenAi account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  const cleaned = item.json.output.replace(/^```json\\n/, '').replace(/\\n```$/, '');\n  const parsed = JSON.parse(cleaned);\n  return parsed.skills.map(skill => ({\n    json: {\n      skill: skill.skill,\n      level: skill.level,\n      constant: 1,\n      reason: skill.reason\n    }\n  }));\n}\n\n"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    200,
+                    -460
+                ],
+                "id": "90c60b1e-c136-4514-9f7d-582bbcc31e58",
+                "name": "Code1"
+            },
+            {
+                "parameters": {
+                    "operation": "append",
+                    "documentId": {
+                        "__rl": true,
+                        "value": "1Lx7GhvJzqP34eVBxfroTN7M8wPcqa-Vhrw2hBK6KdXY",
+                        "mode": "list",
+                        "cachedResultName": "career_data_collection",
+                        "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lx7GhvJzqP34eVBxfroTN7M8wPcqa-Vhrw2hBK6KdXY/edit?usp=drivesdk"
+                    },
+                    "sheetName": {
+                        "__rl": true,
+                        "value": "gid=0",
+                        "mode": "list",
+                        "cachedResultName": "Skills",
+                        "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lx7GhvJzqP34eVBxfroTN7M8wPcqa-Vhrw2hBK6KdXY/edit#gid=0"
+                    },
+                    "columns": {
+                        "mappingMode": "defineBelow",
+                        "value": {
+                            "Technical Skills": "={{ $json.skill }}",
+                            "Level": "={{ $json.level }}",
+                            "AI Generated": "={{ $json.constant }}",
+                            "Reason": "={{ $json.reason }}"
+                        },
+                        "matchingColumns": [],
+                        "schema": [
+                            {
+                                "id": "Technical Skills",
+                                "displayName": "Technical Skills",
+                                "required": false,
+                                "defaultMatch": false,
+                                "display": true,
+                                "type": "string",
+                                "canBeUsedToMatch": true
+                            },
+                            {
+                                "id": "Level",
+                                "displayName": "Level",
+                                "required": false,
+                                "defaultMatch": false,
+                                "display": true,
+                                "type": "string",
+                                "canBeUsedToMatch": true
+                            },
+                            {
+                                "id": "AI Generated",
+                                "displayName": "AI Generated",
+                                "required": false,
+                                "defaultMatch": false,
+                                "display": true,
+                                "type": "string",
+                                "canBeUsedToMatch": true
+                            },
+                            {
+                                "id": "Reason",
+                                "displayName": "Reason",
+                                "required": false,
+                                "defaultMatch": false,
+                                "display": true,
+                                "type": "string",
+                                "canBeUsedToMatch": true
+                            }
+                        ],
+                        "attemptToConvertTypes": false,
+                        "convertFieldsToString": false
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.googleSheets",
+                "typeVersion": 4.5,
+                "position": [
+                    420,
+                    -460
+                ],
+                "id": "81b08518-04df-45a3-aa7c-22f0f29e4c0e",
+                "name": "Google Sheets",
+                "credentials": {
+                    "googleSheetsOAuth2Api": {
+                        "id": "oYswFLQWLJz0WnPK",
+                        "name": "Google Sheets account"
+                    }
+                }
+            }
+        ],
+        "connections": {
+            "When clicking ‘Test workflow’": {
+                "main": [
+                    [
+                        {
+                            "node": "Execute Workflow",
+                            "type": "main",
+                            "index": 0
+                        },
+                        {
+                            "node": "Execute Workflow1",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Execute Workflow": {
+                "main": [
+                    [
+                        {
+                            "node": "Merge",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Execute Workflow1": {
+                "main": [
+                    [
+                        {
+                            "node": "Merge",
+                            "type": "main",
+                            "index": 1
+                        }
+                    ]
+                ]
+            },
+            "Merge": {
+                "main": [
+                    [
+                        {
+                            "node": "Code",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Code": {
+                "main": [
+                    [
+                        {
+                            "node": "AI Agent",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "OpenAI Chat Model": {
+                "ai_languageModel": [
+                    [
+                        {
+                            "node": "AI Agent",
+                            "type": "ai_languageModel",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "AI Agent": {
+                "main": [
+                    [
+                        {
+                            "node": "Code1",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Code1": {
+                "main": [
+                    [
+                        {
+                            "node": "Google Sheets",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            }
+        },
+        "settings": {
+            "executionOrder": "v1"
+        },
+        "staticData": null,
+        "meta": {
+            "templateCredsSetupCompleted": true
+        },
+        "pinData": {},
+        "versionId": "b15fcb97-760c-4847-9d9c-2b69b46e5bb1",
+        "activeVersionId": null,
+        "triggerCount": 0,
+        "shared": [
+            {
+                "updatedAt": "2025-04-13T18:14:23.535Z",
+                "createdAt": "2025-04-13T18:14:23.535Z",
+                "role": "workflow:owner",
+                "workflowId": "bbkeCVaxRhO7Ood8",
+                "projectId": "FlGQaEMmWQfoeLfg"
+            }
+        ],
+        "activeVersion": null,
+        "tags": []
+    }
+]

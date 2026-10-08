@@ -1,0 +1,12 @@
+# OS noise
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor folders
+.vscode/
+.idea/
+
+# Local captures that are not part of the showcase
+*.log
+*.tmp

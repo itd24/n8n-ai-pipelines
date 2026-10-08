@@ -1,0 +1,208 @@
+[
+    {
+        "updatedAt": "2026-05-19T14:16:02.630Z",
+        "createdAt": "2026-05-19T11:54:16.548Z",
+        "id": "Qw2KwyuVg94oVqaS",
+        "name": "Get Page Content",
+        "active": false,
+        "isArchived": false,
+        "nodes": [
+            {
+                "parameters": {
+                    "workflowInputs": {
+                        "values": [
+                            {
+                                "name": "Notion article URL"
+                            }
+                        ]
+                    }
+                },
+                "type": "n8n-nodes-base.executeWorkflowTrigger",
+                "typeVersion": 1.1,
+                "position": [
+                    0,
+                    -160
+                ],
+                "id": "53040400-7eb0-463c-bf22-3f1086d82801",
+                "name": "When Executed by Another Workflow"
+            },
+            {
+                "parameters": {
+                    "resource": "databasePage",
+                    "operation": "get",
+                    "pageId": {
+                        "__rl": true,
+                        "value": "={{ $json[\"Notion article URL\"] }}",
+                        "mode": "url"
+                    }
+                },
+                "type": "n8n-nodes-base.notion",
+                "typeVersion": 2.2,
+                "position": [
+                    448,
+                    -256
+                ],
+                "id": "b79c6d5c-164d-4ee8-b65b-f0272dd00f52",
+                "name": "Get a database page",
+                "executeOnce": false,
+                "retryOnFail": true,
+                "credentials": {
+                    "notionApi": {
+                        "id": "VBly8RGYLumrF6c5",
+                        "name": "Notion account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "resource": "block",
+                    "operation": "getAll",
+                    "blockId": {
+                        "__rl": true,
+                        "value": "={{ $json[\"Notion article URL\"] }}",
+                        "mode": "url"
+                    },
+                    "returnAll": true,
+                    "fetchNestedBlocks": true
+                },
+                "type": "n8n-nodes-base.notion",
+                "typeVersion": 2.2,
+                "position": [
+                    224,
+                    -64
+                ],
+                "id": "ed892aee-b245-4ca5-abf3-e6f82439355d",
+                "name": "Get many child blocks",
+                "retryOnFail": true,
+                "credentials": {
+                    "notionApi": {
+                        "id": "VBly8RGYLumrF6c5",
+                        "name": "Notion account"
+                    }
+                }
+            },
+            {
+                "parameters": {},
+                "type": "n8n-nodes-base.merge",
+                "typeVersion": 3.2,
+                "position": [
+                    672,
+                    -160
+                ],
+                "id": "f6369660-7d6f-485d-ba83-49b46c935274",
+                "name": "Merge"
+            },
+            {
+                "parameters": {
+                    "jsCode": "const blocks = $json.results || $input.all().map(i => i.json);\n\nfunction escape(content) {\n  return (content || '').toString();\n}\n\nfunction parseBlock(block) {\n  const type = block.type;\n  const content = escape(block.content);\n\n  switch (type) {\n    case 'paragraph':\n      return content + '\\n';\n\n    case 'heading_1':\n      return `# ${content}\\n`;\n\n    case 'heading_2':\n      return `## ${content}\\n`;\n\n    case 'heading_3':\n      return `### ${content}\\n`;\n\n    case 'bulleted_list_item':\n      return `- ${content}\\n`;\n\n    case 'numbered_list_item':\n      return `1. ${content}\\n`;\n\n    case 'quote':\n      return `> ${content}\\n`;\n\n    case 'code':\n      return '```' + '\\n' + content + '\\n```\\n';\n\n    case 'divider':\n      return `---\\n`;\n\n    default:\n      return '';\n  }\n}\n\nlet output = '';\n\nfor (const block of blocks) {\n  output += parseBlock(block) + '\\n';\n}\n\nreturn [\n  {\n    json: {\n      markdown: output.trim()\n    }\n  }\n];"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    448,
+                    -64
+                ],
+                "id": "d6892efc-5770-46cd-8ada-4fb4d212c66c",
+                "name": "Code in JavaScript"
+            },
+            {
+                "parameters": {
+                    "jsCode": "var title = $input.all()[0].json.name;\nvar markdown = $input.all()[1].json.markdown;\n\nreturn [{json: {content: `#${title}\\n\\n${markdown}`}}];"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    896,
+                    -160
+                ],
+                "id": "3ffccea1-7296-4814-9247-1a6a361109ef",
+                "name": "Code in JavaScript1"
+            }
+        ],
+        "connections": {
+            "When Executed by Another Workflow": {
+                "main": [
+                    [
+                        {
+                            "node": "Get a database page",
+                            "type": "main",
+                            "index": 0
+                        },
+                        {
+                            "node": "Get many child blocks",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Get a database page": {
+                "main": [
+                    [
+                        {
+                            "node": "Merge",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Get many child blocks": {
+                "main": [
+                    [
+                        {
+                            "node": "Code in JavaScript",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Code in JavaScript": {
+                "main": [
+                    [
+                        {
+                            "node": "Merge",
+                            "type": "main",
+                            "index": 1
+                        }
+                    ]
+                ]
+            },
+            "Merge": {
+                "main": [
+                    [
+                        {
+                            "node": "Code in JavaScript1",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            }
+        },
+        "settings": {
+            "executionOrder": "v1",
+            "binaryMode": "separate"
+        },
+        "staticData": null,
+        "meta": {
+            "templateCredsSetupCompleted": true
+        },
+        "pinData": {},
+        "versionId": "095693be-4e8a-4eb3-a4c0-be8a8cc81b25",
+        "activeVersionId": null,
+        "triggerCount": 0,
+        "shared": [
+            {
+                "updatedAt": "2026-05-19T11:54:16.548Z",
+                "createdAt": "2026-05-19T11:54:16.548Z",
+                "role": "workflow:owner",
+                "workflowId": "Qw2KwyuVg94oVqaS",
+                "projectId": "FlGQaEMmWQfoeLfg"
+            }
+        ],
+        "activeVersion": null,
+        "tags": []
+    }
+]

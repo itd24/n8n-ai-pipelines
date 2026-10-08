@@ -1,0 +1,227 @@
+[
+    {
+        "updatedAt": "2026-05-19T14:16:16.295Z",
+        "createdAt": "2026-05-19T12:38:03.303Z",
+        "id": "ZPbbyJA7lDE7JjcZ",
+        "name": "Recursive Notion Block Loader",
+        "active": false,
+        "isArchived": true,
+        "nodes": [
+            {
+                "parameters": {
+                    "workflowInputs": {
+                        "values": [
+                            {
+                                "name": "blockId"
+                            },
+                            {
+                                "name": "depth"
+                            }
+                        ]
+                    }
+                },
+                "id": "ab213af2-97f1-47a3-aa75-954c25586d08",
+                "name": "When Executed by Another Workflow",
+                "type": "n8n-nodes-base.executeWorkflowTrigger",
+                "typeVersion": 1.1,
+                "position": [
+                    -240,
+                    -64
+                ]
+            },
+            {
+                "parameters": {
+                    "resource": "block",
+                    "operation": "getAll",
+                    "blockId": "={{ $json.blockId }}",
+                    "returnAll": true,
+                    "fetchNestedBlocks": true
+                },
+                "id": "e6e910fe-69fe-42fb-bc10-5a996804db48",
+                "name": "Get Child Blocks",
+                "type": "n8n-nodes-base.notion",
+                "typeVersion": 2.2,
+                "position": [
+                    32,
+                    -64
+                ],
+                "credentials": {
+                    "notionApi": {
+                        "id": "VBly8RGYLumrF6c5",
+                        "name": "Notion account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "jsCode": "const depth = Number($('When Executed by Another Workflow').first().json.depth || 0);\n\nreturn $input.all().map((item, index) => ({\n  json: {\n    id: item.json.id,\n    type: item.json.type,\n    content: item.json.content || '',\n    has_children: item.json.has_children || false,\n    depth,\n    order: index\n  }\n}));"
+                },
+                "id": "a97c3ea1-411e-4ab8-afdb-9bf831ec0208",
+                "name": "Normalize Blocks",
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    288,
+                    -64
+                ]
+            },
+            {
+                "parameters": {
+                    "options": {}
+                },
+                "id": "c4d5827a-1295-48a0-beb0-caf06d007f81",
+                "name": "Split In Batches",
+                "type": "n8n-nodes-base.splitInBatches",
+                "typeVersion": 3,
+                "position": [
+                    544,
+                    -64
+                ]
+            },
+            {
+                "parameters": {
+                    "conditions": {
+                        "boolean": [
+                            {
+                                "value1": "={{ $json.has_children }}",
+                                "value2": true
+                            }
+                        ]
+                    },
+                    "options": {}
+                },
+                "id": "a825947b-8080-4bbb-ac0d-b6079932b290",
+                "name": "Has Children?",
+                "type": "n8n-nodes-base.if",
+                "typeVersion": 2,
+                "position": [
+                    800,
+                    80
+                ]
+            },
+            {
+                "parameters": {
+                    "workflowId": {
+                        "__rl": true,
+                        "value": "Recursive Notion Block Loader",
+                        "mode": "name"
+                    },
+                    "options": {}
+                },
+                "id": "71b44bb7-0880-48cc-a270-eeb9b66381ca",
+                "name": "Load Nested Children",
+                "type": "n8n-nodes-base.executeWorkflow",
+                "typeVersion": 1,
+                "position": [
+                    1024,
+                    -64
+                ]
+            },
+            {
+                "parameters": {},
+                "id": "53c2890e-03b7-4757-983c-eb8dfd47aead",
+                "name": "Append Parent + Children",
+                "type": "n8n-nodes-base.merge",
+                "typeVersion": 3.2,
+                "position": [
+                    1184,
+                    -192
+                ]
+            }
+        ],
+        "connections": {
+            "When Executed by Another Workflow": {
+                "main": [
+                    [
+                        {
+                            "node": "Get Child Blocks",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Get Child Blocks": {
+                "main": [
+                    [
+                        {
+                            "node": "Normalize Blocks",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Normalize Blocks": {
+                "main": [
+                    [
+                        {
+                            "node": "Split In Batches",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Split In Batches": {
+                "main": [
+                    [
+                        {
+                            "node": "Has Children?",
+                            "type": "main",
+                            "index": 0
+                        },
+                        {
+                            "node": "Append Parent + Children",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Has Children?": {
+                "main": [
+                    [
+                        {
+                            "node": "Load Nested Children",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Load Nested Children": {
+                "main": [
+                    [
+                        {
+                            "node": "Append Parent + Children",
+                            "type": "main",
+                            "index": 1
+                        }
+                    ]
+                ]
+            }
+        },
+        "settings": {
+            "executionOrder": "v1",
+            "binaryMode": "separate"
+        },
+        "staticData": null,
+        "meta": null,
+        "pinData": {},
+        "versionId": "3a15c664-234e-4d75-a876-879487e48f6b",
+        "activeVersionId": null,
+        "triggerCount": 0,
+        "shared": [
+            {
+                "updatedAt": "2026-05-19T12:38:03.303Z",
+                "createdAt": "2026-05-19T12:38:03.303Z",
+                "role": "workflow:owner",
+                "workflowId": "ZPbbyJA7lDE7JjcZ",
+                "projectId": "FlGQaEMmWQfoeLfg"
+            }
+        ],
+        "activeVersion": null,
+        "tags": []
+    }
+]

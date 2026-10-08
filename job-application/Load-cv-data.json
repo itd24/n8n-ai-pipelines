@@ -1,0 +1,955 @@
+[
+    {
+        "updatedAt": "2026-03-04T15:38:36.502Z",
+        "createdAt": "2025-04-01T14:31:20.338Z",
+        "id": "GvVL2xA14QTdda2q",
+        "name": "Load-cv-data",
+        "active": true,
+        "isArchived": false,
+        "nodes": [
+            {
+                "parameters": {
+                    "jsCode": "const result = {};\nlet currentCategory = \"\";\n\nfor (const item of $input.all()) {\n    const skill = item.json[\"Technical Skills\"];\n    const level = item.json[\"Level\"];\n\n    if (level == \"\") {\n        // If there's no level, this row defines a new category\n        currentCategory = skill;\n        if (!result[currentCategory]) {\n            result[currentCategory] = [];\n        }\n    } else {\n        // Otherwise, add the skill to the current category\n        if (!result[currentCategory]) {\n            result[currentCategory] = [];\n        }\n        result[currentCategory].push({ skill, level });\n    }\n}\n\nreturn [{ json: {skills:result }}];"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    200,
+                    -320
+                ],
+                "id": "3b00a4d7-523e-4d2b-ad26-7e28bf74ce9a",
+                "name": "Code"
+            },
+            {
+                "parameters": {
+                    "jsCode": "var numberOfSheets = 6;\nvar result = [];\nfor(var i = 1;i<=numberOfSheets;i++){\n  result.push({\"sheet\":`CS_${i}`});\n}\nreturn result;"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    -20,
+                    -140
+                ],
+                "id": "5a4841ea-4ba6-45d3-9aa7-5d0e645cc0c4",
+                "name": "Code1"
+            },
+            {
+                "parameters": {
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.splitInBatches",
+                "typeVersion": 3,
+                "position": [
+                    200,
+                    -140
+                ],
+                "id": "d05230a6-098c-47f5-a090-95678cf169a5",
+                "name": "Loop Over Items",
+                "alwaysOutputData": false
+            },
+            {
+                "parameters": {
+                    "jsCode": "var job = {\n  \"from\":\"\",\n  \"to\":\"\",\n  \"description\":\"\",\n  \"company\":\"\",\n  \"location\":\"\",\n  \"title\":\"\"\n}\n\nfor (const item of $input.all()) {\n  if(item.json.col_1 == \"From\"){\n    job.from = item.json.EN;\n    job.description = item.json.DESCRIPTION;\n  }\n  else if(item.json.col_1 == \"To\"){\n    job.to = item.json.EN;\n  }\n  else if(item.json.col_1 == \"Company\"){\n    job.company = item.json.EN;\n  }\n  else if(item.json.col_1 == \"Location\"){\n    job.location = item.json.EN;\n  }\n  else if(item.json.col_1 == \"Title\"){\n    job.title = item.json.EN;\n  }\n}\n\nreturn [{\"json\":{\n  job\n}}]"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    640,
+                    -40
+                ],
+                "id": "83df79de-3c56-4f78-ac99-2876a1a4c842",
+                "name": "Code2"
+            },
+            {
+                "parameters": {
+                    "numberInputs": 5
+                },
+                "type": "n8n-nodes-base.merge",
+                "typeVersion": 3.1,
+                "position": [
+                    480,
+                    -520
+                ],
+                "id": "4a358494-694a-4de9-8fa3-0f01a732eee3",
+                "name": "Merge"
+            },
+            {
+                "parameters": {
+                    "inputSource": "passthrough"
+                },
+                "type": "n8n-nodes-base.executeWorkflowTrigger",
+                "typeVersion": 1.1,
+                "position": [
+                    -440,
+                    -160
+                ],
+                "id": "6e22c0ee-ddfc-4a8d-a096-8ee979d03e4f",
+                "name": "When Executed by Another Workflow"
+            },
+            {
+                "parameters": {
+                    "documentId": {
+                        "__rl": true,
+                        "value": "1Lx7GhvJzqP34eVBxfroTN7M8wPcqa-Vhrw2hBK6KdXY",
+                        "mode": "list",
+                        "cachedResultName": "career_data_collection",
+                        "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lx7GhvJzqP34eVBxfroTN7M8wPcqa-Vhrw2hBK6KdXY/edit?usp=drivesdk"
+                    },
+                    "sheetName": {
+                        "__rl": true,
+                        "value": "gid=0",
+                        "mode": "list",
+                        "cachedResultName": "Skills",
+                        "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lx7GhvJzqP34eVBxfroTN7M8wPcqa-Vhrw2hBK6KdXY/edit#gid=0"
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.googleSheets",
+                "typeVersion": 4.5,
+                "position": [
+                    -20,
+                    -320
+                ],
+                "id": "07c9d2ad-b5d9-4353-a150-353183be3728",
+                "name": "Load Skills",
+                "credentials": {
+                    "googleSheetsOAuth2Api": {
+                        "id": "oYswFLQWLJz0WnPK",
+                        "name": "Google Sheets account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "documentId": {
+                        "__rl": true,
+                        "value": "1Lx7GhvJzqP34eVBxfroTN7M8wPcqa-Vhrw2hBK6KdXY",
+                        "mode": "list",
+                        "cachedResultName": "career_data_collection",
+                        "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lx7GhvJzqP34eVBxfroTN7M8wPcqa-Vhrw2hBK6KdXY/edit?usp=drivesdk"
+                    },
+                    "sheetName": {
+                        "__rl": true,
+                        "value": "={{ $json.sheet }}",
+                        "mode": "name"
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.googleSheets",
+                "typeVersion": 4.5,
+                "position": [
+                    420,
+                    -40
+                ],
+                "id": "3f1065b3-4d1b-4c62-b96d-a27b0f3810b6",
+                "name": "Load Experience",
+                "credentials": {
+                    "googleSheetsOAuth2Api": {
+                        "id": "oYswFLQWLJz0WnPK",
+                        "name": "Google Sheets account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "documentId": {
+                        "__rl": true,
+                        "value": "1Lx7GhvJzqP34eVBxfroTN7M8wPcqa-Vhrw2hBK6KdXY",
+                        "mode": "list",
+                        "cachedResultName": "career_data_collection",
+                        "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lx7GhvJzqP34eVBxfroTN7M8wPcqa-Vhrw2hBK6KdXY/edit?usp=drivesdk"
+                    },
+                    "sheetName": {
+                        "__rl": true,
+                        "value": 1810374257,
+                        "mode": "list",
+                        "cachedResultName": "Achievements",
+                        "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lx7GhvJzqP34eVBxfroTN7M8wPcqa-Vhrw2hBK6KdXY/edit#gid=1810374257"
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.googleSheets",
+                "typeVersion": 4.5,
+                "position": [
+                    -20,
+                    -500
+                ],
+                "id": "348857c5-5f08-47ee-b824-bec18d447824",
+                "name": "Load Achievements",
+                "credentials": {
+                    "googleSheetsOAuth2Api": {
+                        "id": "oYswFLQWLJz0WnPK",
+                        "name": "Google Sheets account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "documentId": {
+                        "__rl": true,
+                        "value": "1Lx7GhvJzqP34eVBxfroTN7M8wPcqa-Vhrw2hBK6KdXY",
+                        "mode": "list",
+                        "cachedResultName": "career_data_collection",
+                        "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lx7GhvJzqP34eVBxfroTN7M8wPcqa-Vhrw2hBK6KdXY/edit?usp=drivesdk"
+                    },
+                    "sheetName": {
+                        "__rl": true,
+                        "value": 797666047,
+                        "mode": "list",
+                        "cachedResultName": "Interests",
+                        "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lx7GhvJzqP34eVBxfroTN7M8wPcqa-Vhrw2hBK6KdXY/edit#gid=797666047"
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.googleSheets",
+                "typeVersion": 4.5,
+                "position": [
+                    -20,
+                    -840
+                ],
+                "id": "28248d41-792b-4449-9a44-799296e20694",
+                "name": "Load Interests",
+                "credentials": {
+                    "googleSheetsOAuth2Api": {
+                        "id": "oYswFLQWLJz0WnPK",
+                        "name": "Google Sheets account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "documentId": {
+                        "__rl": true,
+                        "value": "1Lx7GhvJzqP34eVBxfroTN7M8wPcqa-Vhrw2hBK6KdXY",
+                        "mode": "list",
+                        "cachedResultName": "career_data_collection",
+                        "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lx7GhvJzqP34eVBxfroTN7M8wPcqa-Vhrw2hBK6KdXY/edit?usp=drivesdk"
+                    },
+                    "sheetName": {
+                        "__rl": true,
+                        "value": 1336344836,
+                        "mode": "list",
+                        "cachedResultName": "Key_Achievements",
+                        "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lx7GhvJzqP34eVBxfroTN7M8wPcqa-Vhrw2hBK6KdXY/edit#gid=1336344836"
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.googleSheets",
+                "typeVersion": 4.5,
+                "position": [
+                    -20,
+                    -680
+                ],
+                "id": "5bae5167-111c-4993-9d09-cbf3b585fa31",
+                "name": "Load Key Achievements",
+                "credentials": {
+                    "googleSheetsOAuth2Api": {
+                        "id": "oYswFLQWLJz0WnPK",
+                        "name": "Google Sheets account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "jsCode": "if(!$input.all())\n  return [{ json: {interests:[]}}];\nreturn [{ json: {interests:$input.all().map(i => i.json.Interest) }}];"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    200,
+                    -840
+                ],
+                "id": "9aea1c8e-d79c-4601-91dd-18b575e1749f",
+                "name": "Code3",
+                "alwaysOutputData": true
+            },
+            {
+                "parameters": {
+                    "jsCode": "if(!$input.all())\n  return [{ json: {key_achievements:[]}}];\nreturn [{ json: {key_achievements:$input.all().map(a => ({\n      description: a.json.Description,\n      company: a.json.Company\n    })) }}];"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    200,
+                    -680
+                ],
+                "id": "3240dc95-7c20-4db0-9c8c-9b1ec5535a14",
+                "name": "Code4"
+            },
+            {
+                "parameters": {
+                    "jsCode": "if(!$input.all())\n  return [{ json: {achievements:[]}}];\nreturn [{ json: {achievements:$input.all().map(a => ({\n      description: a.json.Description,\n      company: a.json.Company\n    })) }}];"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    200,
+                    -500
+                ],
+                "id": "c8e6a017-b653-4e62-be10-94eb58b6a261",
+                "name": "Code5"
+            }
+        ],
+        "connections": {
+            "Code1": {
+                "main": [
+                    [
+                        {
+                            "node": "Loop Over Items",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Loop Over Items": {
+                "main": [
+                    [
+                        {
+                            "node": "Merge",
+                            "type": "main",
+                            "index": 4
+                        }
+                    ],
+                    [
+                        {
+                            "node": "Load Experience",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Code2": {
+                "main": [
+                    [
+                        {
+                            "node": "Loop Over Items",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Code": {
+                "main": [
+                    [
+                        {
+                            "node": "Merge",
+                            "type": "main",
+                            "index": 3
+                        }
+                    ]
+                ]
+            },
+            "When Executed by Another Workflow": {
+                "main": [
+                    [
+                        {
+                            "node": "Load Skills",
+                            "type": "main",
+                            "index": 0
+                        },
+                        {
+                            "node": "Code1",
+                            "type": "main",
+                            "index": 0
+                        },
+                        {
+                            "node": "Load Achievements",
+                            "type": "main",
+                            "index": 0
+                        },
+                        {
+                            "node": "Load Key Achievements",
+                            "type": "main",
+                            "index": 0
+                        },
+                        {
+                            "node": "Load Interests",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Load Skills": {
+                "main": [
+                    [
+                        {
+                            "node": "Code",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Load Experience": {
+                "main": [
+                    [
+                        {
+                            "node": "Code2",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Load Interests": {
+                "main": [
+                    [
+                        {
+                            "node": "Code3",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Load Key Achievements": {
+                "main": [
+                    [
+                        {
+                            "node": "Code4",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Load Achievements": {
+                "main": [
+                    [
+                        {
+                            "node": "Code5",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Code5": {
+                "main": [
+                    [
+                        {
+                            "node": "Merge",
+                            "type": "main",
+                            "index": 2
+                        }
+                    ]
+                ]
+            },
+            "Code4": {
+                "main": [
+                    [
+                        {
+                            "node": "Merge",
+                            "type": "main",
+                            "index": 1
+                        }
+                    ]
+                ]
+            },
+            "Code3": {
+                "main": [
+                    [
+                        {
+                            "node": "Merge",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            }
+        },
+        "settings": {
+            "executionOrder": "v1",
+            "timezone": "Europe/Vienna",
+            "callerPolicy": "workflowsFromSameOwner"
+        },
+        "staticData": null,
+        "meta": {
+            "templateCredsSetupCompleted": true
+        },
+        "pinData": {},
+        "versionId": "f8972005-93c3-42e7-a00e-ef3989b9e46f",
+        "activeVersionId": "f8972005-93c3-42e7-a00e-ef3989b9e46f",
+        "triggerCount": 0,
+        "shared": [
+            {
+                "updatedAt": "2025-04-01T14:31:20.338Z",
+                "createdAt": "2025-04-01T14:31:20.338Z",
+                "role": "workflow:owner",
+                "workflowId": "GvVL2xA14QTdda2q",
+                "projectId": "FlGQaEMmWQfoeLfg"
+            }
+        ],
+        "activeVersion": {
+            "updatedAt": "2025-11-26T19:00:58.272Z",
+            "createdAt": "2025-11-26T19:00:58.272Z",
+            "versionId": "f8972005-93c3-42e7-a00e-ef3989b9e46f",
+            "workflowId": "GvVL2xA14QTdda2q",
+            "nodes": [
+                {
+                    "parameters": {
+                        "jsCode": "const result = {};\nlet currentCategory = \"\";\n\nfor (const item of $input.all()) {\n    const skill = item.json[\"Technical Skills\"];\n    const level = item.json[\"Level\"];\n\n    if (level == \"\") {\n        // If there's no level, this row defines a new category\n        currentCategory = skill;\n        if (!result[currentCategory]) {\n            result[currentCategory] = [];\n        }\n    } else {\n        // Otherwise, add the skill to the current category\n        if (!result[currentCategory]) {\n            result[currentCategory] = [];\n        }\n        result[currentCategory].push({ skill, level });\n    }\n}\n\nreturn [{ json: {skills:result }}];"
+                    },
+                    "type": "n8n-nodes-base.code",
+                    "typeVersion": 2,
+                    "position": [
+                        200,
+                        -320
+                    ],
+                    "id": "3b00a4d7-523e-4d2b-ad26-7e28bf74ce9a",
+                    "name": "Code"
+                },
+                {
+                    "parameters": {
+                        "jsCode": "var numberOfSheets = 6;\nvar result = [];\nfor(var i = 1;i<=numberOfSheets;i++){\n  result.push({\"sheet\":`CS_${i}`});\n}\nreturn result;"
+                    },
+                    "type": "n8n-nodes-base.code",
+                    "typeVersion": 2,
+                    "position": [
+                        -20,
+                        -140
+                    ],
+                    "id": "5a4841ea-4ba6-45d3-9aa7-5d0e645cc0c4",
+                    "name": "Code1"
+                },
+                {
+                    "parameters": {
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.splitInBatches",
+                    "typeVersion": 3,
+                    "position": [
+                        200,
+                        -140
+                    ],
+                    "id": "d05230a6-098c-47f5-a090-95678cf169a5",
+                    "name": "Loop Over Items",
+                    "alwaysOutputData": false
+                },
+                {
+                    "parameters": {
+                        "jsCode": "var job = {\n  \"from\":\"\",\n  \"to\":\"\",\n  \"description\":\"\",\n  \"company\":\"\",\n  \"location\":\"\",\n  \"title\":\"\"\n}\n\nfor (const item of $input.all()) {\n  if(item.json.col_1 == \"From\"){\n    job.from = item.json.EN;\n    job.description = item.json.DESCRIPTION;\n  }\n  else if(item.json.col_1 == \"To\"){\n    job.to = item.json.EN;\n  }\n  else if(item.json.col_1 == \"Company\"){\n    job.company = item.json.EN;\n  }\n  else if(item.json.col_1 == \"Location\"){\n    job.location = item.json.EN;\n  }\n  else if(item.json.col_1 == \"Title\"){\n    job.title = item.json.EN;\n  }\n}\n\nreturn [{\"json\":{\n  job\n}}]"
+                    },
+                    "type": "n8n-nodes-base.code",
+                    "typeVersion": 2,
+                    "position": [
+                        640,
+                        -40
+                    ],
+                    "id": "83df79de-3c56-4f78-ac99-2876a1a4c842",
+                    "name": "Code2"
+                },
+                {
+                    "parameters": {
+                        "numberInputs": 5
+                    },
+                    "type": "n8n-nodes-base.merge",
+                    "typeVersion": 3.1,
+                    "position": [
+                        480,
+                        -520
+                    ],
+                    "id": "4a358494-694a-4de9-8fa3-0f01a732eee3",
+                    "name": "Merge"
+                },
+                {
+                    "parameters": {
+                        "inputSource": "passthrough"
+                    },
+                    "type": "n8n-nodes-base.executeWorkflowTrigger",
+                    "typeVersion": 1.1,
+                    "position": [
+                        -440,
+                        -160
+                    ],
+                    "id": "6e22c0ee-ddfc-4a8d-a096-8ee979d03e4f",
+                    "name": "When Executed by Another Workflow"
+                },
+                {
+                    "parameters": {
+                        "documentId": {
+                            "__rl": true,
+                            "value": "1Lx7GhvJzqP34eVBxfroTN7M8wPcqa-Vhrw2hBK6KdXY",
+                            "mode": "list",
+                            "cachedResultName": "career_data_collection",
+                            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lx7GhvJzqP34eVBxfroTN7M8wPcqa-Vhrw2hBK6KdXY/edit?usp=drivesdk"
+                        },
+                        "sheetName": {
+                            "__rl": true,
+                            "value": "gid=0",
+                            "mode": "list",
+                            "cachedResultName": "Skills",
+                            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lx7GhvJzqP34eVBxfroTN7M8wPcqa-Vhrw2hBK6KdXY/edit#gid=0"
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.googleSheets",
+                    "typeVersion": 4.5,
+                    "position": [
+                        -20,
+                        -320
+                    ],
+                    "id": "07c9d2ad-b5d9-4353-a150-353183be3728",
+                    "name": "Load Skills",
+                    "credentials": {
+                        "googleSheetsOAuth2Api": {
+                            "id": "oYswFLQWLJz0WnPK",
+                            "name": "Google Sheets account"
+                        }
+                    }
+                },
+                {
+                    "parameters": {
+                        "documentId": {
+                            "__rl": true,
+                            "value": "1Lx7GhvJzqP34eVBxfroTN7M8wPcqa-Vhrw2hBK6KdXY",
+                            "mode": "list",
+                            "cachedResultName": "career_data_collection",
+                            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lx7GhvJzqP34eVBxfroTN7M8wPcqa-Vhrw2hBK6KdXY/edit?usp=drivesdk"
+                        },
+                        "sheetName": {
+                            "__rl": true,
+                            "value": "={{ $json.sheet }}",
+                            "mode": "name"
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.googleSheets",
+                    "typeVersion": 4.5,
+                    "position": [
+                        420,
+                        -40
+                    ],
+                    "id": "3f1065b3-4d1b-4c62-b96d-a27b0f3810b6",
+                    "name": "Load Experience",
+                    "credentials": {
+                        "googleSheetsOAuth2Api": {
+                            "id": "oYswFLQWLJz0WnPK",
+                            "name": "Google Sheets account"
+                        }
+                    }
+                },
+                {
+                    "parameters": {
+                        "documentId": {
+                            "__rl": true,
+                            "value": "1Lx7GhvJzqP34eVBxfroTN7M8wPcqa-Vhrw2hBK6KdXY",
+                            "mode": "list",
+                            "cachedResultName": "career_data_collection",
+                            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lx7GhvJzqP34eVBxfroTN7M8wPcqa-Vhrw2hBK6KdXY/edit?usp=drivesdk"
+                        },
+                        "sheetName": {
+                            "__rl": true,
+                            "value": 1810374257,
+                            "mode": "list",
+                            "cachedResultName": "Achievements",
+                            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lx7GhvJzqP34eVBxfroTN7M8wPcqa-Vhrw2hBK6KdXY/edit#gid=1810374257"
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.googleSheets",
+                    "typeVersion": 4.5,
+                    "position": [
+                        -20,
+                        -500
+                    ],
+                    "id": "348857c5-5f08-47ee-b824-bec18d447824",
+                    "name": "Load Achievements",
+                    "credentials": {
+                        "googleSheetsOAuth2Api": {
+                            "id": "oYswFLQWLJz0WnPK",
+                            "name": "Google Sheets account"
+                        }
+                    }
+                },
+                {
+                    "parameters": {
+                        "documentId": {
+                            "__rl": true,
+                            "value": "1Lx7GhvJzqP34eVBxfroTN7M8wPcqa-Vhrw2hBK6KdXY",
+                            "mode": "list",
+                            "cachedResultName": "career_data_collection",
+                            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lx7GhvJzqP34eVBxfroTN7M8wPcqa-Vhrw2hBK6KdXY/edit?usp=drivesdk"
+                        },
+                        "sheetName": {
+                            "__rl": true,
+                            "value": 797666047,
+                            "mode": "list",
+                            "cachedResultName": "Interests",
+                            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lx7GhvJzqP34eVBxfroTN7M8wPcqa-Vhrw2hBK6KdXY/edit#gid=797666047"
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.googleSheets",
+                    "typeVersion": 4.5,
+                    "position": [
+                        -20,
+                        -840
+                    ],
+                    "id": "28248d41-792b-4449-9a44-799296e20694",
+                    "name": "Load Interests",
+                    "credentials": {
+                        "googleSheetsOAuth2Api": {
+                            "id": "oYswFLQWLJz0WnPK",
+                            "name": "Google Sheets account"
+                        }
+                    }
+                },
+                {
+                    "parameters": {
+                        "documentId": {
+                            "__rl": true,
+                            "value": "1Lx7GhvJzqP34eVBxfroTN7M8wPcqa-Vhrw2hBK6KdXY",
+                            "mode": "list",
+                            "cachedResultName": "career_data_collection",
+                            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lx7GhvJzqP34eVBxfroTN7M8wPcqa-Vhrw2hBK6KdXY/edit?usp=drivesdk"
+                        },
+                        "sheetName": {
+                            "__rl": true,
+                            "value": 1336344836,
+                            "mode": "list",
+                            "cachedResultName": "Key_Achievements",
+                            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lx7GhvJzqP34eVBxfroTN7M8wPcqa-Vhrw2hBK6KdXY/edit#gid=1336344836"
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.googleSheets",
+                    "typeVersion": 4.5,
+                    "position": [
+                        -20,
+                        -680
+                    ],
+                    "id": "5bae5167-111c-4993-9d09-cbf3b585fa31",
+                    "name": "Load Key Achievements",
+                    "credentials": {
+                        "googleSheetsOAuth2Api": {
+                            "id": "oYswFLQWLJz0WnPK",
+                            "name": "Google Sheets account"
+                        }
+                    }
+                },
+                {
+                    "parameters": {
+                        "jsCode": "if(!$input.all())\n  return [{ json: {interests:[]}}];\nreturn [{ json: {interests:$input.all().map(i => i.json.Interest) }}];"
+                    },
+                    "type": "n8n-nodes-base.code",
+                    "typeVersion": 2,
+                    "position": [
+                        200,
+                        -840
+                    ],
+                    "id": "9aea1c8e-d79c-4601-91dd-18b575e1749f",
+                    "name": "Code3",
+                    "alwaysOutputData": true
+                },
+                {
+                    "parameters": {
+                        "jsCode": "if(!$input.all())\n  return [{ json: {key_achievements:[]}}];\nreturn [{ json: {key_achievements:$input.all().map(a => ({\n      description: a.json.Description,\n      company: a.json.Company\n    })) }}];"
+                    },
+                    "type": "n8n-nodes-base.code",
+                    "typeVersion": 2,
+                    "position": [
+                        200,
+                        -680
+                    ],
+                    "id": "3240dc95-7c20-4db0-9c8c-9b1ec5535a14",
+                    "name": "Code4"
+                },
+                {
+                    "parameters": {
+                        "jsCode": "if(!$input.all())\n  return [{ json: {achievements:[]}}];\nreturn [{ json: {achievements:$input.all().map(a => ({\n      description: a.json.Description,\n      company: a.json.Company\n    })) }}];"
+                    },
+                    "type": "n8n-nodes-base.code",
+                    "typeVersion": 2,
+                    "position": [
+                        200,
+                        -500
+                    ],
+                    "id": "c8e6a017-b653-4e62-be10-94eb58b6a261",
+                    "name": "Code5"
+                }
+            ],
+            "connections": {
+                "Code1": {
+                    "main": [
+                        [
+                            {
+                                "node": "Loop Over Items",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Loop Over Items": {
+                    "main": [
+                        [
+                            {
+                                "node": "Merge",
+                                "type": "main",
+                                "index": 4
+                            }
+                        ],
+                        [
+                            {
+                                "node": "Load Experience",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Code2": {
+                    "main": [
+                        [
+                            {
+                                "node": "Loop Over Items",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Code": {
+                    "main": [
+                        [
+                            {
+                                "node": "Merge",
+                                "type": "main",
+                                "index": 3
+                            }
+                        ]
+                    ]
+                },
+                "When Executed by Another Workflow": {
+                    "main": [
+                        [
+                            {
+                                "node": "Load Skills",
+                                "type": "main",
+                                "index": 0
+                            },
+                            {
+                                "node": "Code1",
+                                "type": "main",
+                                "index": 0
+                            },
+                            {
+                                "node": "Load Achievements",
+                                "type": "main",
+                                "index": 0
+                            },
+                            {
+                                "node": "Load Key Achievements",
+                                "type": "main",
+                                "index": 0
+                            },
+                            {
+                                "node": "Load Interests",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Load Skills": {
+                    "main": [
+                        [
+                            {
+                                "node": "Code",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Load Experience": {
+                    "main": [
+                        [
+                            {
+                                "node": "Code2",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Load Interests": {
+                    "main": [
+                        [
+                            {
+                                "node": "Code3",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Load Key Achievements": {
+                    "main": [
+                        [
+                            {
+                                "node": "Code4",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Load Achievements": {
+                    "main": [
+                        [
+                            {
+                                "node": "Code5",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Code5": {
+                    "main": [
+                        [
+                            {
+                                "node": "Merge",
+                                "type": "main",
+                                "index": 2
+                            }
+                        ]
+                    ]
+                },
+                "Code4": {
+                    "main": [
+                        [
+                            {
+                                "node": "Merge",
+                                "type": "main",
+                                "index": 1
+                            }
+                        ]
+                    ]
+                },
+                "Code3": {
+                    "main": [
+                        [
+                            {
+                                "node": "Merge",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                }
+            },
+            "authors": "system migration",
+            "name": null,
+            "description": null,
+            "autosaved": false
+        },
+        "tags": []
+    }
+]

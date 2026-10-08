@@ -1,0 +1,1598 @@
+[
+    {
+        "updatedAt": "2026-07-19T11:55:00.357Z",
+        "createdAt": "2026-06-20T13:22:54.059Z",
+        "id": "sMxeFl2CuSMSykhX",
+        "name": "MAIN - Import Data To Firefly",
+        "active": true,
+        "isArchived": false,
+        "nodes": [
+            {
+                "parameters": {},
+                "type": "n8n-nodes-base.manualTrigger",
+                "typeVersion": 1,
+                "position": [
+                    -672,
+                    -384
+                ],
+                "id": "8adcd9af-74de-4791-b673-88e3b7e0db9d",
+                "name": "When clicking ‘Execute workflow’"
+            },
+            {
+                "parameters": {
+                    "assignments": {
+                        "assignments": [
+                            {
+                                "id": "035f7900-626a-4675-8de1-06149aa34c8c",
+                                "name": "nlb-main",
+                                "value": "1",
+                                "type": "string"
+                            },
+                            {
+                                "id": "9851754c-4d40-4e35-aade-2263fc8820be",
+                                "name": "nlb-savings",
+                                "value": "3",
+                                "type": "string"
+                            },
+                            {
+                                "id": "a851a45e-6fc0-43e1-ac29-af5ba412bfed",
+                                "name": "nlb-vita",
+                                "value": "5",
+                                "type": "string"
+                            },
+                            {
+                                "id": "d80d379b-bc99-4565-b77d-fc5d6fc799f3",
+                                "name": "nlb-skladi",
+                                "value": "7",
+                                "type": "string"
+                            },
+                            {
+                                "id": "3eca4d89-42a5-470c-b49e-45c93e2e6abb",
+                                "name": "visa",
+                                "value": "9",
+                                "type": "string"
+                            },
+                            {
+                                "id": "2258cb02-9c3e-44a8-8c97-fdd352ef2291",
+                                "name": "revolut-current",
+                                "value": "10",
+                                "type": "string"
+                            },
+                            {
+                                "id": "cbde7235-c01f-456e-b380-a9427a8f900a",
+                                "name": "revolut-crypto",
+                                "value": "13",
+                                "type": "string"
+                            },
+                            {
+                                "id": "8638bbd4-e46e-4746-afc6-9a23ac64a9e7",
+                                "name": "revolut-stocks",
+                                "value": "15",
+                                "type": "string"
+                            },
+                            {
+                                "id": "099af9bb-1b56-4f9c-87a9-9f05372af9d4",
+                                "name": "auto-lizing",
+                                "value": "17",
+                                "type": "string"
+                            },
+                            {
+                                "id": "e84d86a8-46b5-4d62-83cc-3350ea138365",
+                                "name": "nlb_main_archive_folder",
+                                "value": "1GtkOjouPkG_S_qhsHLIrabt0oUQv83Pa",
+                                "type": "string"
+                            },
+                            {
+                                "id": "96189fad-23f4-49ae-9c46-c5e94dc81f7c",
+                                "name": "nlb_visa_archive_folder",
+                                "value": "1gQtygkjpcYv9AtiNCTLKp-_W6BhQ70Vk",
+                                "type": "string"
+                            },
+                            {
+                                "id": "1f31d6c7-a301-490f-8242-d65f4c0e162d",
+                                "name": "nlb_savings_archive_folder",
+                                "value": "1RH6waKrHO2DDurLjDZsVX4XlCudv5U-Q",
+                                "type": "string"
+                            },
+                            {
+                                "id": "d3132a6a-be23-4389-ab47-9e6515b63612",
+                                "name": "revolut_main_archive_folder",
+                                "value": "1NFfbSD1wK3SYmRSLF6o5Eob9wWhVCocu",
+                                "type": "string"
+                            }
+                        ]
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.set",
+                "typeVersion": 3.4,
+                "position": [
+                    -448,
+                    -384
+                ],
+                "id": "5b16a7ac-a402-4925-b762-fb0ec9f0231f",
+                "name": "Set Static Data"
+            },
+            {
+                "parameters": {
+                    "workflowId": {
+                        "__rl": true,
+                        "value": "zc62SIi0Evmqxtza",
+                        "mode": "list",
+                        "cachedResultUrl": "/workflow/zc62SIi0Evmqxtza",
+                        "cachedResultName": "Read And Structure Revolut"
+                    },
+                    "workflowInputs": {
+                        "mappingMode": "defineBelow",
+                        "value": {},
+                        "matchingColumns": [],
+                        "schema": [],
+                        "attemptToConvertTypes": false,
+                        "convertFieldsToString": true
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.executeWorkflow",
+                "typeVersion": 1.3,
+                "position": [
+                    -224,
+                    -672
+                ],
+                "id": "39e7cba0-c51d-4aa2-ae0b-8e43da032604",
+                "name": "Read And Structure Revolut"
+            },
+            {
+                "parameters": {
+                    "workflowId": {
+                        "__rl": true,
+                        "value": "0uWPJg8m7HT9PyLT",
+                        "mode": "list",
+                        "cachedResultUrl": "/workflow/0uWPJg8m7HT9PyLT",
+                        "cachedResultName": "SUBSET - Import Data to Firefly"
+                    },
+                    "workflowInputs": {
+                        "mappingMode": "defineBelow",
+                        "value": {
+                            "data": "={{ $json.data }}",
+                            "static_data": "={{ $('Set Static Data').item.json }}"
+                        },
+                        "matchingColumns": [
+                            "data"
+                        ],
+                        "schema": [
+                            {
+                                "id": "data",
+                                "displayName": "data",
+                                "required": false,
+                                "defaultMatch": false,
+                                "display": true,
+                                "canBeUsedToMatch": true,
+                                "type": "array",
+                                "removed": false
+                            },
+                            {
+                                "id": "static_data",
+                                "displayName": "static_data",
+                                "required": false,
+                                "defaultMatch": false,
+                                "display": true,
+                                "canBeUsedToMatch": true,
+                                "type": "object",
+                                "removed": false
+                            }
+                        ],
+                        "attemptToConvertTypes": false,
+                        "convertFieldsToString": true
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.executeWorkflow",
+                "typeVersion": 1.3,
+                "position": [
+                    0,
+                    -672
+                ],
+                "id": "15ee9203-ccaf-4e55-9795-a19300f43f5e",
+                "name": "Import Revolut Data to Firefly"
+            },
+            {
+                "parameters": {
+                    "operation": "move",
+                    "fileId": {
+                        "__rl": true,
+                        "value": "={{ $('Read And Structure Revolut').item.json.fileId }}",
+                        "mode": "id"
+                    },
+                    "driveId": {
+                        "__rl": true,
+                        "value": "My Drive",
+                        "mode": "list",
+                        "cachedResultName": "My Drive",
+                        "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+                    },
+                    "folderId": {
+                        "__rl": true,
+                        "value": "={{ $('Set Static Data').item.json.revolut_main_archive_folder }}",
+                        "mode": "id"
+                    }
+                },
+                "type": "n8n-nodes-base.googleDrive",
+                "typeVersion": 3,
+                "position": [
+                    224,
+                    -672
+                ],
+                "id": "531c9d76-3949-4a17-9db6-584452e448f4",
+                "name": "Move revolut file to archive",
+                "alwaysOutputData": true,
+                "credentials": {
+                    "googleDriveOAuth2Api": {
+                        "id": "zUSpRXM5p8MF5y3t",
+                        "name": "Google Drive account"
+                    }
+                },
+                "onError": "continueRegularOutput"
+            },
+            {
+                "parameters": {
+                    "workflowId": {
+                        "__rl": true,
+                        "value": "0uWPJg8m7HT9PyLT",
+                        "mode": "list",
+                        "cachedResultUrl": "/workflow/0uWPJg8m7HT9PyLT",
+                        "cachedResultName": "SUBSET - Import Data to Firefly"
+                    },
+                    "workflowInputs": {
+                        "mappingMode": "defineBelow",
+                        "value": {
+                            "data": "={{ $json.data }}",
+                            "static_data": "={{ $('Set Static Data').item.json }}"
+                        },
+                        "matchingColumns": [
+                            "data"
+                        ],
+                        "schema": [
+                            {
+                                "id": "data",
+                                "displayName": "data",
+                                "required": false,
+                                "defaultMatch": false,
+                                "display": true,
+                                "canBeUsedToMatch": true,
+                                "type": "array",
+                                "removed": false
+                            },
+                            {
+                                "id": "static_data",
+                                "displayName": "static_data",
+                                "required": false,
+                                "defaultMatch": false,
+                                "display": true,
+                                "canBeUsedToMatch": true,
+                                "type": "object",
+                                "removed": false
+                            }
+                        ],
+                        "attemptToConvertTypes": false,
+                        "convertFieldsToString": true
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.executeWorkflow",
+                "typeVersion": 1.3,
+                "position": [
+                    0,
+                    -480
+                ],
+                "id": "7eb03e25-61a9-486b-8aed-bae156ca0e65",
+                "name": "Import NLB Main Data to Firefly"
+            },
+            {
+                "parameters": {
+                    "operation": "move",
+                    "fileId": {
+                        "__rl": true,
+                        "value": "={{ $('Read And Structure NLB Main').item.json.fileId }}",
+                        "mode": "id"
+                    },
+                    "driveId": {
+                        "__rl": true,
+                        "mode": "list",
+                        "value": "My Drive"
+                    },
+                    "folderId": {
+                        "__rl": true,
+                        "value": "={{ $('Set Static Data').item.json.nlb_main_archive_folder }}",
+                        "mode": "id"
+                    }
+                },
+                "type": "n8n-nodes-base.googleDrive",
+                "typeVersion": 3,
+                "position": [
+                    224,
+                    -480
+                ],
+                "id": "d8650df7-29c5-4fc4-8581-f579795ac180",
+                "name": "Move nlb main file to archive",
+                "executeOnce": false,
+                "alwaysOutputData": true,
+                "retryOnFail": false,
+                "credentials": {
+                    "googleDriveOAuth2Api": {
+                        "id": "zUSpRXM5p8MF5y3t",
+                        "name": "Google Drive account"
+                    }
+                },
+                "onError": "continueRegularOutput"
+            },
+            {
+                "parameters": {
+                    "workflowId": {
+                        "__rl": true,
+                        "value": "lZbuzq0isCbt7rVq",
+                        "mode": "list",
+                        "cachedResultUrl": "/workflow/lZbuzq0isCbt7rVq",
+                        "cachedResultName": "Read And Structure NLB Main"
+                    },
+                    "workflowInputs": {
+                        "mappingMode": "defineBelow",
+                        "value": {},
+                        "matchingColumns": [],
+                        "schema": [],
+                        "attemptToConvertTypes": false,
+                        "convertFieldsToString": true
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.executeWorkflow",
+                "typeVersion": 1.3,
+                "position": [
+                    -224,
+                    -480
+                ],
+                "id": "54424fb8-4f66-4f0b-8a9f-14d2797406b8",
+                "name": "Read And Structure NLB Main"
+            },
+            {
+                "parameters": {
+                    "workflowId": {
+                        "__rl": true,
+                        "value": "qzaGpoJsxkrpf1ny",
+                        "mode": "list",
+                        "cachedResultUrl": "/workflow/qzaGpoJsxkrpf1ny",
+                        "cachedResultName": "Read And Structure NLB Savings"
+                    },
+                    "workflowInputs": {
+                        "mappingMode": "defineBelow",
+                        "value": {},
+                        "matchingColumns": [],
+                        "schema": [],
+                        "attemptToConvertTypes": false,
+                        "convertFieldsToString": true
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.executeWorkflow",
+                "typeVersion": 1.3,
+                "position": [
+                    -224,
+                    -288
+                ],
+                "id": "fa1e761d-70c1-43b6-97f3-3c6228dd3b5b",
+                "name": "Read And Structure NLB Savings"
+            },
+            {
+                "parameters": {
+                    "workflowId": {
+                        "__rl": true,
+                        "value": "5DvRXRtfBuQ2Nbn0",
+                        "mode": "list",
+                        "cachedResultUrl": "/workflow/5DvRXRtfBuQ2Nbn0",
+                        "cachedResultName": "Read And Structure VISA"
+                    },
+                    "workflowInputs": {
+                        "mappingMode": "defineBelow",
+                        "value": {},
+                        "matchingColumns": [],
+                        "schema": [],
+                        "attemptToConvertTypes": false,
+                        "convertFieldsToString": true
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.executeWorkflow",
+                "typeVersion": 1.3,
+                "position": [
+                    -224,
+                    -96
+                ],
+                "id": "3ea609ba-a207-4366-8032-34b1f20f5194",
+                "name": "Read And Structure VISA"
+            },
+            {
+                "parameters": {
+                    "workflowId": {
+                        "__rl": true,
+                        "value": "0uWPJg8m7HT9PyLT",
+                        "mode": "list",
+                        "cachedResultUrl": "/workflow/0uWPJg8m7HT9PyLT",
+                        "cachedResultName": "SUBSET - Import Data to Firefly"
+                    },
+                    "workflowInputs": {
+                        "mappingMode": "defineBelow",
+                        "value": {
+                            "data": "={{ $json.data }}",
+                            "static_data": "={{ $('Set Static Data').item.json }}"
+                        },
+                        "matchingColumns": [
+                            "data"
+                        ],
+                        "schema": [
+                            {
+                                "id": "data",
+                                "displayName": "data",
+                                "required": false,
+                                "defaultMatch": false,
+                                "display": true,
+                                "canBeUsedToMatch": true,
+                                "type": "array",
+                                "removed": false
+                            },
+                            {
+                                "id": "static_data",
+                                "displayName": "static_data",
+                                "required": false,
+                                "defaultMatch": false,
+                                "display": true,
+                                "canBeUsedToMatch": true,
+                                "type": "object",
+                                "removed": false
+                            }
+                        ],
+                        "attemptToConvertTypes": false,
+                        "convertFieldsToString": true
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.executeWorkflow",
+                "typeVersion": 1.3,
+                "position": [
+                    0,
+                    -288
+                ],
+                "id": "71ad1ad5-5ae7-4a3d-b500-7434f0e1dca3",
+                "name": "Import NLB Savings Data to Firefly"
+            },
+            {
+                "parameters": {
+                    "operation": "move",
+                    "fileId": {
+                        "__rl": true,
+                        "value": "={{ $('Read And Structure NLB Savings').item.json.fileId }}",
+                        "mode": "id"
+                    },
+                    "driveId": {
+                        "__rl": true,
+                        "mode": "list",
+                        "value": "My Drive"
+                    },
+                    "folderId": {
+                        "__rl": true,
+                        "value": "={{ $('Set Static Data').item.json.nlb_savings_archive_folder }}",
+                        "mode": "id"
+                    }
+                },
+                "type": "n8n-nodes-base.googleDrive",
+                "typeVersion": 3,
+                "position": [
+                    224,
+                    -288
+                ],
+                "id": "592e198d-a2a8-4bce-954b-7a3869067a93",
+                "name": "Move nlb savings file to archive",
+                "alwaysOutputData": true,
+                "credentials": {
+                    "googleDriveOAuth2Api": {
+                        "id": "zUSpRXM5p8MF5y3t",
+                        "name": "Google Drive account"
+                    }
+                },
+                "onError": "continueRegularOutput"
+            },
+            {
+                "parameters": {
+                    "operation": "move",
+                    "fileId": {
+                        "__rl": true,
+                        "value": "={{ $('Read And Structure VISA').item.json.fileId }}",
+                        "mode": "id"
+                    },
+                    "driveId": {
+                        "__rl": true,
+                        "mode": "list",
+                        "value": "My Drive"
+                    },
+                    "folderId": {
+                        "__rl": true,
+                        "value": "={{ $('Set Static Data').item.json.nlb_visa_archive_folder }}",
+                        "mode": "id"
+                    }
+                },
+                "type": "n8n-nodes-base.googleDrive",
+                "typeVersion": 3,
+                "position": [
+                    224,
+                    -96
+                ],
+                "id": "d05ee85c-2a95-4dd0-bee9-879cc676406f",
+                "name": "Move nlb savings file to archive1",
+                "alwaysOutputData": true,
+                "credentials": {
+                    "googleDriveOAuth2Api": {
+                        "id": "zUSpRXM5p8MF5y3t",
+                        "name": "Google Drive account"
+                    }
+                },
+                "onError": "continueRegularOutput"
+            },
+            {
+                "parameters": {
+                    "workflowId": {
+                        "__rl": true,
+                        "value": "0uWPJg8m7HT9PyLT",
+                        "mode": "list",
+                        "cachedResultUrl": "/workflow/0uWPJg8m7HT9PyLT",
+                        "cachedResultName": "SUBSET - Import Data to Firefly"
+                    },
+                    "workflowInputs": {
+                        "mappingMode": "defineBelow",
+                        "value": {
+                            "data": "={{ $json.data }}",
+                            "static_data": "={{ $('Set Static Data').item.json }}"
+                        },
+                        "matchingColumns": [
+                            "data"
+                        ],
+                        "schema": [
+                            {
+                                "id": "data",
+                                "displayName": "data",
+                                "required": false,
+                                "defaultMatch": false,
+                                "display": true,
+                                "canBeUsedToMatch": true,
+                                "type": "array",
+                                "removed": false
+                            },
+                            {
+                                "id": "static_data",
+                                "displayName": "static_data",
+                                "required": false,
+                                "defaultMatch": false,
+                                "display": true,
+                                "canBeUsedToMatch": true,
+                                "type": "object",
+                                "removed": false
+                            }
+                        ],
+                        "attemptToConvertTypes": false,
+                        "convertFieldsToString": true
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.executeWorkflow",
+                "typeVersion": 1.3,
+                "position": [
+                    0,
+                    -96
+                ],
+                "id": "37d9cb2b-5df2-47cd-b445-fbd3cc903d50",
+                "name": "Import Visa Data to Firefly"
+            },
+            {
+                "parameters": {
+                    "numberInputs": 4
+                },
+                "type": "n8n-nodes-base.merge",
+                "typeVersion": 3.2,
+                "position": [
+                    448,
+                    -416
+                ],
+                "id": "6cdd4663-c5b4-4b19-9f17-86d5c6e81145",
+                "name": "Merge Results"
+            },
+            {
+                "parameters": {
+                    "rule": {
+                        "interval": [
+                            {
+                                "field": "hours"
+                            }
+                        ]
+                    }
+                },
+                "type": "n8n-nodes-base.scheduleTrigger",
+                "typeVersion": 1.3,
+                "position": [
+                    -672,
+                    -528
+                ],
+                "id": "7aac2c7a-3b95-452a-ac3d-6ae419d6338b",
+                "name": "Schedule Trigger"
+            }
+        ],
+        "connections": {
+            "When clicking ‘Execute workflow’": {
+                "main": [
+                    [
+                        {
+                            "node": "Set Static Data",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Set Static Data": {
+                "main": [
+                    [
+                        {
+                            "node": "Read And Structure Revolut",
+                            "type": "main",
+                            "index": 0
+                        },
+                        {
+                            "node": "Read And Structure NLB Main",
+                            "type": "main",
+                            "index": 0
+                        },
+                        {
+                            "node": "Read And Structure NLB Savings",
+                            "type": "main",
+                            "index": 0
+                        },
+                        {
+                            "node": "Read And Structure VISA",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Read And Structure Revolut": {
+                "main": [
+                    [
+                        {
+                            "node": "Import Revolut Data to Firefly",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Import Revolut Data to Firefly": {
+                "main": [
+                    [
+                        {
+                            "node": "Move revolut file to archive",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Import NLB Main Data to Firefly": {
+                "main": [
+                    [
+                        {
+                            "node": "Move nlb main file to archive",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Read And Structure NLB Main": {
+                "main": [
+                    [
+                        {
+                            "node": "Import NLB Main Data to Firefly",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Read And Structure NLB Savings": {
+                "main": [
+                    [
+                        {
+                            "node": "Import NLB Savings Data to Firefly",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Read And Structure VISA": {
+                "main": [
+                    [
+                        {
+                            "node": "Import Visa Data to Firefly",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Import NLB Savings Data to Firefly": {
+                "main": [
+                    [
+                        {
+                            "node": "Move nlb savings file to archive",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Import Visa Data to Firefly": {
+                "main": [
+                    [
+                        {
+                            "node": "Move nlb savings file to archive1",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Move revolut file to archive": {
+                "main": [
+                    [
+                        {
+                            "node": "Merge Results",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Move nlb main file to archive": {
+                "main": [
+                    [
+                        {
+                            "node": "Merge Results",
+                            "type": "main",
+                            "index": 1
+                        }
+                    ]
+                ]
+            },
+            "Move nlb savings file to archive": {
+                "main": [
+                    [
+                        {
+                            "node": "Merge Results",
+                            "type": "main",
+                            "index": 2
+                        }
+                    ]
+                ]
+            },
+            "Move nlb savings file to archive1": {
+                "main": [
+                    [
+                        {
+                            "node": "Merge Results",
+                            "type": "main",
+                            "index": 3
+                        }
+                    ]
+                ]
+            },
+            "Schedule Trigger": {
+                "main": [
+                    [
+                        {
+                            "node": "Set Static Data",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            }
+        },
+        "settings": {
+            "executionOrder": "v1",
+            "binaryMode": "separate"
+        },
+        "staticData": {
+            "node:Schedule Trigger": {
+                "recurrenceRules": []
+            }
+        },
+        "meta": {
+            "templateCredsSetupCompleted": true
+        },
+        "pinData": {},
+        "versionId": "6f0c6d2a-8866-4dc8-a4ad-92959df81447",
+        "activeVersionId": "ef5205b0-97ef-4a4d-b974-97244bae7854",
+        "triggerCount": 1,
+        "shared": [
+            {
+                "updatedAt": "2026-06-20T13:22:54.059Z",
+                "createdAt": "2026-06-20T13:22:54.059Z",
+                "role": "workflow:owner",
+                "workflowId": "sMxeFl2CuSMSykhX",
+                "projectId": "FlGQaEMmWQfoeLfg"
+            }
+        ],
+        "activeVersion": {
+            "updatedAt": "2026-07-06T11:58:12.674Z",
+            "createdAt": "2026-07-06T11:57:21.639Z",
+            "versionId": "ef5205b0-97ef-4a4d-b974-97244bae7854",
+            "workflowId": "sMxeFl2CuSMSykhX",
+            "nodes": [
+                {
+                    "parameters": {},
+                    "type": "n8n-nodes-base.manualTrigger",
+                    "typeVersion": 1,
+                    "position": [
+                        -672,
+                        -384
+                    ],
+                    "id": "8adcd9af-74de-4791-b673-88e3b7e0db9d",
+                    "name": "When clicking ‘Execute workflow’"
+                },
+                {
+                    "parameters": {
+                        "assignments": {
+                            "assignments": [
+                                {
+                                    "id": "035f7900-626a-4675-8de1-06149aa34c8c",
+                                    "name": "nlb-main",
+                                    "value": "1",
+                                    "type": "string"
+                                },
+                                {
+                                    "id": "9851754c-4d40-4e35-aade-2263fc8820be",
+                                    "name": "nlb-savings",
+                                    "value": "3",
+                                    "type": "string"
+                                },
+                                {
+                                    "id": "a851a45e-6fc0-43e1-ac29-af5ba412bfed",
+                                    "name": "nlb-vita",
+                                    "value": "5",
+                                    "type": "string"
+                                },
+                                {
+                                    "id": "d80d379b-bc99-4565-b77d-fc5d6fc799f3",
+                                    "name": "nlb-skladi",
+                                    "value": "7",
+                                    "type": "string"
+                                },
+                                {
+                                    "id": "3eca4d89-42a5-470c-b49e-45c93e2e6abb",
+                                    "name": "visa",
+                                    "value": "9",
+                                    "type": "string"
+                                },
+                                {
+                                    "id": "2258cb02-9c3e-44a8-8c97-fdd352ef2291",
+                                    "name": "revolut-current",
+                                    "value": "10",
+                                    "type": "string"
+                                },
+                                {
+                                    "id": "cbde7235-c01f-456e-b380-a9427a8f900a",
+                                    "name": "revolut-crypto",
+                                    "value": "13",
+                                    "type": "string"
+                                },
+                                {
+                                    "id": "8638bbd4-e46e-4746-afc6-9a23ac64a9e7",
+                                    "name": "revolut-stocks",
+                                    "value": "15",
+                                    "type": "string"
+                                },
+                                {
+                                    "id": "099af9bb-1b56-4f9c-87a9-9f05372af9d4",
+                                    "name": "auto-lizing",
+                                    "value": "17",
+                                    "type": "string"
+                                },
+                                {
+                                    "id": "e84d86a8-46b5-4d62-83cc-3350ea138365",
+                                    "name": "nlb_main_archive_folder",
+                                    "value": "1GtkOjouPkG_S_qhsHLIrabt0oUQv83Pa",
+                                    "type": "string"
+                                },
+                                {
+                                    "id": "96189fad-23f4-49ae-9c46-c5e94dc81f7c",
+                                    "name": "nlb_visa_archive_folder",
+                                    "value": "1gQtygkjpcYv9AtiNCTLKp-_W6BhQ70Vk",
+                                    "type": "string"
+                                },
+                                {
+                                    "id": "1f31d6c7-a301-490f-8242-d65f4c0e162d",
+                                    "name": "nlb_savings_archive_folder",
+                                    "value": "1RH6waKrHO2DDurLjDZsVX4XlCudv5U-Q",
+                                    "type": "string"
+                                },
+                                {
+                                    "id": "d3132a6a-be23-4389-ab47-9e6515b63612",
+                                    "name": "revolut_main_archive_folder",
+                                    "value": "1NFfbSD1wK3SYmRSLF6o5Eob9wWhVCocu",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.set",
+                    "typeVersion": 3.4,
+                    "position": [
+                        -448,
+                        -384
+                    ],
+                    "id": "5b16a7ac-a402-4925-b762-fb0ec9f0231f",
+                    "name": "Set Static Data"
+                },
+                {
+                    "parameters": {
+                        "workflowId": {
+                            "__rl": true,
+                            "value": "zc62SIi0Evmqxtza",
+                            "mode": "list",
+                            "cachedResultUrl": "/workflow/zc62SIi0Evmqxtza",
+                            "cachedResultName": "Read And Structure Revolut"
+                        },
+                        "workflowInputs": {
+                            "mappingMode": "defineBelow",
+                            "value": {},
+                            "matchingColumns": [],
+                            "schema": [],
+                            "attemptToConvertTypes": false,
+                            "convertFieldsToString": true
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.executeWorkflow",
+                    "typeVersion": 1.3,
+                    "position": [
+                        -224,
+                        -672
+                    ],
+                    "id": "39e7cba0-c51d-4aa2-ae0b-8e43da032604",
+                    "name": "Read And Structure Revolut"
+                },
+                {
+                    "parameters": {
+                        "workflowId": {
+                            "__rl": true,
+                            "value": "0uWPJg8m7HT9PyLT",
+                            "mode": "list",
+                            "cachedResultUrl": "/workflow/0uWPJg8m7HT9PyLT",
+                            "cachedResultName": "SUBSET - Import Data to Firefly"
+                        },
+                        "workflowInputs": {
+                            "mappingMode": "defineBelow",
+                            "value": {
+                                "data": "={{ $json.data }}"
+                            },
+                            "matchingColumns": [
+                                "data"
+                            ],
+                            "schema": [
+                                {
+                                    "id": "data",
+                                    "displayName": "data",
+                                    "required": false,
+                                    "defaultMatch": false,
+                                    "display": true,
+                                    "canBeUsedToMatch": true,
+                                    "type": "array",
+                                    "removed": false
+                                }
+                            ],
+                            "attemptToConvertTypes": false,
+                            "convertFieldsToString": true
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.executeWorkflow",
+                    "typeVersion": 1.3,
+                    "position": [
+                        0,
+                        -672
+                    ],
+                    "id": "15ee9203-ccaf-4e55-9795-a19300f43f5e",
+                    "name": "Import Revolut Data to Firefly"
+                },
+                {
+                    "parameters": {
+                        "operation": "move",
+                        "fileId": {
+                            "__rl": true,
+                            "value": "={{ $('Read And Structure Revolut').item.json.fileId }}",
+                            "mode": "id"
+                        },
+                        "driveId": {
+                            "__rl": true,
+                            "value": "My Drive",
+                            "mode": "list",
+                            "cachedResultName": "My Drive",
+                            "cachedResultUrl": "https://drive.google.com/drive/my-drive"
+                        },
+                        "folderId": {
+                            "__rl": true,
+                            "value": "={{ $('Set Static Data').item.json.revolut_main_archive_folder }}",
+                            "mode": "id"
+                        }
+                    },
+                    "type": "n8n-nodes-base.googleDrive",
+                    "typeVersion": 3,
+                    "position": [
+                        224,
+                        -672
+                    ],
+                    "id": "531c9d76-3949-4a17-9db6-584452e448f4",
+                    "name": "Move revolut file to archive",
+                    "alwaysOutputData": true,
+                    "credentials": {
+                        "googleDriveOAuth2Api": {
+                            "id": "zUSpRXM5p8MF5y3t",
+                            "name": "Google Drive account"
+                        }
+                    },
+                    "onError": "continueRegularOutput"
+                },
+                {
+                    "parameters": {
+                        "workflowId": {
+                            "__rl": true,
+                            "value": "0uWPJg8m7HT9PyLT",
+                            "mode": "list",
+                            "cachedResultUrl": "/workflow/0uWPJg8m7HT9PyLT",
+                            "cachedResultName": "SUBSET - Import Data to Firefly"
+                        },
+                        "workflowInputs": {
+                            "mappingMode": "defineBelow",
+                            "value": {
+                                "data": "={{ $json.data }}"
+                            },
+                            "matchingColumns": [
+                                "data"
+                            ],
+                            "schema": [
+                                {
+                                    "id": "data",
+                                    "displayName": "data",
+                                    "required": false,
+                                    "defaultMatch": false,
+                                    "display": true,
+                                    "canBeUsedToMatch": true,
+                                    "type": "array",
+                                    "removed": false
+                                }
+                            ],
+                            "attemptToConvertTypes": false,
+                            "convertFieldsToString": true
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.executeWorkflow",
+                    "typeVersion": 1.3,
+                    "position": [
+                        0,
+                        -480
+                    ],
+                    "id": "7eb03e25-61a9-486b-8aed-bae156ca0e65",
+                    "name": "Import NLB Main Data to Firefly"
+                },
+                {
+                    "parameters": {
+                        "operation": "move",
+                        "fileId": {
+                            "__rl": true,
+                            "value": "={{ $('Read And Structure NLB Main').item.json.fileId }}",
+                            "mode": "id"
+                        },
+                        "driveId": {
+                            "__rl": true,
+                            "mode": "list",
+                            "value": "My Drive"
+                        },
+                        "folderId": {
+                            "__rl": true,
+                            "value": "={{ $('Set Static Data').item.json.nlb_main_archive_folder }}",
+                            "mode": "id"
+                        }
+                    },
+                    "type": "n8n-nodes-base.googleDrive",
+                    "typeVersion": 3,
+                    "position": [
+                        224,
+                        -480
+                    ],
+                    "id": "d8650df7-29c5-4fc4-8581-f579795ac180",
+                    "name": "Move nlb main file to archive",
+                    "executeOnce": false,
+                    "alwaysOutputData": true,
+                    "retryOnFail": false,
+                    "credentials": {
+                        "googleDriveOAuth2Api": {
+                            "id": "zUSpRXM5p8MF5y3t",
+                            "name": "Google Drive account"
+                        }
+                    },
+                    "onError": "continueRegularOutput"
+                },
+                {
+                    "parameters": {
+                        "workflowId": {
+                            "__rl": true,
+                            "value": "lZbuzq0isCbt7rVq",
+                            "mode": "list",
+                            "cachedResultUrl": "/workflow/lZbuzq0isCbt7rVq",
+                            "cachedResultName": "Read And Structure NLB Main"
+                        },
+                        "workflowInputs": {
+                            "mappingMode": "defineBelow",
+                            "value": {},
+                            "matchingColumns": [],
+                            "schema": [],
+                            "attemptToConvertTypes": false,
+                            "convertFieldsToString": true
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.executeWorkflow",
+                    "typeVersion": 1.3,
+                    "position": [
+                        -224,
+                        -480
+                    ],
+                    "id": "54424fb8-4f66-4f0b-8a9f-14d2797406b8",
+                    "name": "Read And Structure NLB Main"
+                },
+                {
+                    "parameters": {
+                        "workflowId": {
+                            "__rl": true,
+                            "value": "qzaGpoJsxkrpf1ny",
+                            "mode": "list",
+                            "cachedResultUrl": "/workflow/qzaGpoJsxkrpf1ny",
+                            "cachedResultName": "Read And Structure NLB Savings"
+                        },
+                        "workflowInputs": {
+                            "mappingMode": "defineBelow",
+                            "value": {},
+                            "matchingColumns": [],
+                            "schema": [],
+                            "attemptToConvertTypes": false,
+                            "convertFieldsToString": true
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.executeWorkflow",
+                    "typeVersion": 1.3,
+                    "position": [
+                        -224,
+                        -288
+                    ],
+                    "id": "fa1e761d-70c1-43b6-97f3-3c6228dd3b5b",
+                    "name": "Read And Structure NLB Savings"
+                },
+                {
+                    "parameters": {
+                        "workflowId": {
+                            "__rl": true,
+                            "value": "5DvRXRtfBuQ2Nbn0",
+                            "mode": "list",
+                            "cachedResultUrl": "/workflow/5DvRXRtfBuQ2Nbn0",
+                            "cachedResultName": "Read And Structure VISA"
+                        },
+                        "workflowInputs": {
+                            "mappingMode": "defineBelow",
+                            "value": {},
+                            "matchingColumns": [],
+                            "schema": [],
+                            "attemptToConvertTypes": false,
+                            "convertFieldsToString": true
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.executeWorkflow",
+                    "typeVersion": 1.3,
+                    "position": [
+                        -224,
+                        -96
+                    ],
+                    "id": "3ea609ba-a207-4366-8032-34b1f20f5194",
+                    "name": "Read And Structure VISA"
+                },
+                {
+                    "parameters": {
+                        "workflowId": {
+                            "__rl": true,
+                            "value": "0uWPJg8m7HT9PyLT",
+                            "mode": "list",
+                            "cachedResultUrl": "/workflow/0uWPJg8m7HT9PyLT",
+                            "cachedResultName": "SUBSET - Import Data to Firefly"
+                        },
+                        "workflowInputs": {
+                            "mappingMode": "defineBelow",
+                            "value": {
+                                "data": "={{ $json.data }}"
+                            },
+                            "matchingColumns": [
+                                "data"
+                            ],
+                            "schema": [
+                                {
+                                    "id": "data",
+                                    "displayName": "data",
+                                    "required": false,
+                                    "defaultMatch": false,
+                                    "display": true,
+                                    "canBeUsedToMatch": true,
+                                    "type": "array",
+                                    "removed": false
+                                }
+                            ],
+                            "attemptToConvertTypes": false,
+                            "convertFieldsToString": true
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.executeWorkflow",
+                    "typeVersion": 1.3,
+                    "position": [
+                        0,
+                        -288
+                    ],
+                    "id": "71ad1ad5-5ae7-4a3d-b500-7434f0e1dca3",
+                    "name": "Import NLB Savings Data to Firefly"
+                },
+                {
+                    "parameters": {
+                        "operation": "move",
+                        "fileId": {
+                            "__rl": true,
+                            "value": "={{ $('Read And Structure NLB Savings').item.json.fileId }}",
+                            "mode": "id"
+                        },
+                        "driveId": {
+                            "__rl": true,
+                            "mode": "list",
+                            "value": "My Drive"
+                        },
+                        "folderId": {
+                            "__rl": true,
+                            "value": "={{ $('Set Static Data').item.json.nlb_savings_archive_folder }}",
+                            "mode": "id"
+                        }
+                    },
+                    "type": "n8n-nodes-base.googleDrive",
+                    "typeVersion": 3,
+                    "position": [
+                        224,
+                        -288
+                    ],
+                    "id": "592e198d-a2a8-4bce-954b-7a3869067a93",
+                    "name": "Move nlb savings file to archive",
+                    "alwaysOutputData": true,
+                    "credentials": {
+                        "googleDriveOAuth2Api": {
+                            "id": "zUSpRXM5p8MF5y3t",
+                            "name": "Google Drive account"
+                        }
+                    },
+                    "onError": "continueRegularOutput"
+                },
+                {
+                    "parameters": {
+                        "operation": "move",
+                        "fileId": {
+                            "__rl": true,
+                            "value": "={{ $('Read And Structure VISA').item.json.fileId }}",
+                            "mode": "id"
+                        },
+                        "driveId": {
+                            "__rl": true,
+                            "mode": "list",
+                            "value": "My Drive"
+                        },
+                        "folderId": {
+                            "__rl": true,
+                            "value": "={{ $('Set Static Data').item.json.nlb_visa_archive_folder }}",
+                            "mode": "id"
+                        }
+                    },
+                    "type": "n8n-nodes-base.googleDrive",
+                    "typeVersion": 3,
+                    "position": [
+                        224,
+                        -96
+                    ],
+                    "id": "d05ee85c-2a95-4dd0-bee9-879cc676406f",
+                    "name": "Move nlb savings file to archive1",
+                    "alwaysOutputData": true,
+                    "credentials": {
+                        "googleDriveOAuth2Api": {
+                            "id": "zUSpRXM5p8MF5y3t",
+                            "name": "Google Drive account"
+                        }
+                    },
+                    "onError": "continueRegularOutput"
+                },
+                {
+                    "parameters": {
+                        "workflowId": {
+                            "__rl": true,
+                            "value": "0uWPJg8m7HT9PyLT",
+                            "mode": "list",
+                            "cachedResultUrl": "/workflow/0uWPJg8m7HT9PyLT",
+                            "cachedResultName": "SUBSET - Import Data to Firefly"
+                        },
+                        "workflowInputs": {
+                            "mappingMode": "defineBelow",
+                            "value": {
+                                "data": "={{ $json.data }}"
+                            },
+                            "matchingColumns": [
+                                "data"
+                            ],
+                            "schema": [
+                                {
+                                    "id": "data",
+                                    "displayName": "data",
+                                    "required": false,
+                                    "defaultMatch": false,
+                                    "display": true,
+                                    "canBeUsedToMatch": true,
+                                    "type": "array",
+                                    "removed": false
+                                }
+                            ],
+                            "attemptToConvertTypes": false,
+                            "convertFieldsToString": true
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.executeWorkflow",
+                    "typeVersion": 1.3,
+                    "position": [
+                        0,
+                        -96
+                    ],
+                    "id": "37d9cb2b-5df2-47cd-b445-fbd3cc903d50",
+                    "name": "Import Visa Data to Firefly"
+                },
+                {
+                    "parameters": {
+                        "numberInputs": 4
+                    },
+                    "type": "n8n-nodes-base.merge",
+                    "typeVersion": 3.2,
+                    "position": [
+                        448,
+                        -416
+                    ],
+                    "id": "6cdd4663-c5b4-4b19-9f17-86d5c6e81145",
+                    "name": "Merge Results"
+                },
+                {
+                    "parameters": {
+                        "rule": {
+                            "interval": [
+                                {
+                                    "field": "hours"
+                                }
+                            ]
+                        }
+                    },
+                    "type": "n8n-nodes-base.scheduleTrigger",
+                    "typeVersion": 1.3,
+                    "position": [
+                        -672,
+                        -528
+                    ],
+                    "id": "7aac2c7a-3b95-452a-ac3d-6ae419d6338b",
+                    "name": "Schedule Trigger"
+                }
+            ],
+            "connections": {
+                "When clicking ‘Execute workflow’": {
+                    "main": [
+                        [
+                            {
+                                "node": "Set Static Data",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Set Static Data": {
+                    "main": [
+                        [
+                            {
+                                "node": "Read And Structure Revolut",
+                                "type": "main",
+                                "index": 0
+                            },
+                            {
+                                "node": "Read And Structure NLB Main",
+                                "type": "main",
+                                "index": 0
+                            },
+                            {
+                                "node": "Read And Structure NLB Savings",
+                                "type": "main",
+                                "index": 0
+                            },
+                            {
+                                "node": "Read And Structure VISA",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Read And Structure Revolut": {
+                    "main": [
+                        [
+                            {
+                                "node": "Import Revolut Data to Firefly",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Import Revolut Data to Firefly": {
+                    "main": [
+                        [
+                            {
+                                "node": "Move revolut file to archive",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Import NLB Main Data to Firefly": {
+                    "main": [
+                        [
+                            {
+                                "node": "Move nlb main file to archive",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Read And Structure NLB Main": {
+                    "main": [
+                        [
+                            {
+                                "node": "Import NLB Main Data to Firefly",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Read And Structure NLB Savings": {
+                    "main": [
+                        [
+                            {
+                                "node": "Import NLB Savings Data to Firefly",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Read And Structure VISA": {
+                    "main": [
+                        [
+                            {
+                                "node": "Import Visa Data to Firefly",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Import NLB Savings Data to Firefly": {
+                    "main": [
+                        [
+                            {
+                                "node": "Move nlb savings file to archive",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Import Visa Data to Firefly": {
+                    "main": [
+                        [
+                            {
+                                "node": "Move nlb savings file to archive1",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Move revolut file to archive": {
+                    "main": [
+                        [
+                            {
+                                "node": "Merge Results",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Move nlb main file to archive": {
+                    "main": [
+                        [
+                            {
+                                "node": "Merge Results",
+                                "type": "main",
+                                "index": 1
+                            }
+                        ]
+                    ]
+                },
+                "Move nlb savings file to archive": {
+                    "main": [
+                        [
+                            {
+                                "node": "Merge Results",
+                                "type": "main",
+                                "index": 2
+                            }
+                        ]
+                    ]
+                },
+                "Move nlb savings file to archive1": {
+                    "main": [
+                        [
+                            {
+                                "node": "Merge Results",
+                                "type": "main",
+                                "index": 3
+                            }
+                        ]
+                    ]
+                },
+                "Schedule Trigger": {
+                    "main": [
+                        [
+                            {
+                                "node": "Set Static Data",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                }
+            },
+            "authors": "",
+            "name": "Version ef5205b0",
+            "description": "",
+            "autosaved": true
+        },
+        "tags": []
+    }
+]

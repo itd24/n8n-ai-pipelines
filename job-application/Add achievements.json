@@ -1,0 +1,359 @@
+[
+    {
+        "updatedAt": "2026-03-04T15:38:34.992Z",
+        "createdAt": "2025-05-05T10:00:12.721Z",
+        "id": "QMQQjx19BFGfxvxS",
+        "name": "Add achievements",
+        "active": false,
+        "isArchived": false,
+        "nodes": [
+            {
+                "parameters": {},
+                "type": "n8n-nodes-base.manualTrigger",
+                "typeVersion": 1,
+                "position": [
+                    -180,
+                    100
+                ],
+                "id": "f47f1f61-3e05-49e8-9868-35493e7a421d",
+                "name": "When clicking ‘Test workflow’"
+            },
+            {
+                "parameters": {
+                    "workflowId": {
+                        "__rl": true,
+                        "value": "GvVL2xA14QTdda2q",
+                        "mode": "list",
+                        "cachedResultName": "Load-cv-data"
+                    },
+                    "workflowInputs": {
+                        "mappingMode": "defineBelow",
+                        "value": {},
+                        "matchingColumns": [],
+                        "schema": [],
+                        "attemptToConvertTypes": false,
+                        "convertFieldsToString": true
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.executeWorkflow",
+                "typeVersion": 1.2,
+                "position": [
+                    0,
+                    0
+                ],
+                "id": "167f3a45-f1c6-4c5b-86ed-8d445dc59085",
+                "name": "Execute Workflow"
+            },
+            {
+                "parameters": {
+                    "promptType": "define",
+                    "text": "=You are a career professional, who can help me to create a list of my achievements based on my previous work experience and the job I am applying for. You have to create a list of relevant achievements and output it in this json format:\n{\n\"achievements\":[\n{\n\"description\": \"a detailed description of my achievement that highlichts why I am perfect for the job I am applying for\",\n\"company\": \"the name of the company, where I achieved this achievement\",\n\"reason\": \"the reason why you think this would be an achievement I should add to my resume\"\n}\n]\n\nThe definition of an achievement: \n\nThey are general accomplishments across my roles, education, or life. They can include things like: \n\"Completed a certification in cloud computing.\"\n\"Organized team events that improved morale.\"\n\nThey have to be relevant to the job I am applying for. Highly relevant achievements will be rewarded.\nYou also must not add any achievements I already have in my list. The achievements already on my list are: {{ $json.achievements.map(a => a.description) }}\n\nthe description of the job I am applying for:\n\"{{ $json.applications[0].content }}\"\n\nmy job experience summarized in my own words and formatted into a json structure, where the property \"from\" represents the month and year I started the job, the property \"to\" represents the month and year I quit the job, the property \"description\" represents the description of the job, what I did and what I achieved,\nthe property \"company\" represents the name of the company, the property \"location\" represents the name of the city I worked in, and the property \"title\" represents the official position I had at this job: \n\n\"{{ $json.jobs.toJsonString() }}\"\n\nYou have to output only the json and nothing else. Adding additional text that would prevent me from parsing the json will result in a penalty.",
+                    "hasOutputParser": true,
+                    "options": {}
+                },
+                "type": "@n8n/n8n-nodes-langchain.agent",
+                "typeVersion": 1.8,
+                "position": [
+                    560,
+                    80
+                ],
+                "id": "e126cd6f-9a85-486e-bde4-a26f648ec502",
+                "name": "AI Agent"
+            },
+            {
+                "parameters": {
+                    "workflowId": {
+                        "__rl": true,
+                        "value": "vds3gMzBpCwr7hrM",
+                        "mode": "list",
+                        "cachedResultName": "Load-job-description"
+                    },
+                    "workflowInputs": {
+                        "mappingMode": "defineBelow",
+                        "value": {},
+                        "matchingColumns": [],
+                        "schema": [],
+                        "attemptToConvertTypes": false,
+                        "convertFieldsToString": true
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.executeWorkflow",
+                "typeVersion": 1.2,
+                "position": [
+                    0,
+                    160
+                ],
+                "id": "d2a42b38-c975-4623-aec2-8bd1d2439efb",
+                "name": "Execute Workflow1"
+            },
+            {
+                "parameters": {},
+                "type": "n8n-nodes-base.merge",
+                "typeVersion": 3.1,
+                "position": [
+                    160,
+                    80
+                ],
+                "id": "add25f76-bbdd-468c-b7f8-73fc7b9c14bf",
+                "name": "Merge"
+            },
+            {
+                "parameters": {
+                    "jsCode": "\nvar achievements = [];\nvar jobs = [];\nvar applications = [];\nfor (const item of $input.all()) {\n  if(item.json.achievements){\n    achievements = achievements.concat(item.json.achievements)\n  }\n  else if(item.json.job){\n    jobs.push(item.json.job);\n  }\n  else if(item.json.application){\n    applications.push({\"content\":item.json.application});\n  }\n}\nachievements = [...new Set(achievements)];\n\n\n\nreturn [{\n  json:{\n    achievements,\n    jobs,\n    applications\n  }\n}]"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    380,
+                    80
+                ],
+                "id": "032f7f4b-95bf-47ee-b437-f7cc7f007f53",
+                "name": "Code"
+            },
+            {
+                "parameters": {
+                    "model": {
+                        "__rl": true,
+                        "mode": "list",
+                        "value": "gpt-4o-mini"
+                    },
+                    "options": {}
+                },
+                "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+                "typeVersion": 1.2,
+                "position": [
+                    540,
+                    280
+                ],
+                "id": "dd082f43-1089-4c4d-84ae-d9712bb608f7",
+                "name": "OpenAI Chat Model",
+                "credentials": {
+                    "openAiApi": {
+                        "id": "41vcpeRIZNLSJWiZ",
+                        "name": "OpenAi account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  const cleaned = item.json.output.replace(/^```json\\n/, '').replace(/\\n```$/, '');\n  const parsed = JSON.parse(cleaned);\n  return parsed.achievements.map(achievement => ({\n    json: {\n      description: achievement.description,\n      company: achievement.company,\n      constant: 1,\n      reason: achievement.reason\n    }\n  }));\n}\n\n"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    920,
+                    80
+                ],
+                "id": "5cadb929-1957-450b-b0cf-5d515ef5040e",
+                "name": "Code1"
+            },
+            {
+                "parameters": {
+                    "operation": "append",
+                    "documentId": {
+                        "__rl": true,
+                        "value": "1Lx7GhvJzqP34eVBxfroTN7M8wPcqa-Vhrw2hBK6KdXY",
+                        "mode": "list",
+                        "cachedResultName": "career_data_collection",
+                        "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lx7GhvJzqP34eVBxfroTN7M8wPcqa-Vhrw2hBK6KdXY/edit?usp=drivesdk"
+                    },
+                    "sheetName": {
+                        "__rl": true,
+                        "value": 1810374257,
+                        "mode": "list",
+                        "cachedResultName": "Achievements",
+                        "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1Lx7GhvJzqP34eVBxfroTN7M8wPcqa-Vhrw2hBK6KdXY/edit#gid=1810374257"
+                    },
+                    "columns": {
+                        "mappingMode": "defineBelow",
+                        "value": {
+                            "Description": "={{ $json.description }}",
+                            "Company": "={{ $json.company }}",
+                            "AI Generated": "={{ $json.constant }}",
+                            "Reason": "={{ $json.reason }}"
+                        },
+                        "matchingColumns": [],
+                        "schema": [
+                            {
+                                "id": "Description",
+                                "displayName": "Description",
+                                "required": false,
+                                "defaultMatch": false,
+                                "display": true,
+                                "type": "string",
+                                "canBeUsedToMatch": true,
+                                "removed": false
+                            },
+                            {
+                                "id": "Company",
+                                "displayName": "Company",
+                                "required": false,
+                                "defaultMatch": false,
+                                "display": true,
+                                "type": "string",
+                                "canBeUsedToMatch": true,
+                                "removed": false
+                            },
+                            {
+                                "id": "AI Generated",
+                                "displayName": "AI Generated",
+                                "required": false,
+                                "defaultMatch": false,
+                                "display": true,
+                                "type": "string",
+                                "canBeUsedToMatch": true,
+                                "removed": false
+                            },
+                            {
+                                "id": "Reason",
+                                "displayName": "Reason",
+                                "required": false,
+                                "defaultMatch": false,
+                                "display": true,
+                                "type": "string",
+                                "canBeUsedToMatch": true,
+                                "removed": false
+                            }
+                        ],
+                        "attemptToConvertTypes": false,
+                        "convertFieldsToString": false
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.googleSheets",
+                "typeVersion": 4.5,
+                "position": [
+                    1140,
+                    80
+                ],
+                "id": "34a0b816-a3cb-40a0-a3f9-e202f64a9988",
+                "name": "Google Sheets",
+                "credentials": {
+                    "googleSheetsOAuth2Api": {
+                        "id": "oYswFLQWLJz0WnPK",
+                        "name": "Google Sheets account"
+                    }
+                }
+            }
+        ],
+        "connections": {
+            "When clicking ‘Test workflow’": {
+                "main": [
+                    [
+                        {
+                            "node": "Execute Workflow",
+                            "type": "main",
+                            "index": 0
+                        },
+                        {
+                            "node": "Execute Workflow1",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Execute Workflow": {
+                "main": [
+                    [
+                        {
+                            "node": "Merge",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "AI Agent": {
+                "main": [
+                    [
+                        {
+                            "node": "Code1",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Execute Workflow1": {
+                "main": [
+                    [
+                        {
+                            "node": "Merge",
+                            "type": "main",
+                            "index": 1
+                        }
+                    ]
+                ]
+            },
+            "Merge": {
+                "main": [
+                    [
+                        {
+                            "node": "Code",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Code": {
+                "main": [
+                    [
+                        {
+                            "node": "AI Agent",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "OpenAI Chat Model": {
+                "ai_languageModel": [
+                    [
+                        {
+                            "node": "AI Agent",
+                            "type": "ai_languageModel",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Code1": {
+                "main": [
+                    [
+                        {
+                            "node": "Google Sheets",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            }
+        },
+        "settings": {
+            "executionOrder": "v1"
+        },
+        "staticData": null,
+        "meta": {
+            "templateCredsSetupCompleted": true
+        },
+        "pinData": {},
+        "versionId": "89773725-b3e3-4d38-8076-8bbabd6598b3",
+        "activeVersionId": null,
+        "triggerCount": 0,
+        "shared": [
+            {
+                "updatedAt": "2025-05-05T10:00:12.721Z",
+                "createdAt": "2025-05-05T10:00:12.721Z",
+                "role": "workflow:owner",
+                "workflowId": "QMQQjx19BFGfxvxS",
+                "projectId": "FlGQaEMmWQfoeLfg"
+            }
+        ],
+        "activeVersion": null,
+        "tags": []
+    }
+]

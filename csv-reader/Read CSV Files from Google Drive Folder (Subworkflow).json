@@ -1,0 +1,298 @@
+[
+    {
+        "updatedAt": "2026-07-19T12:13:38.049Z",
+        "createdAt": "2026-06-19T12:53:06.849Z",
+        "id": "Z5f5YMUT4TtBXlpA",
+        "name": "Read CSV Files from Google Drive Folder (Subworkflow)",
+        "active": true,
+        "isArchived": false,
+        "nodes": [
+            {
+                "parameters": {
+                    "workflowInputs": {
+                        "values": [
+                            {
+                                "name": "folderId"
+                            }
+                        ]
+                    }
+                },
+                "type": "n8n-nodes-base.executeWorkflowTrigger",
+                "typeVersion": 1.1,
+                "position": [
+                    0,
+                    0
+                ],
+                "id": "33e1f5a0-b238-4d0d-a291-c5e6173a54d7",
+                "name": "When Executed by Another Workflow"
+            },
+            {
+                "parameters": {
+                    "resource": "fileFolder",
+                    "searchMethod": "query",
+                    "queryString": "(mimeType = 'text/csv' or mimeType = 'application/vnd.google-apps.spreadsheet')",
+                    "returnAll": true,
+                    "filter": {
+                        "folderId": {
+                            "__rl": true,
+                            "value": "={{ $json.folderId }}",
+                            "mode": "id"
+                        }
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.googleDrive",
+                "typeVersion": 3,
+                "position": [
+                    224,
+                    0
+                ],
+                "id": "39ff3ba8-3ed5-4e92-b971-0328640ecbe9",
+                "name": "List Files in Folder",
+                "credentials": {
+                    "googleDriveOAuth2Api": {
+                        "id": "zUSpRXM5p8MF5y3t",
+                        "name": "Google Drive account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "operation": "download",
+                    "fileId": {
+                        "__rl": true,
+                        "value": "={{ $json.id }}",
+                        "mode": "id"
+                    },
+                    "options": {
+                        "googleFileConversion": {
+                            "conversion": {}
+                        }
+                    }
+                },
+                "type": "n8n-nodes-base.googleDrive",
+                "typeVersion": 3,
+                "position": [
+                    432,
+                    0
+                ],
+                "id": "1f5a6062-4ce0-4d60-a02e-cef990654e11",
+                "name": "Download File",
+                "credentials": {
+                    "googleDriveOAuth2Api": {
+                        "id": "zUSpRXM5p8MF5y3t",
+                        "name": "Google Drive account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "jsCode": "const items = $input.all();\nconst results = [];\n\nfunction parseCSV(text) {\n  const rows = [];\n  let row = [];\n  let field = '';\n  let inQuotes = false;\n\n  for (let i = 0; i < text.length; i++) {\n    const char = text[i];\n    if (inQuotes) {\n      if (char === '\"') {\n        if (text[i + 1] === '\"') { field += '\"'; i++; }\n        else { inQuotes = false; }\n      } else {\n        field += char;\n      }\n    } else {\n      if (char === '\"') { inQuotes = true; }\n      else if (char === ',') { row.push(field); field = ''; }\n      else if (char === '\\r') { /* skip */ }\n      else if (char === '\\n') { row.push(field); rows.push(row); row = []; field = ''; }\n      else { field += char; }\n    }\n  }\n  if (field.length > 0 || row.length > 0) { row.push(field); rows.push(row); }\n  return rows.filter(r => !(r.length === 1 && r[0].trim() === ''));\n}\n\nfor (let i = 0; i < items.length; i++) {\n  const item = items[i];\n  const binaryPropertyName = Object.keys(item.binary || {})[0];\n  if (!binaryPropertyName) continue;\n\n  const buffer = await this.helpers.getBinaryDataBuffer(i, binaryPropertyName);\n  const text = buffer.toString('utf-8');\n  const rows = parseCSV(text);\n  const headers = rows[0] || [];\n  const data = rows.slice(1).map(r => {\n    const obj = {};\n    headers.forEach((h, idx) => { obj[h] = r[idx] !== undefined ? r[idx] : ''; });\n    return obj;\n  });\n\n  results.push({\n    json: {\n      fileName: item.json.name || 'unknown.csv',\n      fileId: item.json.id || null,\n      rowCount: data.length,\n      data\n    }\n  });\n}\n\nreturn results;"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    640,
+                    0
+                ],
+                "id": "ca468198-a4df-4e50-b551-3329a715b895",
+                "name": "Parse CSV to JSON"
+            }
+        ],
+        "connections": {
+            "When Executed by Another Workflow": {
+                "main": [
+                    [
+                        {
+                            "node": "List Files in Folder",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "List Files in Folder": {
+                "main": [
+                    [
+                        {
+                            "node": "Download File",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Download File": {
+                "main": [
+                    [
+                        {
+                            "node": "Parse CSV to JSON",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            }
+        },
+        "settings": {
+            "executionOrder": "v1",
+            "binaryMode": "separate"
+        },
+        "staticData": null,
+        "meta": {
+            "templateCredsSetupCompleted": true
+        },
+        "pinData": {},
+        "versionId": "5b09c74f-b785-4b74-9f28-22bf10bb4e49",
+        "activeVersionId": "5b09c74f-b785-4b74-9f28-22bf10bb4e49",
+        "triggerCount": 0,
+        "shared": [
+            {
+                "updatedAt": "2026-06-19T12:53:06.849Z",
+                "createdAt": "2026-06-19T12:53:06.849Z",
+                "role": "workflow:owner",
+                "workflowId": "Z5f5YMUT4TtBXlpA",
+                "projectId": "FlGQaEMmWQfoeLfg"
+            }
+        ],
+        "activeVersion": {
+            "updatedAt": "2026-07-19T12:13:58.611Z",
+            "createdAt": "2026-07-19T12:13:38.050Z",
+            "versionId": "5b09c74f-b785-4b74-9f28-22bf10bb4e49",
+            "workflowId": "Z5f5YMUT4TtBXlpA",
+            "nodes": [
+                {
+                    "parameters": {
+                        "workflowInputs": {
+                            "values": [
+                                {
+                                    "name": "folderId"
+                                }
+                            ]
+                        }
+                    },
+                    "type": "n8n-nodes-base.executeWorkflowTrigger",
+                    "typeVersion": 1.1,
+                    "position": [
+                        0,
+                        0
+                    ],
+                    "id": "33e1f5a0-b238-4d0d-a291-c5e6173a54d7",
+                    "name": "When Executed by Another Workflow"
+                },
+                {
+                    "parameters": {
+                        "resource": "fileFolder",
+                        "searchMethod": "query",
+                        "queryString": "(mimeType = 'text/csv' or mimeType = 'application/vnd.google-apps.spreadsheet')",
+                        "returnAll": true,
+                        "filter": {
+                            "folderId": {
+                                "__rl": true,
+                                "value": "={{ $json.folderId }}",
+                                "mode": "id"
+                            }
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.googleDrive",
+                    "typeVersion": 3,
+                    "position": [
+                        224,
+                        0
+                    ],
+                    "id": "39ff3ba8-3ed5-4e92-b971-0328640ecbe9",
+                    "name": "List Files in Folder",
+                    "credentials": {
+                        "googleDriveOAuth2Api": {
+                            "id": "zUSpRXM5p8MF5y3t",
+                            "name": "Google Drive account"
+                        }
+                    }
+                },
+                {
+                    "parameters": {
+                        "operation": "download",
+                        "fileId": {
+                            "__rl": true,
+                            "value": "={{ $json.id }}",
+                            "mode": "id"
+                        },
+                        "options": {
+                            "googleFileConversion": {
+                                "conversion": {}
+                            }
+                        }
+                    },
+                    "type": "n8n-nodes-base.googleDrive",
+                    "typeVersion": 3,
+                    "position": [
+                        432,
+                        0
+                    ],
+                    "id": "1f5a6062-4ce0-4d60-a02e-cef990654e11",
+                    "name": "Download File",
+                    "credentials": {
+                        "googleDriveOAuth2Api": {
+                            "id": "zUSpRXM5p8MF5y3t",
+                            "name": "Google Drive account"
+                        }
+                    }
+                },
+                {
+                    "parameters": {
+                        "jsCode": "const items = $input.all();\nconst results = [];\n\nfunction parseCSV(text) {\n  const rows = [];\n  let row = [];\n  let field = '';\n  let inQuotes = false;\n\n  for (let i = 0; i < text.length; i++) {\n    const char = text[i];\n    if (inQuotes) {\n      if (char === '\"') {\n        if (text[i + 1] === '\"') { field += '\"'; i++; }\n        else { inQuotes = false; }\n      } else {\n        field += char;\n      }\n    } else {\n      if (char === '\"') { inQuotes = true; }\n      else if (char === ',') { row.push(field); field = ''; }\n      else if (char === '\\r') { /* skip */ }\n      else if (char === '\\n') { row.push(field); rows.push(row); row = []; field = ''; }\n      else { field += char; }\n    }\n  }\n  if (field.length > 0 || row.length > 0) { row.push(field); rows.push(row); }\n  return rows.filter(r => !(r.length === 1 && r[0].trim() === ''));\n}\n\nfor (let i = 0; i < items.length; i++) {\n  const item = items[i];\n  const binaryPropertyName = Object.keys(item.binary || {})[0];\n  if (!binaryPropertyName) continue;\n\n  const buffer = await this.helpers.getBinaryDataBuffer(i, binaryPropertyName);\n  const text = buffer.toString('utf-8');\n  const rows = parseCSV(text);\n  const headers = rows[0] || [];\n  const data = rows.slice(1).map(r => {\n    const obj = {};\n    headers.forEach((h, idx) => { obj[h] = r[idx] !== undefined ? r[idx] : ''; });\n    return obj;\n  });\n\n  results.push({\n    json: {\n      fileName: item.json.name || 'unknown.csv',\n      fileId: item.json.id || null,\n      rowCount: data.length,\n      data\n    }\n  });\n}\n\nreturn results;"
+                    },
+                    "type": "n8n-nodes-base.code",
+                    "typeVersion": 2,
+                    "position": [
+                        640,
+                        0
+                    ],
+                    "id": "ca468198-a4df-4e50-b551-3329a715b895",
+                    "name": "Parse CSV to JSON"
+                }
+            ],
+            "connections": {
+                "When Executed by Another Workflow": {
+                    "main": [
+                        [
+                            {
+                                "node": "List Files in Folder",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "List Files in Folder": {
+                    "main": [
+                        [
+                            {
+                                "node": "Download File",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Download File": {
+                    "main": [
+                        [
+                            {
+                                "node": "Parse CSV to JSON",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                }
+            },
+            "authors": "",
+            "name": "Version 5b09c74f",
+            "description": "",
+            "autosaved": true
+        },
+        "tags": []
+    }
+]

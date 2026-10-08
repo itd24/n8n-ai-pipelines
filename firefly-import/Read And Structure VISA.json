@@ -1,0 +1,452 @@
+[
+    {
+        "updatedAt": "2026-07-06T07:10:12.891Z",
+        "createdAt": "2026-06-19T14:53:33.643Z",
+        "id": "5DvRXRtfBuQ2Nbn0",
+        "name": "Read And Structure VISA",
+        "active": true,
+        "isArchived": false,
+        "nodes": [
+            {
+                "parameters": {
+                    "inputSource": "passthrough"
+                },
+                "type": "n8n-nodes-base.executeWorkflowTrigger",
+                "typeVersion": 1.1,
+                "position": [
+                    384,
+                    -192
+                ],
+                "id": "f2ce64bc-0498-4677-9739-4c22d792f8ea",
+                "name": "When Executed by Another Workflow"
+            },
+            {
+                "parameters": {
+                    "assignments": {
+                        "assignments": [
+                            {
+                                "id": "82eec283-8685-4a82-a227-dce4cb29541e",
+                                "name": "DriveFolder",
+                                "value": "11XCw-iANaVe0Vq1wH0rK3DPs3KYfBJz2",
+                                "type": "string"
+                            },
+                            {
+                                "id": "a6a4037a-0e05-48df-a9d0-b2c77acbbe91",
+                                "name": "DriveFolderTest",
+                                "value": "1rWJtPE26gS9CsasWUaaTIvtT6t6iIKq6",
+                                "type": "string"
+                            }
+                        ]
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.set",
+                "typeVersion": 3.4,
+                "position": [
+                    608,
+                    -192
+                ],
+                "id": "7384314d-3708-4db6-993d-dd577010985c",
+                "name": "Edit Fields"
+            },
+            {
+                "parameters": {
+                    "mode": "runOnceForEachItem",
+                    "jsCode": "// n8n Code node - \"Run Once for All Items\" mode\n\nconst ACCOUNT_NAME = 'visa'; // adjust if you have multiple cards/PDF sources\n\nfunction emptyToNull(val) {\n  return val === '' || val === undefined ? null : val;\n}\n\nfunction parseNumber(value) {\n  if (typeof value !== 'string') return NaN;\n\n  const hasComma = value.includes(',');\n  const hasDot = value.includes('.');\n\n  let normalized = value;\n\n  if (hasComma && hasDot) {\n    // assume dot = thousand separator, comma = decimal\n    normalized = value.replace(/\\./g, '').replace(',', '.');\n  } else if (hasComma) {\n    // comma as decimal\n    normalized = value.replace(',', '.');\n  }\n\n  return parseFloat(normalized);\n}\n\nfunction buildCounterpartyFields(type, knownAccountId, counterpartyName) {\n  if (type === 'withdrawal') {\n    return {\n      // your own asset account (already known from the PDF) is the source\n      ...(knownAccountId != null ? { source_id: knownAccountId } : {}),\n      destination_name: counterpartyName,\n      destination_iban: null,\n      destination_bic: null,\n    };\n  }\n  if (type === 'deposit') {\n    return {\n      source_name: counterpartyName,\n      source_iban: null,\n      source_bic: null,\n      // your own asset account is now the destination\n      ...(knownAccountId != null ? { destination_id: knownAccountId } : {}),\n    };\n  }\n  // transfer / unknown type - pass through what we know\n  return knownAccountId != null ? { source_id: knownAccountId } : {};\n}\n\nconst results = [];\n\nfor (const item of $json.transactions) {\n  const transactions = item.firefly.transactions || [];\n\n  for (const raw of transactions) {\n    const type = raw.type; // already normalized upstream: \"withdrawal\" / \"deposit\"\n    const amount = parseNumber(raw.amount).toFixed(2);\n    const date = raw.date;\n    const counterpartyName = raw.description || 'Unknown';\n    const knownAccountId = raw.source_id;\n\n    const normalized = {\n      id: raw.external_id || `${ACCOUNT_NAME}-${date}-${counterpartyName}`,\n      account: ACCOUNT_NAME,\n      type,\n      date,\n      amount,\n      currency_code: 'EUR', // adjust if this statement covers another currency\n      description: raw.description || '',\n      category_name: null,\n\n      ...buildCounterpartyFields(type, knownAccountId, counterpartyName),\n\n      external_id: emptyToNull(raw.external_id),\n      internal_reference: null,\n\n      payment_date: date,\n      book_date: date,\n\n      tags: [],\n      notes: null,\n\n      raw,\n    };\n\n    results.push(normalized);\n  }\n}\n\nreturn {\n  fileId: $json.fileId,\n  rowCount: results.length,\n  data: results\n};\n/*\nreturn [{\n  json: {\n    rowCount: results.length,\n    data: results\n  }\n}]\n//*/"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    1728,
+                    -192
+                ],
+                "id": "18c6f19c-c9f5-47b5-b941-c0f24bb0dfdc",
+                "name": "Normalize Data"
+            },
+            {
+                "parameters": {},
+                "name": "Read PDF",
+                "type": "n8n-nodes-base.readPDF",
+                "position": [
+                    1280,
+                    -192
+                ],
+                "typeVersion": 1,
+                "id": "ff5bd50f-ab4e-4267-9e63-5e2a6e55a8b7"
+            },
+            {
+                "parameters": {
+                    "resource": "fileFolder",
+                    "searchMethod": "query",
+                    "queryString": "mimeType = 'application/pdf'",
+                    "returnAll": true,
+                    "filter": {
+                        "folderId": {
+                            "__rl": true,
+                            "value": "={{ $json.DriveFolder }}",
+                            "mode": "id"
+                        },
+                        "whatToSearch": "files"
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.googleDrive",
+                "typeVersion": 3,
+                "position": [
+                    832,
+                    -192
+                ],
+                "id": "765a9793-a9c7-4841-8f42-c7b4ac2b007a",
+                "name": "Search files and folders",
+                "credentials": {
+                    "googleDriveOAuth2Api": {
+                        "id": "zUSpRXM5p8MF5y3t",
+                        "name": "Google Drive account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "operation": "download",
+                    "fileId": {
+                        "__rl": true,
+                        "value": "={{ $json.id }}",
+                        "mode": "id"
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.googleDrive",
+                "typeVersion": 3,
+                "position": [
+                    1056,
+                    -192
+                ],
+                "id": "88e7c804-7826-4247-8a3d-16a84c1613cf",
+                "name": "Download file",
+                "credentials": {
+                    "googleDriveOAuth2Api": {
+                        "id": "zUSpRXM5p8MF5y3t",
+                        "name": "Google Drive account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "mode": "runOnceForEachItem",
+                    "jsCode": "function slugify(str) {\n  return str\n    .toLowerCase()\n    .replace(/\\s+/g, \"-\")\n    .replace(/[^a-z0-9\\-]/g, \"\")\n    .substring(0, 80); // keep it clean & short\n}\n\nfunction parseNumber(value) {\n  if (typeof value !== 'string') return NaN;\n\n  const hasComma = value.includes(',');\n  const hasDot = value.includes('.');\n\n  let normalized = value;\n\n  if (hasComma && hasDot) {\n    // assume dot = thousand separator, comma = decimal\n    normalized = value.replace(/\\./g, '').replace(',', '.');\n  } else if (hasComma) {\n    // comma as decimal\n    normalized = value.replace(',', '.');\n  }\n\n  return parseFloat(normalized);\n}\n\n// n8n Function Node\n// Input: items from a previous node, each with { text: \"<full receipt text>\" }\n\n\nconst allTransactions = [];\n\n//for (const item of items) {\n    const text = $json.text;//item.json.text;\n\n    // Regex to match transactions lines: dd.mm.yyyy Description Amount\n    // Note: Amount uses comma as decimal separator\n    const regex = /(\\d{2}\\.\\d{2}\\.\\d{4})\\s+(.+?)\\s+(\\d+,\\d{2})/g;\n\n  const line = text\n    .split(/\\r?\\n/)\n    .find(l => l.includes(\"PLAČANA PORABA V PRETEKLEM OBDOBJU\"));\n  if(line){\n    const [, paymentDate, paymentAmount] = line.match(\n        /^(\\d{2}\\.\\d{2}\\.\\d{4})\\s+.*?(-?\\d{1,3}(?:\\.\\d{3})*,\\d{2})\\s+EUR$/\n      );\n    const [paymentDay, paymentMonth, paymentYear] = paymentDate.split('.');\n    const paymentIsoDate = `${paymentYear}-${paymentMonth}-${paymentDay}`; // YYYY-MM-DD for Firefly III\n    let previouslyPayedAmount = parseNumber(paymentAmount);\n    if(previouslyPayedAmount < 0)\n      previouslyPayedAmount *= -1;\n    const paymentDescription = \"Plačana poraba v preteklem obdobju. Placilo porabe kreditne kartice iz preteklega meseca.\";\n    const paymentDescriptionForExternalId = 'Placana poraba v preteklem obdobju';\n    const paymentExternalId = `visa-${paymentYear}-${paymentMonth}-${paymentDay}-${slugify(paymentDescriptionForExternalId)}`;\n    const payedTransaction = {\n        transactions: [\n          {\n            type: \"deposit\",\n            date: paymentIsoDate,\n            amount: previouslyPayedAmount.toFixed(2), // Firefly needs string amount\n            description: paymentDescription,\n            destination_id: 6,\n            external_id: paymentExternalId\n          }\n        ]\n      }\n\n       allTransactions.push({\n          json: {\n            isoDate: paymentIsoDate,\n            sortDate: new Date(paymentIsoDate),\n            firefly: payedTransaction\n          }\n        });\n    \n    }\n   \n    let match;\n    while ((match = regex.exec(text)) !== null) {\n        const date = match[1]; // e.g., 10.11.2024\n        const description = match[2].trim(); // e.g., PAYPAL *UBERPAYMENT\n        const amount = parseNumber(match[3]); // convert to number\n        const [day, month, year] = date.split('.');\n        const isoDate = `${year}-${month}-${day}`; // YYYY-MM-DD for Firefly III\n        const externalId = `visa-${year}-${month}-${day}-${slugify(description)}`;\n\n      const transaction = {\n        transactions: [\n          {\n            type: \"withdrawal\",\n            date: isoDate,\n            amount: amount.toFixed(2), // Firefly needs string amount\n            description,\n            source_id: 6,\n            external_id: externalId\n          }\n        ]\n      }\n\n       allTransactions.push({\n          json: {\n            isoDate,\n            sortDate: new Date(isoDate),\n            firefly: transaction\n          }\n        });\n    }\n//}\nallTransactions.sort((a, b) => a.json.sortDate - b.json.sortDate);\n\nreturn {json:{\n  fileId: $('Download file').item.json.id,\n  transactions:allTransactions.map(o =>o.json)\n}};\n\n/*\nreturn allTransactions.map(o => ({\n  json: {\n  transactions: o.json.firefly.transactions\n  }\n}));\n//*/"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    1504,
+                    -192
+                ],
+                "id": "9464e34e-159e-4933-9d8b-dec2800e4ad0",
+                "name": "Extract transactions"
+            }
+        ],
+        "connections": {
+            "When Executed by Another Workflow": {
+                "main": [
+                    [
+                        {
+                            "node": "Edit Fields",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Edit Fields": {
+                "main": [
+                    [
+                        {
+                            "node": "Search files and folders",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Read PDF": {
+                "main": [
+                    [
+                        {
+                            "node": "Extract transactions",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Search files and folders": {
+                "main": [
+                    [
+                        {
+                            "node": "Download file",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Download file": {
+                "main": [
+                    [
+                        {
+                            "node": "Read PDF",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Extract transactions": {
+                "main": [
+                    [
+                        {
+                            "node": "Normalize Data",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            }
+        },
+        "settings": {
+            "executionOrder": "v1",
+            "binaryMode": "separate"
+        },
+        "staticData": null,
+        "meta": null,
+        "pinData": {},
+        "versionId": "aaf52194-e4ba-4a81-ad79-2e82264cb43d",
+        "activeVersionId": "116a1f19-dc87-4311-933a-28df74fdb3dd",
+        "triggerCount": 0,
+        "shared": [
+            {
+                "updatedAt": "2026-06-19T14:53:33.643Z",
+                "createdAt": "2026-06-19T14:53:33.643Z",
+                "role": "workflow:owner",
+                "workflowId": "5DvRXRtfBuQ2Nbn0",
+                "projectId": "FlGQaEMmWQfoeLfg"
+            }
+        ],
+        "activeVersion": {
+            "updatedAt": "2026-07-03T06:39:51.000Z",
+            "createdAt": "2026-07-03T06:39:45.177Z",
+            "versionId": "116a1f19-dc87-4311-933a-28df74fdb3dd",
+            "workflowId": "5DvRXRtfBuQ2Nbn0",
+            "nodes": [
+                {
+                    "parameters": {
+                        "inputSource": "passthrough"
+                    },
+                    "type": "n8n-nodes-base.executeWorkflowTrigger",
+                    "typeVersion": 1.1,
+                    "position": [
+                        384,
+                        -192
+                    ],
+                    "id": "f2ce64bc-0498-4677-9739-4c22d792f8ea",
+                    "name": "When Executed by Another Workflow"
+                },
+                {
+                    "parameters": {
+                        "assignments": {
+                            "assignments": [
+                                {
+                                    "id": "82eec283-8685-4a82-a227-dce4cb29541e",
+                                    "name": "DriveFolder",
+                                    "value": "11XCw-iANaVe0Vq1wH0rK3DPs3KYfBJz2",
+                                    "type": "string"
+                                },
+                                {
+                                    "id": "a6a4037a-0e05-48df-a9d0-b2c77acbbe91",
+                                    "name": "DriveFolderTest",
+                                    "value": "1rWJtPE26gS9CsasWUaaTIvtT6t6iIKq6",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.set",
+                    "typeVersion": 3.4,
+                    "position": [
+                        608,
+                        -192
+                    ],
+                    "id": "7384314d-3708-4db6-993d-dd577010985c",
+                    "name": "Edit Fields"
+                },
+                {
+                    "parameters": {
+                        "jsCode": "// n8n Code node - \"Run Once for All Items\" mode\n\nconst ACCOUNT_NAME = 'visa'; // adjust if you have multiple cards/PDF sources\n\nfunction emptyToNull(val) {\n  return val === '' || val === undefined ? null : val;\n}\n\nfunction parseNumber(value) {\n  if (typeof value !== 'string') return NaN;\n\n  const hasComma = value.includes(',');\n  const hasDot = value.includes('.');\n\n  let normalized = value;\n\n  if (hasComma && hasDot) {\n    // assume dot = thousand separator, comma = decimal\n    normalized = value.replace(/\\./g, '').replace(',', '.');\n  } else if (hasComma) {\n    // comma as decimal\n    normalized = value.replace(',', '.');\n  }\n\n  return parseFloat(normalized);\n}\n\nfunction buildCounterpartyFields(type, knownAccountId, counterpartyName) {\n  if (type === 'withdrawal') {\n    return {\n      // your own asset account (already known from the PDF) is the source\n      ...(knownAccountId != null ? { source_id: knownAccountId } : {}),\n      destination_name: counterpartyName,\n      destination_iban: null,\n      destination_bic: null,\n    };\n  }\n  if (type === 'deposit') {\n    return {\n      source_name: counterpartyName,\n      source_iban: null,\n      source_bic: null,\n      // your own asset account is now the destination\n      ...(knownAccountId != null ? { destination_id: knownAccountId } : {}),\n    };\n  }\n  // transfer / unknown type - pass through what we know\n  return knownAccountId != null ? { source_id: knownAccountId } : {};\n}\n\nconst results = [];\n\nfor (const item of $input.all()) {\n  const transactions = item.json.transactions || [];\n\n  for (const raw of transactions) {\n    const type = raw.type; // already normalized upstream: \"withdrawal\" / \"deposit\"\n    const amount = parseNumber(raw.amount).toFixed(2);\n    const date = raw.date;\n    const counterpartyName = raw.description || 'Unknown';\n    const knownAccountId = raw.source_id;\n\n    const normalized = {\n      id: raw.external_id || `${ACCOUNT_NAME}-${date}-${counterpartyName}`,\n      account: ACCOUNT_NAME,\n      type,\n      date,\n      amount,\n      currency_code: 'EUR', // adjust if this statement covers another currency\n      description: raw.description || '',\n      category_name: null,\n\n      ...buildCounterpartyFields(type, knownAccountId, counterpartyName),\n\n      external_id: emptyToNull(raw.external_id),\n      internal_reference: null,\n\n      payment_date: date,\n      book_date: date,\n\n      tags: [],\n      notes: null,\n\n      raw,\n    };\n\n    results.push(normalized);\n  }\n}\n\nreturn [{\n  json: {\n    rowCount: results.length,\n    data: results\n  }\n}]"
+                    },
+                    "type": "n8n-nodes-base.code",
+                    "typeVersion": 2,
+                    "position": [
+                        1728,
+                        -192
+                    ],
+                    "id": "18c6f19c-c9f5-47b5-b941-c0f24bb0dfdc",
+                    "name": "Normalize Data"
+                },
+                {
+                    "parameters": {},
+                    "name": "Read PDF",
+                    "type": "n8n-nodes-base.readPDF",
+                    "position": [
+                        1280,
+                        -192
+                    ],
+                    "typeVersion": 1,
+                    "id": "ff5bd50f-ab4e-4267-9e63-5e2a6e55a8b7"
+                },
+                {
+                    "parameters": {
+                        "resource": "fileFolder",
+                        "searchMethod": "query",
+                        "queryString": "mimeType = 'application/pdf'",
+                        "returnAll": true,
+                        "filter": {
+                            "folderId": {
+                                "__rl": true,
+                                "value": "={{ $json.DriveFolder }}",
+                                "mode": "id"
+                            },
+                            "whatToSearch": "files"
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.googleDrive",
+                    "typeVersion": 3,
+                    "position": [
+                        832,
+                        -192
+                    ],
+                    "id": "765a9793-a9c7-4841-8f42-c7b4ac2b007a",
+                    "name": "Search files and folders",
+                    "credentials": {
+                        "googleDriveOAuth2Api": {
+                            "id": "zUSpRXM5p8MF5y3t",
+                            "name": "Google Drive account"
+                        }
+                    }
+                },
+                {
+                    "parameters": {
+                        "operation": "download",
+                        "fileId": {
+                            "__rl": true,
+                            "value": "={{ $json.id }}",
+                            "mode": "id"
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.googleDrive",
+                    "typeVersion": 3,
+                    "position": [
+                        1056,
+                        -192
+                    ],
+                    "id": "88e7c804-7826-4247-8a3d-16a84c1613cf",
+                    "name": "Download file",
+                    "credentials": {
+                        "googleDriveOAuth2Api": {
+                            "id": "zUSpRXM5p8MF5y3t",
+                            "name": "Google Drive account"
+                        }
+                    }
+                },
+                {
+                    "parameters": {
+                        "jsCode": "function slugify(str) {\n  return str\n    .toLowerCase()\n    .replace(/\\s+/g, \"-\")\n    .replace(/[^a-z0-9\\-]/g, \"\")\n    .substring(0, 80); // keep it clean & short\n}\n\nfunction parseNumber(value) {\n  if (typeof value !== 'string') return NaN;\n\n  const hasComma = value.includes(',');\n  const hasDot = value.includes('.');\n\n  let normalized = value;\n\n  if (hasComma && hasDot) {\n    // assume dot = thousand separator, comma = decimal\n    normalized = value.replace(/\\./g, '').replace(',', '.');\n  } else if (hasComma) {\n    // comma as decimal\n    normalized = value.replace(',', '.');\n  }\n\n  return parseFloat(normalized);\n}\n\n// n8n Function Node\n// Input: items from a previous node, each with { text: \"<full receipt text>\" }\nconst items = $input.all();\n\nconst allTransactions = [];\n\nfor (const item of items) {\n    const text = item.json.text;\n\n    // Regex to match transactions lines: dd.mm.yyyy Description Amount\n    // Note: Amount uses comma as decimal separator\n    const regex = /(\\d{2}\\.\\d{2}\\.\\d{4})\\s+(.+?)\\s+(\\d+,\\d{2})/g;\n\n  const line = text\n    .split(/\\r?\\n/)\n    .find(l => l.includes(\"PLAČANA PORABA V PRETEKLEM OBDOBJU\"));\n  if(line){\n    const [, paymentDate, paymentAmount] = line.match(\n        /^(\\d{2}\\.\\d{2}\\.\\d{4})\\s+.*?(-?\\d{1,3}(?:\\.\\d{3})*,\\d{2})\\s+EUR$/\n      );\n    const [paymentDay, paymentMonth, paymentYear] = paymentDate.split('.');\n    const paymentIsoDate = `${paymentYear}-${paymentMonth}-${paymentDay}`; // YYYY-MM-DD for Firefly III\n    let previouslyPayedAmount = parseNumber(paymentAmount);\n    if(previouslyPayedAmount < 0)\n      previouslyPayedAmount *= -1;\n    const paymentDescription = \"Plačana poraba v preteklem obdobju. Placilo porabe kreditne kartice iz preteklega meseca.\";\n    const paymentDescriptionForExternalId = 'Placana poraba v preteklem obdobju';\n    const paymentExternalId = `visa-${paymentYear}-${paymentMonth}-${paymentDay}-${slugify(paymentDescriptionForExternalId)}`;\n    const payedTransaction = {\n        transactions: [\n          {\n            type: \"deposit\",\n            date: paymentIsoDate,\n            amount: previouslyPayedAmount.toFixed(2), // Firefly needs string amount\n            description: paymentDescription,\n            destination_id: 6,\n            external_id: paymentExternalId\n          }\n        ]\n      }\n\n       allTransactions.push({\n          json: {\n            paymentIsoDate,\n            sortDate: new Date(paymentIsoDate),\n            firefly: payedTransaction\n          }\n        });\n    \n    }\n   \n    let match;\n    while ((match = regex.exec(text)) !== null) {\n        const date = match[1]; // e.g., 10.11.2024\n        const description = match[2].trim(); // e.g., PAYPAL *UBERPAYMENT\n        const amount = parseNumber(match[3]); // convert to number\n        const [day, month, year] = date.split('.');\n        const isoDate = `${year}-${month}-${day}`; // YYYY-MM-DD for Firefly III\n        const externalId = `visa-${year}-${month}-${day}-${slugify(description)}`;\n\n      const transaction = {\n        transactions: [\n          {\n            type: \"withdrawal\",\n            date: isoDate,\n            amount: amount.toFixed(2), // Firefly needs string amount\n            description,\n            source_id: 6,\n            external_id: externalId\n          }\n        ]\n      }\n\n       allTransactions.push({\n          json: {\n            isoDate,\n            sortDate: new Date(isoDate),\n            firefly: transaction\n          }\n        });\n    }\n}\nallTransactions.sort((a, b) => a.json.sortDate - b.json.sortDate);\nreturn allTransactions.map(o => ({\n  json: {\n  transactions: o.json.firefly.transactions\n  }\n}));\n"
+                    },
+                    "type": "n8n-nodes-base.code",
+                    "typeVersion": 2,
+                    "position": [
+                        1504,
+                        -192
+                    ],
+                    "id": "9464e34e-159e-4933-9d8b-dec2800e4ad0",
+                    "name": "Extract transactions"
+                }
+            ],
+            "connections": {
+                "When Executed by Another Workflow": {
+                    "main": [
+                        [
+                            {
+                                "node": "Edit Fields",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Edit Fields": {
+                    "main": [
+                        [
+                            {
+                                "node": "Search files and folders",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Read PDF": {
+                    "main": [
+                        [
+                            {
+                                "node": "Extract transactions",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Search files and folders": {
+                    "main": [
+                        [
+                            {
+                                "node": "Download file",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Download file": {
+                    "main": [
+                        [
+                            {
+                                "node": "Read PDF",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Extract transactions": {
+                    "main": [
+                        [
+                            {
+                                "node": "Normalize Data",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                }
+            },
+            "authors": "",
+            "name": "Version 116a1f19",
+            "description": "",
+            "autosaved": false
+        },
+        "tags": []
+    }
+]

@@ -1,0 +1,1283 @@
+[
+    {
+        "updatedAt": "2026-08-02T19:16:07.752Z",
+        "createdAt": "2026-05-20T06:03:06.374Z",
+        "id": "ex2acZkiUgT8vPZM",
+        "name": "AI Json Agent",
+        "active": true,
+        "isArchived": false,
+        "nodes": [
+            {
+                "parameters": {
+                    "workflowInputs": {
+                        "values": [
+                            {
+                                "name": "system message"
+                            },
+                            {
+                                "name": "prompt"
+                            },
+                            {
+                                "name": "json schema",
+                                "type": "object"
+                            },
+                            {
+                                "name": "max tokens",
+                                "type": "number"
+                            },
+                            {
+                                "name": "temperature",
+                                "type": "number"
+                            },
+                            {
+                                "name": "model"
+                            },
+                            {
+                                "name": "AI Engine"
+                            }
+                        ]
+                    }
+                },
+                "type": "n8n-nodes-base.executeWorkflowTrigger",
+                "typeVersion": 1.1,
+                "position": [
+                    -768,
+                    16
+                ],
+                "id": "fcb85ae4-7847-4263-b3f1-e02b905b954c",
+                "name": "When Executed by Another Workflow"
+            },
+            {
+                "parameters": {
+                    "promptType": "define",
+                    "text": "={{ $json.prompt }}",
+                    "hasOutputParser": true,
+                    "options": {
+                        "systemMessage": "={{ $json[\"system message\"] }}"
+                    }
+                },
+                "type": "@n8n/n8n-nodes-langchain.agent",
+                "typeVersion": 3.1,
+                "position": [
+                    -288,
+                    -800
+                ],
+                "id": "87d5a2d2-3fb2-4739-a714-370eb44e57f0",
+                "name": "AI Agent",
+                "retryOnFail": true
+            },
+            {
+                "parameters": {
+                    "model": {
+                        "__rl": true,
+                        "value": "={{ $('When Executed by Another Workflow').item.json[\"model\"] }}",
+                        "mode": "id"
+                    },
+                    "options": {
+                        "maxTokensToSample": "={{ $('When Executed by Another Workflow').item.json[\"max tokens\"] }}",
+                        "temperature": "={{ $('When Executed by Another Workflow').item.json.temperature }}"
+                    }
+                },
+                "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+                "typeVersion": 1.3,
+                "position": [
+                    -320,
+                    -576
+                ],
+                "id": "15f51ee3-e69f-48ab-91ce-0b8a24d6e462",
+                "name": "Anthropic Chat Model",
+                "credentials": {
+                    "anthropicApi": {
+                        "id": "uw2xlWVJZVXjn8Qy",
+                        "name": "Anthropic account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "schemaType": "manual",
+                    "inputSchema": "={{ JSON.stringify($('When Executed by Another Workflow').item.json[\"json schema\"]) }}",
+                    "autoFix": true
+                },
+                "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+                "typeVersion": 1.3,
+                "position": [
+                    -192,
+                    -576
+                ],
+                "id": "2c0594dd-a454-4139-b56c-c2fa721cb5d7",
+                "name": "Structured Output Parser",
+                "retryOnFail": true
+            },
+            {
+                "parameters": {
+                    "model": {
+                        "__rl": true,
+                        "value": "gpt-5-mini",
+                        "mode": "id"
+                    },
+                    "builtInTools": {},
+                    "options": {
+                        "textFormat": {
+                            "textOptions": {
+                                "type": "json_schema",
+                                "schema": "={{ JSON.stringify($('When Executed by Another Workflow').item.json[\"json schema\"]) }}"
+                            }
+                        }
+                    }
+                },
+                "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+                "typeVersion": 1.3,
+                "position": [
+                    -112,
+                    -368
+                ],
+                "id": "f89a9564-451d-4c76-ae33-06d71e3536d1",
+                "name": "OpenAI Chat Model",
+                "credentials": {
+                    "openAiApi": {
+                        "id": "41vcpeRIZNLSJWiZ",
+                        "name": "OpenAi account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "rules": {
+                        "values": [
+                            {
+                                "conditions": {
+                                    "options": {
+                                        "caseSensitive": true,
+                                        "leftValue": "",
+                                        "typeValidation": "strict",
+                                        "version": 3
+                                    },
+                                    "conditions": [
+                                        {
+                                            "leftValue": "={{ $json[\"AI Engine\"].toLowerCase() }}",
+                                            "rightValue": "claude",
+                                            "operator": {
+                                                "type": "string",
+                                                "operation": "equals"
+                                            },
+                                            "id": "205da48e-45e0-4426-8dc1-e5bcef74ea19"
+                                        }
+                                    ],
+                                    "combinator": "and"
+                                }
+                            },
+                            {
+                                "conditions": {
+                                    "options": {
+                                        "caseSensitive": true,
+                                        "leftValue": "",
+                                        "typeValidation": "strict",
+                                        "version": 3
+                                    },
+                                    "conditions": [
+                                        {
+                                            "id": "f4b1951c-8357-46ac-8500-8a462933feae",
+                                            "leftValue": "={{ $json[\"AI Engine\"].toLowerCase() }}",
+                                            "rightValue": "openai",
+                                            "operator": {
+                                                "type": "string",
+                                                "operation": "equals",
+                                                "name": "filter.operator.equals"
+                                            }
+                                        }
+                                    ],
+                                    "combinator": "and"
+                                }
+                            },
+                            {
+                                "conditions": {
+                                    "options": {
+                                        "caseSensitive": true,
+                                        "leftValue": "",
+                                        "typeValidation": "strict",
+                                        "version": 3
+                                    },
+                                    "conditions": [
+                                        {
+                                            "id": "ea6921f0-ab03-4936-abcb-8c970ee59f81",
+                                            "leftValue": "={{ $json[\"AI Engine\"].toLowerCase() }}",
+                                            "rightValue": "deepseek",
+                                            "operator": {
+                                                "type": "string",
+                                                "operation": "equals",
+                                                "name": "filter.operator.equals"
+                                            }
+                                        }
+                                    ],
+                                    "combinator": "and"
+                                }
+                            }
+                        ]
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.switch",
+                "typeVersion": 3.4,
+                "position": [
+                    -544,
+                    0
+                ],
+                "id": "39339ac4-fcca-4eb0-a378-88c39075e208",
+                "name": "Switch"
+            },
+            {
+                "parameters": {
+                    "promptType": "define",
+                    "text": "={{ $json.prompt }}",
+                    "hasOutputParser": true,
+                    "options": {
+                        "systemMessage": "={{ $json[\"system message\"] }}"
+                    }
+                },
+                "type": "@n8n/n8n-nodes-langchain.agent",
+                "typeVersion": 3.1,
+                "position": [
+                    -288,
+                    -192
+                ],
+                "id": "f4636708-fbe5-471d-a3cc-c657394c9e8e",
+                "name": "AI Agent1",
+                "retryOnFail": true
+            },
+            {
+                "parameters": {
+                    "schemaType": "manual",
+                    "inputSchema": "={{ JSON.stringify($('When Executed by Another Workflow').item.json[\"json schema\"]) }}",
+                    "autoFix": true
+                },
+                "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+                "typeVersion": 1.3,
+                "position": [
+                    -192,
+                    32
+                ],
+                "id": "52c33fe2-431c-4288-a655-1721ca8326c3",
+                "name": "Structured Output Parser1",
+                "retryOnFail": true
+            },
+            {
+                "parameters": {
+                    "model": {
+                        "__rl": true,
+                        "mode": "list",
+                        "value": "gpt-5-mini"
+                    },
+                    "builtInTools": {},
+                    "options": {
+                        "textFormat": {
+                            "textOptions": {
+                                "type": "json_schema",
+                                "schema": "={{ JSON.stringify($('When Executed by Another Workflow').item.json[\"json schema\"]) }}"
+                            }
+                        }
+                    }
+                },
+                "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+                "typeVersion": 1.3,
+                "position": [
+                    -112,
+                    240
+                ],
+                "id": "a3d6f586-407e-4007-b4fc-a2e5182ef8e9",
+                "name": "OpenAI Chat Model1",
+                "credentials": {
+                    "openAiApi": {
+                        "id": "41vcpeRIZNLSJWiZ",
+                        "name": "OpenAi account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "model": {
+                        "__rl": true,
+                        "value": "={{ $('When Executed by Another Workflow').item.json.model }}",
+                        "mode": "id"
+                    },
+                    "builtInTools": {},
+                    "options": {
+                        "maxTokens": "={{ $('When Executed by Another Workflow').item.json[\"max tokens\"] }}",
+                        "textFormat": {
+                            "textOptions": {
+                                "type": "json_schema",
+                                "schema": "={{ JSON.stringify($('When Executed by Another Workflow').item.json[\"json schema\"]) }}"
+                            }
+                        },
+                        "reasoningEffort": "medium"
+                    }
+                },
+                "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+                "typeVersion": 1.3,
+                "position": [
+                    -320,
+                    32
+                ],
+                "id": "58be74a2-d36d-4146-af88-3e07524b79d5",
+                "name": "OpenAI Chat Model2",
+                "credentials": {
+                    "openAiApi": {
+                        "id": "41vcpeRIZNLSJWiZ",
+                        "name": "OpenAi account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "promptType": "define",
+                    "text": "={{ $json.prompt }}",
+                    "hasOutputParser": true,
+                    "options": {
+                        "systemMessage": "={{ $json[\"system message\"] }}"
+                    }
+                },
+                "type": "@n8n/n8n-nodes-langchain.agent",
+                "typeVersion": 3.1,
+                "position": [
+                    -288,
+                    624
+                ],
+                "id": "a552bee6-da70-444f-ba69-a45c96947869",
+                "name": "AI Agent2",
+                "retryOnFail": true
+            },
+            {
+                "parameters": {
+                    "schemaType": "manual",
+                    "inputSchema": "={{ JSON.stringify($('When Executed by Another Workflow').item.json[\"json schema\"]) }}",
+                    "autoFix": true
+                },
+                "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+                "typeVersion": 1.3,
+                "position": [
+                    -192,
+                    848
+                ],
+                "id": "17a1f845-c943-424f-91a3-4928a45f9eed",
+                "name": "Structured Output Parser2",
+                "retryOnFail": true
+            },
+            {
+                "parameters": {
+                    "model": {
+                        "__rl": true,
+                        "mode": "list",
+                        "value": "gpt-5-mini"
+                    },
+                    "builtInTools": {},
+                    "options": {
+                        "textFormat": {
+                            "textOptions": {
+                                "type": "json_schema",
+                                "schema": "={{ JSON.stringify($('When Executed by Another Workflow').item.json[\"json schema\"]) }}"
+                            }
+                        }
+                    }
+                },
+                "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+                "typeVersion": 1.3,
+                "position": [
+                    -112,
+                    1056
+                ],
+                "id": "a34fa201-6a08-41f1-a069-0d01d5f522ef",
+                "name": "OpenAI Chat Model3",
+                "credentials": {
+                    "openAiApi": {
+                        "id": "41vcpeRIZNLSJWiZ",
+                        "name": "OpenAi account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "model": "={{ $('When Executed by Another Workflow').item.json.model }}",
+                    "options": {
+                        "maxTokens": "={{ $('When Executed by Another Workflow').item.json[\"max tokens\"] }}",
+                        "responseFormat": "json_object",
+                        "temperature": "={{ $('When Executed by Another Workflow').item.json.temperature }}"
+                    }
+                },
+                "type": "@n8n/n8n-nodes-langchain.lmChatDeepSeek",
+                "typeVersion": 1,
+                "position": [
+                    -320,
+                    848
+                ],
+                "id": "34f3a869-083e-471d-af0a-a0aa3ec62451",
+                "name": "DeepSeek Chat Model",
+                "credentials": {
+                    "deepSeekApi": {
+                        "id": "nimst476NmopC6az",
+                        "name": "DeepSeek account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "numberInputs": 3
+                },
+                "type": "n8n-nodes-base.merge",
+                "typeVersion": 3.2,
+                "position": [
+                    176,
+                    0
+                ],
+                "id": "46620a08-e18c-46ea-8785-16cfdc8ab45a",
+                "name": "Merge"
+            },
+            {
+                "parameters": {
+                    "options": {}
+                },
+                "type": "@n8n/n8n-nodes-langchain.agent",
+                "typeVersion": 3.1,
+                "position": [
+                    576,
+                    -576
+                ],
+                "id": "668adf34-32f3-49f2-a2f8-4a332a71f32a",
+                "name": "AI Agent3"
+            },
+            {
+                "parameters": {
+                    "model": {
+                        "__rl": true,
+                        "value": "=gpt-5.4",
+                        "mode": "id"
+                    },
+                    "builtInTools": {},
+                    "options": {}
+                },
+                "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+                "typeVersion": 1.3,
+                "position": [
+                    448,
+                    -368
+                ],
+                "id": "0f0c5dd3-e615-49af-a9b0-5e2c2038aec8",
+                "name": "OpenAI Chat Model4",
+                "credentials": {
+                    "openAiApi": {
+                        "id": "41vcpeRIZNLSJWiZ",
+                        "name": "OpenAi account"
+                    }
+                }
+            }
+        ],
+        "connections": {
+            "When Executed by Another Workflow": {
+                "main": [
+                    [
+                        {
+                            "node": "Switch",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Anthropic Chat Model": {
+                "ai_languageModel": [
+                    [
+                        {
+                            "node": "AI Agent",
+                            "type": "ai_languageModel",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Structured Output Parser": {
+                "ai_outputParser": [
+                    [
+                        {
+                            "node": "AI Agent",
+                            "type": "ai_outputParser",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "OpenAI Chat Model": {
+                "ai_languageModel": [
+                    [
+                        {
+                            "node": "Structured Output Parser",
+                            "type": "ai_languageModel",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Switch": {
+                "main": [
+                    [
+                        {
+                            "node": "AI Agent",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ],
+                    [
+                        {
+                            "node": "AI Agent1",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ],
+                    [
+                        {
+                            "node": "AI Agent2",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Structured Output Parser1": {
+                "ai_outputParser": [
+                    [
+                        {
+                            "node": "AI Agent1",
+                            "type": "ai_outputParser",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "OpenAI Chat Model1": {
+                "ai_languageModel": [
+                    [
+                        {
+                            "node": "Structured Output Parser1",
+                            "type": "ai_languageModel",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "OpenAI Chat Model2": {
+                "ai_languageModel": [
+                    [
+                        {
+                            "node": "AI Agent1",
+                            "type": "ai_languageModel",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Structured Output Parser2": {
+                "ai_outputParser": [
+                    [
+                        {
+                            "node": "AI Agent2",
+                            "type": "ai_outputParser",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "OpenAI Chat Model3": {
+                "ai_languageModel": [
+                    [
+                        {
+                            "node": "Structured Output Parser2",
+                            "type": "ai_languageModel",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "DeepSeek Chat Model": {
+                "ai_languageModel": [
+                    [
+                        {
+                            "node": "AI Agent2",
+                            "type": "ai_languageModel",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "AI Agent": {
+                "main": [
+                    [
+                        {
+                            "node": "Merge",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "AI Agent1": {
+                "main": [
+                    [
+                        {
+                            "node": "Merge",
+                            "type": "main",
+                            "index": 1
+                        }
+                    ]
+                ]
+            },
+            "AI Agent2": {
+                "main": [
+                    [
+                        {
+                            "node": "Merge",
+                            "type": "main",
+                            "index": 2
+                        }
+                    ]
+                ]
+            },
+            "OpenAI Chat Model4": {
+                "ai_languageModel": [
+                    [
+                        {
+                            "node": "AI Agent3",
+                            "type": "ai_languageModel",
+                            "index": 0
+                        }
+                    ]
+                ]
+            }
+        },
+        "settings": {
+            "executionOrder": "v1",
+            "binaryMode": "separate"
+        },
+        "staticData": null,
+        "meta": {
+            "templateCredsSetupCompleted": true
+        },
+        "pinData": {},
+        "versionId": "3b8c0ef7-9f21-4953-b575-19dbe1e015cd",
+        "activeVersionId": "45a79ec4-3c2d-4a26-ac7c-880914addffe",
+        "triggerCount": 0,
+        "shared": [
+            {
+                "updatedAt": "2026-05-20T06:03:06.374Z",
+                "createdAt": "2026-05-20T06:03:06.374Z",
+                "role": "workflow:owner",
+                "workflowId": "ex2acZkiUgT8vPZM",
+                "projectId": "FlGQaEMmWQfoeLfg"
+            }
+        ],
+        "activeVersion": {
+            "updatedAt": "2026-06-20T20:21:58.624Z",
+            "createdAt": "2026-06-20T20:20:27.052Z",
+            "versionId": "45a79ec4-3c2d-4a26-ac7c-880914addffe",
+            "workflowId": "ex2acZkiUgT8vPZM",
+            "nodes": [
+                {
+                    "parameters": {
+                        "workflowInputs": {
+                            "values": [
+                                {
+                                    "name": "system message"
+                                },
+                                {
+                                    "name": "prompt"
+                                },
+                                {
+                                    "name": "json schema",
+                                    "type": "object"
+                                },
+                                {
+                                    "name": "max tokens",
+                                    "type": "number"
+                                },
+                                {
+                                    "name": "temperature",
+                                    "type": "number"
+                                },
+                                {
+                                    "name": "model"
+                                },
+                                {
+                                    "name": "AI Engine"
+                                }
+                            ]
+                        }
+                    },
+                    "type": "n8n-nodes-base.executeWorkflowTrigger",
+                    "typeVersion": 1.1,
+                    "position": [
+                        -768,
+                        16
+                    ],
+                    "id": "fcb85ae4-7847-4263-b3f1-e02b905b954c",
+                    "name": "When Executed by Another Workflow"
+                },
+                {
+                    "parameters": {
+                        "promptType": "define",
+                        "text": "={{ $json.prompt }}",
+                        "hasOutputParser": true,
+                        "options": {
+                            "systemMessage": "={{ $json[\"system message\"] }}"
+                        }
+                    },
+                    "type": "@n8n/n8n-nodes-langchain.agent",
+                    "typeVersion": 3.1,
+                    "position": [
+                        -288,
+                        -800
+                    ],
+                    "id": "87d5a2d2-3fb2-4739-a714-370eb44e57f0",
+                    "name": "AI Agent",
+                    "retryOnFail": true
+                },
+                {
+                    "parameters": {
+                        "model": {
+                            "__rl": true,
+                            "value": "={{ $('When Executed by Another Workflow').item.json[\"model\"] }}",
+                            "mode": "id"
+                        },
+                        "options": {
+                            "maxTokensToSample": "={{ $('When Executed by Another Workflow').item.json[\"max tokens\"] }}",
+                            "temperature": "={{ $('When Executed by Another Workflow').item.json.temperature }}"
+                        }
+                    },
+                    "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+                    "typeVersion": 1.3,
+                    "position": [
+                        -320,
+                        -576
+                    ],
+                    "id": "15f51ee3-e69f-48ab-91ce-0b8a24d6e462",
+                    "name": "Anthropic Chat Model",
+                    "credentials": {
+                        "anthropicApi": {
+                            "id": "uw2xlWVJZVXjn8Qy",
+                            "name": "Anthropic account"
+                        }
+                    }
+                },
+                {
+                    "parameters": {
+                        "schemaType": "manual",
+                        "inputSchema": "={{ JSON.stringify($('When Executed by Another Workflow').item.json[\"json schema\"]) }}",
+                        "autoFix": true
+                    },
+                    "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+                    "typeVersion": 1.3,
+                    "position": [
+                        -192,
+                        -576
+                    ],
+                    "id": "2c0594dd-a454-4139-b56c-c2fa721cb5d7",
+                    "name": "Structured Output Parser",
+                    "retryOnFail": true
+                },
+                {
+                    "parameters": {
+                        "model": {
+                            "__rl": true,
+                            "value": "gpt-5-mini",
+                            "mode": "id"
+                        },
+                        "builtInTools": {},
+                        "options": {
+                            "textFormat": {
+                                "textOptions": {
+                                    "type": "json_schema",
+                                    "schema": "={{ JSON.stringify($('When Executed by Another Workflow').item.json[\"json schema\"]) }}"
+                                }
+                            }
+                        }
+                    },
+                    "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+                    "typeVersion": 1.3,
+                    "position": [
+                        -112,
+                        -368
+                    ],
+                    "id": "f89a9564-451d-4c76-ae33-06d71e3536d1",
+                    "name": "OpenAI Chat Model",
+                    "credentials": {
+                        "openAiApi": {
+                            "id": "41vcpeRIZNLSJWiZ",
+                            "name": "OpenAi account"
+                        }
+                    }
+                },
+                {
+                    "parameters": {
+                        "rules": {
+                            "values": [
+                                {
+                                    "conditions": {
+                                        "options": {
+                                            "caseSensitive": true,
+                                            "leftValue": "",
+                                            "typeValidation": "strict",
+                                            "version": 3
+                                        },
+                                        "conditions": [
+                                            {
+                                                "leftValue": "={{ $json[\"AI Engine\"].toLowerCase() }}",
+                                                "rightValue": "claude",
+                                                "operator": {
+                                                    "type": "string",
+                                                    "operation": "equals"
+                                                },
+                                                "id": "205da48e-45e0-4426-8dc1-e5bcef74ea19"
+                                            }
+                                        ],
+                                        "combinator": "and"
+                                    }
+                                },
+                                {
+                                    "conditions": {
+                                        "options": {
+                                            "caseSensitive": true,
+                                            "leftValue": "",
+                                            "typeValidation": "strict",
+                                            "version": 3
+                                        },
+                                        "conditions": [
+                                            {
+                                                "id": "f4b1951c-8357-46ac-8500-8a462933feae",
+                                                "leftValue": "={{ $json[\"AI Engine\"].toLowerCase() }}",
+                                                "rightValue": "openai",
+                                                "operator": {
+                                                    "type": "string",
+                                                    "operation": "equals",
+                                                    "name": "filter.operator.equals"
+                                                }
+                                            }
+                                        ],
+                                        "combinator": "and"
+                                    }
+                                },
+                                {
+                                    "conditions": {
+                                        "options": {
+                                            "caseSensitive": true,
+                                            "leftValue": "",
+                                            "typeValidation": "strict",
+                                            "version": 3
+                                        },
+                                        "conditions": [
+                                            {
+                                                "id": "ea6921f0-ab03-4936-abcb-8c970ee59f81",
+                                                "leftValue": "={{ $json[\"AI Engine\"].toLowerCase() }}",
+                                                "rightValue": "deepseek",
+                                                "operator": {
+                                                    "type": "string",
+                                                    "operation": "equals",
+                                                    "name": "filter.operator.equals"
+                                                }
+                                            }
+                                        ],
+                                        "combinator": "and"
+                                    }
+                                }
+                            ]
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.switch",
+                    "typeVersion": 3.4,
+                    "position": [
+                        -544,
+                        0
+                    ],
+                    "id": "39339ac4-fcca-4eb0-a378-88c39075e208",
+                    "name": "Switch"
+                },
+                {
+                    "parameters": {
+                        "promptType": "define",
+                        "text": "={{ $json.prompt }}",
+                        "hasOutputParser": true,
+                        "options": {
+                            "systemMessage": "={{ $json[\"system message\"] }}"
+                        }
+                    },
+                    "type": "@n8n/n8n-nodes-langchain.agent",
+                    "typeVersion": 3.1,
+                    "position": [
+                        -288,
+                        -192
+                    ],
+                    "id": "f4636708-fbe5-471d-a3cc-c657394c9e8e",
+                    "name": "AI Agent1",
+                    "retryOnFail": true
+                },
+                {
+                    "parameters": {
+                        "schemaType": "manual",
+                        "inputSchema": "={{ JSON.stringify($('When Executed by Another Workflow').item.json[\"json schema\"]) }}",
+                        "autoFix": true
+                    },
+                    "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+                    "typeVersion": 1.3,
+                    "position": [
+                        -192,
+                        32
+                    ],
+                    "id": "52c33fe2-431c-4288-a655-1721ca8326c3",
+                    "name": "Structured Output Parser1",
+                    "retryOnFail": true
+                },
+                {
+                    "parameters": {
+                        "model": {
+                            "__rl": true,
+                            "mode": "list",
+                            "value": "gpt-5-mini"
+                        },
+                        "builtInTools": {},
+                        "options": {
+                            "textFormat": {
+                                "textOptions": {
+                                    "type": "json_schema",
+                                    "schema": "={{ JSON.stringify($('When Executed by Another Workflow').item.json[\"json schema\"]) }}"
+                                }
+                            }
+                        }
+                    },
+                    "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+                    "typeVersion": 1.3,
+                    "position": [
+                        -112,
+                        240
+                    ],
+                    "id": "a3d6f586-407e-4007-b4fc-a2e5182ef8e9",
+                    "name": "OpenAI Chat Model1",
+                    "credentials": {
+                        "openAiApi": {
+                            "id": "41vcpeRIZNLSJWiZ",
+                            "name": "OpenAi account"
+                        }
+                    }
+                },
+                {
+                    "parameters": {
+                        "model": {
+                            "__rl": true,
+                            "value": "={{ $('When Executed by Another Workflow').item.json.model }}",
+                            "mode": "id"
+                        },
+                        "builtInTools": {},
+                        "options": {
+                            "maxTokens": "={{ $('When Executed by Another Workflow').item.json[\"max tokens\"] }}",
+                            "textFormat": {
+                                "textOptions": {
+                                    "type": "json_schema",
+                                    "schema": "={{ JSON.stringify($('When Executed by Another Workflow').item.json[\"json schema\"]) }}"
+                                }
+                            },
+                            "reasoningEffort": "medium"
+                        }
+                    },
+                    "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+                    "typeVersion": 1.3,
+                    "position": [
+                        -320,
+                        32
+                    ],
+                    "id": "58be74a2-d36d-4146-af88-3e07524b79d5",
+                    "name": "OpenAI Chat Model2",
+                    "credentials": {
+                        "openAiApi": {
+                            "id": "41vcpeRIZNLSJWiZ",
+                            "name": "OpenAi account"
+                        }
+                    }
+                },
+                {
+                    "parameters": {
+                        "promptType": "define",
+                        "text": "={{ $json.prompt }}",
+                        "hasOutputParser": true,
+                        "options": {
+                            "systemMessage": "={{ $json[\"system message\"] }}"
+                        }
+                    },
+                    "type": "@n8n/n8n-nodes-langchain.agent",
+                    "typeVersion": 3.1,
+                    "position": [
+                        -288,
+                        624
+                    ],
+                    "id": "a552bee6-da70-444f-ba69-a45c96947869",
+                    "name": "AI Agent2",
+                    "retryOnFail": true
+                },
+                {
+                    "parameters": {
+                        "schemaType": "manual",
+                        "inputSchema": "={{ JSON.stringify($('When Executed by Another Workflow').item.json[\"json schema\"]) }}",
+                        "autoFix": true
+                    },
+                    "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+                    "typeVersion": 1.3,
+                    "position": [
+                        -192,
+                        848
+                    ],
+                    "id": "17a1f845-c943-424f-91a3-4928a45f9eed",
+                    "name": "Structured Output Parser2",
+                    "retryOnFail": true
+                },
+                {
+                    "parameters": {
+                        "model": {
+                            "__rl": true,
+                            "mode": "list",
+                            "value": "gpt-5-mini"
+                        },
+                        "builtInTools": {},
+                        "options": {
+                            "textFormat": {
+                                "textOptions": {
+                                    "type": "json_schema",
+                                    "schema": "={{ JSON.stringify($('When Executed by Another Workflow').item.json[\"json schema\"]) }}"
+                                }
+                            }
+                        }
+                    },
+                    "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+                    "typeVersion": 1.3,
+                    "position": [
+                        -112,
+                        1056
+                    ],
+                    "id": "a34fa201-6a08-41f1-a069-0d01d5f522ef",
+                    "name": "OpenAI Chat Model3",
+                    "credentials": {
+                        "openAiApi": {
+                            "id": "41vcpeRIZNLSJWiZ",
+                            "name": "OpenAi account"
+                        }
+                    }
+                },
+                {
+                    "parameters": {
+                        "model": "={{ $('When Executed by Another Workflow').item.json.model }}",
+                        "options": {
+                            "maxTokens": "={{ $('When Executed by Another Workflow').item.json[\"max tokens\"] }}",
+                            "responseFormat": "json_object",
+                            "temperature": "={{ $('When Executed by Another Workflow').item.json.temperature }}"
+                        }
+                    },
+                    "type": "@n8n/n8n-nodes-langchain.lmChatDeepSeek",
+                    "typeVersion": 1,
+                    "position": [
+                        -320,
+                        848
+                    ],
+                    "id": "34f3a869-083e-471d-af0a-a0aa3ec62451",
+                    "name": "DeepSeek Chat Model",
+                    "credentials": {
+                        "deepSeekApi": {
+                            "id": "nimst476NmopC6az",
+                            "name": "DeepSeek account"
+                        }
+                    }
+                },
+                {
+                    "parameters": {
+                        "numberInputs": 3
+                    },
+                    "type": "n8n-nodes-base.merge",
+                    "typeVersion": 3.2,
+                    "position": [
+                        176,
+                        0
+                    ],
+                    "id": "46620a08-e18c-46ea-8785-16cfdc8ab45a",
+                    "name": "Merge"
+                }
+            ],
+            "connections": {
+                "When Executed by Another Workflow": {
+                    "main": [
+                        [
+                            {
+                                "node": "Switch",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Anthropic Chat Model": {
+                    "ai_languageModel": [
+                        [
+                            {
+                                "node": "AI Agent",
+                                "type": "ai_languageModel",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Structured Output Parser": {
+                    "ai_outputParser": [
+                        [
+                            {
+                                "node": "AI Agent",
+                                "type": "ai_outputParser",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "OpenAI Chat Model": {
+                    "ai_languageModel": [
+                        [
+                            {
+                                "node": "Structured Output Parser",
+                                "type": "ai_languageModel",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Switch": {
+                    "main": [
+                        [
+                            {
+                                "node": "AI Agent",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ],
+                        [
+                            {
+                                "node": "AI Agent1",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ],
+                        [
+                            {
+                                "node": "AI Agent2",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Structured Output Parser1": {
+                    "ai_outputParser": [
+                        [
+                            {
+                                "node": "AI Agent1",
+                                "type": "ai_outputParser",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "OpenAI Chat Model1": {
+                    "ai_languageModel": [
+                        [
+                            {
+                                "node": "Structured Output Parser1",
+                                "type": "ai_languageModel",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "OpenAI Chat Model2": {
+                    "ai_languageModel": [
+                        [
+                            {
+                                "node": "AI Agent1",
+                                "type": "ai_languageModel",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Structured Output Parser2": {
+                    "ai_outputParser": [
+                        [
+                            {
+                                "node": "AI Agent2",
+                                "type": "ai_outputParser",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "OpenAI Chat Model3": {
+                    "ai_languageModel": [
+                        [
+                            {
+                                "node": "Structured Output Parser2",
+                                "type": "ai_languageModel",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "DeepSeek Chat Model": {
+                    "ai_languageModel": [
+                        [
+                            {
+                                "node": "AI Agent2",
+                                "type": "ai_languageModel",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "AI Agent": {
+                    "main": [
+                        [
+                            {
+                                "node": "Merge",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "AI Agent1": {
+                    "main": [
+                        [
+                            {
+                                "node": "Merge",
+                                "type": "main",
+                                "index": 1
+                            }
+                        ]
+                    ]
+                },
+                "AI Agent2": {
+                    "main": [
+                        [
+                            {
+                                "node": "Merge",
+                                "type": "main",
+                                "index": 2
+                            }
+                        ]
+                    ]
+                }
+            },
+            "authors": "",
+            "name": "Version 45a79ec4",
+            "description": "",
+            "autosaved": true
+        },
+        "tags": []
+    }
+]

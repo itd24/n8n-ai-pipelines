@@ -1,0 +1,161 @@
+[
+    {
+        "updatedAt": "2026-05-19T08:21:44.635Z",
+        "createdAt": "2026-05-19T08:13:09.057Z",
+        "id": "5OEZbpYMy7HYq7ZN",
+        "name": "Load Json from drive",
+        "active": false,
+        "isArchived": false,
+        "nodes": [
+            {
+                "parameters": {
+                    "workflowInputs": {
+                        "values": [
+                            {
+                                "name": "Google drive folder"
+                            },
+                            {
+                                "name": "file name"
+                            }
+                        ]
+                    }
+                },
+                "type": "n8n-nodes-base.executeWorkflowTrigger",
+                "typeVersion": 1.1,
+                "position": [
+                    0,
+                    0
+                ],
+                "id": "0cc6aafb-b7ea-42d0-954a-ce88466a766f",
+                "name": "When Executed by Another Workflow"
+            },
+            {
+                "parameters": {
+                    "resource": "fileFolder",
+                    "queryString": "={{ $json[\"file name\"] }}",
+                    "filter": {
+                        "folderId": {
+                            "__rl": true,
+                            "value": "={{ $json[\"Google drive folder\"] }}",
+                            "mode": "id"
+                        }
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.googleDrive",
+                "typeVersion": 3,
+                "position": [
+                    208,
+                    0
+                ],
+                "id": "30711fd9-51ea-41a8-9996-9ae11268e63b",
+                "name": "Search files and folders",
+                "retryOnFail": true,
+                "credentials": {
+                    "googleDriveOAuth2Api": {
+                        "id": "zUSpRXM5p8MF5y3t",
+                        "name": "Google Drive account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "operation": "download",
+                    "fileId": {
+                        "__rl": true,
+                        "value": "={{ $json.id }}",
+                        "mode": "id"
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.googleDrive",
+                "typeVersion": 3,
+                "position": [
+                    416,
+                    0
+                ],
+                "id": "7b86b442-e50d-420a-86ed-2301dab8c8c5",
+                "name": "Download file",
+                "retryOnFail": true,
+                "credentials": {
+                    "googleDriveOAuth2Api": {
+                        "id": "zUSpRXM5p8MF5y3t",
+                        "name": "Google Drive account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "operation": "fromJson",
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.extractFromFile",
+                "typeVersion": 1.1,
+                "position": [
+                    624,
+                    0
+                ],
+                "id": "01ebea0b-3157-4dbe-bee2-5e62d1bc9397",
+                "name": "Extract from File"
+            }
+        ],
+        "connections": {
+            "When Executed by Another Workflow": {
+                "main": [
+                    [
+                        {
+                            "node": "Search files and folders",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Search files and folders": {
+                "main": [
+                    [
+                        {
+                            "node": "Download file",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Download file": {
+                "main": [
+                    [
+                        {
+                            "node": "Extract from File",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            }
+        },
+        "settings": {
+            "executionOrder": "v1",
+            "binaryMode": "separate"
+        },
+        "staticData": null,
+        "meta": {
+            "templateCredsSetupCompleted": true
+        },
+        "pinData": {},
+        "versionId": "53e49ed3-2f01-4304-95a2-ff3e3893229f",
+        "activeVersionId": null,
+        "triggerCount": 0,
+        "shared": [
+            {
+                "updatedAt": "2026-05-19T08:13:09.057Z",
+                "createdAt": "2026-05-19T08:13:09.057Z",
+                "role": "workflow:owner",
+                "workflowId": "5OEZbpYMy7HYq7ZN",
+                "projectId": "FlGQaEMmWQfoeLfg"
+            }
+        ],
+        "activeVersion": null,
+        "tags": []
+    }
+]

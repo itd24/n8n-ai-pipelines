@@ -1,0 +1,161 @@
+[
+    {
+        "updatedAt": "2026-05-18T18:30:53.861Z",
+        "createdAt": "2026-05-18T18:20:41.360Z",
+        "id": "gfFR0wR9NDmvTJnr",
+        "name": "Change article status",
+        "active": false,
+        "isArchived": false,
+        "nodes": [
+            {
+                "parameters": {
+                    "inputSource": "jsonExample",
+                    "jsonExample": "{\n  \"articleUrl\": \"a string\",\n  \"status\": \"IN_PROGRESS|READY|FINISHED|WARNING|ERROR\"\n}"
+                },
+                "type": "n8n-nodes-base.executeWorkflowTrigger",
+                "typeVersion": 1.1,
+                "position": [
+                    0,
+                    -80
+                ],
+                "id": "c94e8253-7704-44ff-aebb-0083874c8b72",
+                "name": "When Executed by Another Workflow"
+            },
+            {
+                "parameters": {
+                    "resource": "databasePage",
+                    "operation": "get",
+                    "pageId": {
+                        "__rl": true,
+                        "value": "={{ $json.articleUrl }}",
+                        "mode": "url"
+                    }
+                },
+                "type": "n8n-nodes-base.notion",
+                "typeVersion": 2.2,
+                "position": [
+                    448,
+                    -80
+                ],
+                "id": "20cdaa11-237e-4cb9-8d6a-7178d8884fd3",
+                "name": "Get a database page",
+                "retryOnFail": true,
+                "credentials": {
+                    "notionApi": {
+                        "id": "VBly8RGYLumrF6c5",
+                        "name": "Notion account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "jsCode": "// n8n Code node / Function node\n\nconst input = $input.first().json;\n\nconst statusToIcon = {\n  IN_PROGRESS: \"⏳\",\n  READY: \"✅\",\n  FINISHED: \"🎉\",\n  WARNING: \"⚠️\",\n  ERROR: \"❌\",\n};\n\nreturn [\n  {\n    json: {\n      articleUrl: input.articleUrl,\n      icon: statusToIcon[input.status] || \"\",\n    },\n  },\n];"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    224,
+                    -80
+                ],
+                "id": "eee8480a-2d78-4d5b-9196-7fc06c19c861",
+                "name": "Get Icon"
+            },
+            {
+                "parameters": {
+                    "method": "PATCH",
+                    "url": "=https://api.notion.com/v1/pages/{{$json.id}}",
+                    "authentication": "genericCredentialType",
+                    "genericAuthType": "httpBearerAuth",
+                    "sendHeaders": true,
+                    "headerParameters": {
+                        "parameters": [
+                            {
+                                "name": "Content-Type",
+                                "value": "application/json"
+                            },
+                            {
+                                "name": "Notion-Version",
+                                "value": "2026-03-11"
+                            }
+                        ]
+                    },
+                    "sendBody": true,
+                    "specifyBody": "json",
+                    "jsonBody": "={\n  \"icon\": {\n    \"type\": \"emoji\",\n    \"emoji\": \"{{ $('Get Icon').item.json.icon }}\"\n  }\n}",
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.httpRequest",
+                "typeVersion": 4.4,
+                "position": [
+                    672,
+                    -80
+                ],
+                "id": "0ddf107a-e345-4d15-92da-0732a2ec67f0",
+                "name": "Change Icon",
+                "retryOnFail": true,
+                "credentials": {
+                    "httpBearerAuth": {
+                        "id": "nT020gKnVr5lWUjB",
+                        "name": "Notion Bearer"
+                    }
+                }
+            }
+        ],
+        "connections": {
+            "When Executed by Another Workflow": {
+                "main": [
+                    [
+                        {
+                            "node": "Get Icon",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Get a database page": {
+                "main": [
+                    [
+                        {
+                            "node": "Change Icon",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Get Icon": {
+                "main": [
+                    [
+                        {
+                            "node": "Get a database page",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            }
+        },
+        "settings": {
+            "executionOrder": "v1",
+            "binaryMode": "separate"
+        },
+        "staticData": null,
+        "meta": null,
+        "pinData": {},
+        "versionId": "b2c47718-3c54-47f1-8326-ded5749511e9",
+        "activeVersionId": null,
+        "triggerCount": 0,
+        "shared": [
+            {
+                "updatedAt": "2026-05-18T18:20:41.360Z",
+                "createdAt": "2026-05-18T18:20:41.360Z",
+                "role": "workflow:owner",
+                "workflowId": "gfFR0wR9NDmvTJnr",
+                "projectId": "FlGQaEMmWQfoeLfg"
+            }
+        ],
+        "activeVersion": null,
+        "tags": []
+    }
+]

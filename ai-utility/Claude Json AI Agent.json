@@ -1,0 +1,210 @@
+[
+    {
+        "updatedAt": "2026-05-20T10:28:16.870Z",
+        "createdAt": "2026-05-19T17:33:02.785Z",
+        "id": "OwVoiLFyN1nRd09N",
+        "name": "Claude Json AI Agent",
+        "active": false,
+        "isArchived": true,
+        "nodes": [
+            {
+                "parameters": {
+                    "workflowInputs": {
+                        "values": [
+                            {
+                                "name": "system message"
+                            },
+                            {
+                                "name": "prompt"
+                            },
+                            {
+                                "name": "json schema",
+                                "type": "object"
+                            },
+                            {
+                                "name": "max tokens",
+                                "type": "number"
+                            },
+                            {
+                                "name": "temperature",
+                                "type": "number"
+                            },
+                            {
+                                "name": "claude model"
+                            }
+                        ]
+                    }
+                },
+                "type": "n8n-nodes-base.executeWorkflowTrigger",
+                "typeVersion": 1.1,
+                "position": [
+                    0,
+                    0
+                ],
+                "id": "56430006-330d-4c2c-a77a-07caaa29b81e",
+                "name": "When Executed by Another Workflow"
+            },
+            {
+                "parameters": {
+                    "promptType": "define",
+                    "text": "={{ $json.prompt }}",
+                    "hasOutputParser": true,
+                    "options": {
+                        "systemMessage": "={{ $json[\"system message\"] }}"
+                    }
+                },
+                "type": "@n8n/n8n-nodes-langchain.agent",
+                "typeVersion": 3.1,
+                "position": [
+                    208,
+                    0
+                ],
+                "id": "ca458ce0-92d9-4f53-bcc5-14c823adedef",
+                "name": "AI Agent"
+            },
+            {
+                "parameters": {
+                    "model": {
+                        "__rl": true,
+                        "value": "={{ $('When Executed by Another Workflow').item.json[\"claude model\"] }}",
+                        "mode": "id"
+                    },
+                    "options": {
+                        "maxTokensToSample": "={{ $('When Executed by Another Workflow').item.json[\"max tokens\"] }}",
+                        "temperature": "={{ $('When Executed by Another Workflow').item.json.temperature }}"
+                    }
+                },
+                "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+                "typeVersion": 1.3,
+                "position": [
+                    80,
+                    208
+                ],
+                "id": "d29d4a30-0a01-40ca-add6-4869fedf32fd",
+                "name": "Anthropic Chat Model",
+                "credentials": {
+                    "anthropicApi": {
+                        "id": "uw2xlWVJZVXjn8Qy",
+                        "name": "Anthropic account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "schemaType": "manual",
+                    "inputSchema": "={{ JSON.stringify($('When Executed by Another Workflow').item.json[\"json schema\"]) }}",
+                    "autoFix": true
+                },
+                "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+                "typeVersion": 1.3,
+                "position": [
+                    384,
+                    208
+                ],
+                "id": "49e2869a-43ad-42cb-967d-1ac6c1ae6b4f",
+                "name": "Structured Output Parser"
+            },
+            {
+                "parameters": {
+                    "model": {
+                        "__rl": true,
+                        "mode": "list",
+                        "value": "gpt-5-mini"
+                    },
+                    "builtInTools": {},
+                    "options": {
+                        "textFormat": {
+                            "textOptions": {
+                                "type": "json_schema",
+                                "schema": "={{ JSON.stringify($('When Executed by Another Workflow').item.json[\"json schema\"]) }}"
+                            }
+                        }
+                    }
+                },
+                "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+                "typeVersion": 1.3,
+                "position": [
+                    320,
+                    416
+                ],
+                "id": "2f8f5dd5-be19-44c5-b524-2e59544ccc01",
+                "name": "OpenAI Chat Model",
+                "credentials": {
+                    "openAiApi": {
+                        "id": "41vcpeRIZNLSJWiZ",
+                        "name": "OpenAi account"
+                    }
+                }
+            }
+        ],
+        "connections": {
+            "When Executed by Another Workflow": {
+                "main": [
+                    [
+                        {
+                            "node": "AI Agent",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Anthropic Chat Model": {
+                "ai_languageModel": [
+                    [
+                        {
+                            "node": "AI Agent",
+                            "type": "ai_languageModel",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Structured Output Parser": {
+                "ai_outputParser": [
+                    [
+                        {
+                            "node": "AI Agent",
+                            "type": "ai_outputParser",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "OpenAI Chat Model": {
+                "ai_languageModel": [
+                    [
+                        {
+                            "node": "Structured Output Parser",
+                            "type": "ai_languageModel",
+                            "index": 0
+                        }
+                    ]
+                ]
+            }
+        },
+        "settings": {
+            "executionOrder": "v1",
+            "binaryMode": "separate"
+        },
+        "staticData": null,
+        "meta": {
+            "templateCredsSetupCompleted": true
+        },
+        "pinData": {},
+        "versionId": "29466d9b-f8f0-4897-a899-adf7da244a39",
+        "activeVersionId": null,
+        "triggerCount": 0,
+        "shared": [
+            {
+                "updatedAt": "2026-05-19T17:33:02.785Z",
+                "createdAt": "2026-05-19T17:33:02.785Z",
+                "role": "workflow:owner",
+                "workflowId": "OwVoiLFyN1nRd09N",
+                "projectId": "FlGQaEMmWQfoeLfg"
+            }
+        ],
+        "activeVersion": null,
+        "tags": []
+    }
+]

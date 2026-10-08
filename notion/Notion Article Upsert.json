@@ -1,0 +1,396 @@
+[
+    {
+        "updatedAt": "2026-05-19T09:53:33.706Z",
+        "createdAt": "2026-05-18T18:51:22.686Z",
+        "id": "X9k3L86DzKHZDqrc",
+        "name": "Notion Article Upsert",
+        "active": false,
+        "isArchived": false,
+        "nodes": [
+            {
+                "parameters": {
+                    "conditions": {
+                        "number": [
+                            {
+                                "value1": "={{ $input.all()[0].json.id }}",
+                                "operation": "isNotEmpty"
+                            }
+                        ]
+                    }
+                },
+                "id": "74592bcb-1abb-4761-9516-6ebce40541a1",
+                "name": "Article Exists?",
+                "type": "n8n-nodes-base.if",
+                "typeVersion": 1,
+                "position": [
+                    -592,
+                    -16
+                ]
+            },
+            {
+                "parameters": {
+                    "resource": "databasePage",
+                    "operation": "update",
+                    "pageId": {
+                        "__rl": true,
+                        "value": "={{ $json.url }}",
+                        "mode": "url"
+                    },
+                    "propertiesUi": {
+                        "propertyValues": [
+                            {
+                                "key": "Status|status",
+                                "statusValue": "={{ $('Set').item.json.status }}"
+                            },
+                            {
+                                "key": "Article Type|select",
+                                "selectValue": "={{ $('Set').item.json.articleType }}"
+                            },
+                            {
+                                "key": "Writing Step|select",
+                                "selectValue": "={{ $('Set').item.json.writingStep }}"
+                            },
+                            {
+                                "key": "Published At|url",
+                                "ignoreIfEmpty": true,
+                                "urlValue": "={{ $('Set').item.json.publishedAt }}"
+                            }
+                        ]
+                    },
+                    "options": {}
+                },
+                "id": "77fcdada-b6c4-49fa-a6da-2e69e6fec866",
+                "name": "Update Article",
+                "type": "n8n-nodes-base.notion",
+                "typeVersion": 2,
+                "position": [
+                    48,
+                    -144
+                ],
+                "credentials": {
+                    "notionApi": {
+                        "id": "VBly8RGYLumrF6c5",
+                        "name": "Notion account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "resource": "databasePage",
+                    "databaseId": {
+                        "__rl": true,
+                        "value": "3640acff258780f9b7bee4f1c15da7ed",
+                        "mode": ""
+                    },
+                    "title": "={{ $json.name }}",
+                    "propertiesUi": {
+                        "propertyValues": [
+                            {
+                                "key": "Idea Page|url",
+                                "title": "={{$json.ideaPage}}",
+                                "urlValue": "={{ $json.url }}"
+                            },
+                            {
+                                "key": "Article Title|title",
+                                "title": "={{ $json.name }}",
+                                "selectValue": "={{$json.status}}"
+                            },
+                            {
+                                "key": "Article Type|select",
+                                "selectValue": "={{ $('Set').item.json.articleType }}"
+                            },
+                            {
+                                "key": "Created Date|date",
+                                "selectValue": "={{$json.writingStep}}",
+                                "date": "={{ $now }}"
+                            },
+                            {
+                                "key": "Published At|url",
+                                "urlValue": "={{ $('Set').item.json.publishedAt }}"
+                            },
+                            {
+                                "key": "Status|status",
+                                "statusValue": "={{ $('Set').item.json.status }}",
+                                "urlValue": "={{$json.supportFolder}}"
+                            },
+                            {
+                                "key": "Writing Step|select",
+                                "selectValue": "={{ $('Set').item.json.writingStep }}"
+                            }
+                        ]
+                    },
+                    "options": {}
+                },
+                "id": "d2b858e4-bfd0-46b2-a463-3259dff04053",
+                "name": "Create Article",
+                "type": "n8n-nodes-base.notion",
+                "typeVersion": 2,
+                "position": [
+                    96,
+                    128
+                ],
+                "credentials": {
+                    "notionApi": {
+                        "id": "VBly8RGYLumrF6c5",
+                        "name": "Notion account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "resource": "databasePage",
+                    "operation": "getAll",
+                    "databaseId": {
+                        "__rl": true,
+                        "value": "3640acff-2587-80f9-b7be-e4f1c15da7ed",
+                        "mode": "list",
+                        "cachedResultName": "ArticlePipeline",
+                        "cachedResultUrl": "https://www.notion.so/3640acff258780f9b7bee4f1c15da7ed"
+                    },
+                    "filterType": "manual",
+                    "matchType": "allFilters",
+                    "filters": {
+                        "conditions": [
+                            {
+                                "key": "Idea Page|url",
+                                "condition": "starts_with",
+                                "urlValue": "={{ $json.ideaPage.split('?')[0] }}"
+                            }
+                        ]
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.notion",
+                "typeVersion": 2.2,
+                "position": [
+                    -944,
+                    -16
+                ],
+                "id": "e62b7fdd-1547-42b5-9762-33eed4877a36",
+                "name": "Get a database page",
+                "alwaysOutputData": true,
+                "executeOnce": false,
+                "retryOnFail": false,
+                "credentials": {
+                    "notionApi": {
+                        "id": "VBly8RGYLumrF6c5",
+                        "name": "Notion account"
+                    }
+                },
+                "onError": "continueRegularOutput"
+            },
+            {
+                "parameters": {
+                    "resource": "databasePage",
+                    "operation": "get",
+                    "pageId": {
+                        "__rl": true,
+                        "value": "={{ $('Set').all()[0].json.ideaPage }}",
+                        "mode": "url"
+                    }
+                },
+                "type": "n8n-nodes-base.notion",
+                "typeVersion": 2.2,
+                "position": [
+                    -176,
+                    64
+                ],
+                "id": "deaa61e1-333d-4fcb-a17b-97afe339c89c",
+                "name": "Get a database page1",
+                "credentials": {
+                    "notionApi": {
+                        "id": "VBly8RGYLumrF6c5",
+                        "name": "Notion account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "inputSource": "jsonExample",
+                    "jsonExample": "{ \n\"ideaPage\": \"an url to a notion article\", \"status\": \"a status in string format: Idea | In Progress | Written | Published | Archived\", \"articleType\": \"Main Article | Support Article\", \"writingStep\": \"Brainstorming | Outlining | Drafting | Editing | Review |Final\", \"publishedAt\": \"a url to the platform where it was published\"\n}"
+                },
+                "type": "n8n-nodes-base.executeWorkflowTrigger",
+                "typeVersion": 1.1,
+                "position": [
+                    -1392,
+                    -16
+                ],
+                "id": "7f8e2fb6-18d7-40cc-a7c0-211afd96870a",
+                "name": "Input"
+            },
+            {
+                "parameters": {
+                    "assignments": {
+                        "assignments": [
+                            {
+                                "id": "b668d647-2081-420e-aa0e-c62d252025ba",
+                                "name": "ideaPage",
+                                "value": "={{ $json.ideaPage }}",
+                                "type": "string"
+                            },
+                            {
+                                "id": "5a72cb50-de65-4570-90d8-2070005ec2e6",
+                                "name": "status",
+                                "value": "={{ $json.status }}",
+                                "type": "string"
+                            },
+                            {
+                                "id": "a67613dc-f936-4002-b7f5-9baf1a73e8cf",
+                                "name": "articleType",
+                                "value": "={{ $json.articleType }}",
+                                "type": "string"
+                            },
+                            {
+                                "id": "69007b0b-e9a8-4587-a0a7-2cc9cf0008ae",
+                                "name": "writingStep",
+                                "value": "={{ $json.writingStep }}",
+                                "type": "string"
+                            },
+                            {
+                                "id": "9582605b-be0f-464f-bfd2-7f10cc1dbe5f",
+                                "name": "publishedAt",
+                                "value": "={{ $json.publishedAt }}",
+                                "type": "string"
+                            },
+                            {
+                                "id": "25f8ecd0-b6e4-49aa-824a-0a7ca6fbeb22",
+                                "name": "supportFolder",
+                                "value": "={{ $json.supportFolder }}",
+                                "type": "string"
+                            }
+                        ]
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.set",
+                "typeVersion": 3.4,
+                "position": [
+                    -1184,
+                    -16
+                ],
+                "id": "dcea98d6-0493-4776-82a0-1bcb9b4952ce",
+                "name": "Set"
+            },
+            {
+                "parameters": {},
+                "type": "n8n-nodes-base.merge",
+                "typeVersion": 3.2,
+                "position": [
+                    352,
+                    -16
+                ],
+                "id": "1f3ac597-eefa-46de-8973-0d6f447273ef",
+                "name": "Merge"
+            }
+        ],
+        "connections": {
+            "Article Exists?": {
+                "main": [
+                    [
+                        {
+                            "node": "Update Article",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ],
+                    [
+                        {
+                            "node": "Get a database page1",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Get a database page": {
+                "main": [
+                    [
+                        {
+                            "node": "Article Exists?",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Get a database page1": {
+                "main": [
+                    [
+                        {
+                            "node": "Create Article",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Input": {
+                "main": [
+                    [
+                        {
+                            "node": "Set",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Set": {
+                "main": [
+                    [
+                        {
+                            "node": "Get a database page",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Update Article": {
+                "main": [
+                    [
+                        {
+                            "node": "Merge",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Create Article": {
+                "main": [
+                    [
+                        {
+                            "node": "Merge",
+                            "type": "main",
+                            "index": 1
+                        }
+                    ]
+                ]
+            }
+        },
+        "settings": {
+            "executionOrder": "v1",
+            "binaryMode": "separate"
+        },
+        "staticData": null,
+        "meta": {
+            "templateCredsSetupCompleted": true
+        },
+        "pinData": {},
+        "versionId": "f71f4a0f-7cdb-490c-b1d3-3e7246fd600f",
+        "activeVersionId": null,
+        "triggerCount": 0,
+        "shared": [
+            {
+                "updatedAt": "2026-05-18T18:51:22.686Z",
+                "createdAt": "2026-05-18T18:51:22.686Z",
+                "role": "workflow:owner",
+                "workflowId": "X9k3L86DzKHZDqrc",
+                "projectId": "FlGQaEMmWQfoeLfg"
+            }
+        ],
+        "activeVersion": null,
+        "tags": []
+    }
+]

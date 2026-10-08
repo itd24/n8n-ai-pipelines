@@ -1,0 +1,185 @@
+[
+    {
+        "updatedAt": "2026-03-04T15:38:39.328Z",
+        "createdAt": "2025-04-13T18:45:16.038Z",
+        "id": "vds3gMzBpCwr7hrM",
+        "name": "Load-job-description",
+        "active": true,
+        "isArchived": false,
+        "nodes": [
+            {
+                "parameters": {
+                    "inputSource": "passthrough"
+                },
+                "type": "n8n-nodes-base.executeWorkflowTrigger",
+                "typeVersion": 1.1,
+                "position": [
+                    0,
+                    0
+                ],
+                "id": "d9240364-0fc1-44cf-a492-b1e07b3ab79d",
+                "name": "When Executed by Another Workflow"
+            },
+            {
+                "parameters": {
+                    "operation": "get",
+                    "documentURL": "https://docs.google.com/document/d/1CAAxzCPn-Qe-EYWChFlG6awMDhnQ6R-bLJTQQ5Vb8OI/edit?tab=t.0"
+                },
+                "type": "n8n-nodes-base.googleDocs",
+                "typeVersion": 2,
+                "position": [
+                    220,
+                    0
+                ],
+                "id": "e44b4442-a30c-43c5-97f7-bc6293f0a713",
+                "name": "Google Docs",
+                "credentials": {
+                    "googleDocsOAuth2Api": {
+                        "id": "qs3fOeGLpYb5om5t",
+                        "name": "Google Docs account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json = {\n    \"application\": item.json.content\n  }\n}\n\nreturn $input.all();"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    440,
+                    0
+                ],
+                "id": "28fcb091-c847-4686-9c47-5c5946fe0e94",
+                "name": "Code"
+            }
+        ],
+        "connections": {
+            "When Executed by Another Workflow": {
+                "main": [
+                    [
+                        {
+                            "node": "Google Docs",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Google Docs": {
+                "main": [
+                    [
+                        {
+                            "node": "Code",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            }
+        },
+        "settings": {
+            "executionOrder": "v1"
+        },
+        "staticData": null,
+        "meta": {
+            "templateCredsSetupCompleted": true
+        },
+        "pinData": {},
+        "versionId": "c5ba241e-d490-43d8-bf12-05e011b58f09",
+        "activeVersionId": "c5ba241e-d490-43d8-bf12-05e011b58f09",
+        "triggerCount": 0,
+        "shared": [
+            {
+                "updatedAt": "2025-04-13T18:45:16.038Z",
+                "createdAt": "2025-04-13T18:45:16.038Z",
+                "role": "workflow:owner",
+                "workflowId": "vds3gMzBpCwr7hrM",
+                "projectId": "FlGQaEMmWQfoeLfg"
+            }
+        ],
+        "activeVersion": {
+            "updatedAt": "2025-11-26T19:00:58.272Z",
+            "createdAt": "2025-11-26T19:00:58.272Z",
+            "versionId": "c5ba241e-d490-43d8-bf12-05e011b58f09",
+            "workflowId": "vds3gMzBpCwr7hrM",
+            "nodes": [
+                {
+                    "parameters": {
+                        "inputSource": "passthrough"
+                    },
+                    "type": "n8n-nodes-base.executeWorkflowTrigger",
+                    "typeVersion": 1.1,
+                    "position": [
+                        0,
+                        0
+                    ],
+                    "id": "d9240364-0fc1-44cf-a492-b1e07b3ab79d",
+                    "name": "When Executed by Another Workflow"
+                },
+                {
+                    "parameters": {
+                        "operation": "get",
+                        "documentURL": "https://docs.google.com/document/d/1CAAxzCPn-Qe-EYWChFlG6awMDhnQ6R-bLJTQQ5Vb8OI/edit?tab=t.0"
+                    },
+                    "type": "n8n-nodes-base.googleDocs",
+                    "typeVersion": 2,
+                    "position": [
+                        220,
+                        0
+                    ],
+                    "id": "e44b4442-a30c-43c5-97f7-bc6293f0a713",
+                    "name": "Google Docs",
+                    "credentials": {
+                        "googleDocsOAuth2Api": {
+                            "id": "qs3fOeGLpYb5om5t",
+                            "name": "Google Docs account"
+                        }
+                    }
+                },
+                {
+                    "parameters": {
+                        "jsCode": "// Loop over input items and add a new field called 'myNewField' to the JSON of each one\nfor (const item of $input.all()) {\n  item.json = {\n    \"application\": item.json.content\n  }\n}\n\nreturn $input.all();"
+                    },
+                    "type": "n8n-nodes-base.code",
+                    "typeVersion": 2,
+                    "position": [
+                        440,
+                        0
+                    ],
+                    "id": "28fcb091-c847-4686-9c47-5c5946fe0e94",
+                    "name": "Code"
+                }
+            ],
+            "connections": {
+                "When Executed by Another Workflow": {
+                    "main": [
+                        [
+                            {
+                                "node": "Google Docs",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Google Docs": {
+                    "main": [
+                        [
+                            {
+                                "node": "Code",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                }
+            },
+            "authors": "system migration",
+            "name": null,
+            "description": null,
+            "autosaved": false
+        },
+        "tags": []
+    }
+]

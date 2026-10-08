@@ -1,0 +1,3225 @@
+[
+    {
+        "updatedAt": "2026-03-25T21:24:06.159Z",
+        "createdAt": "2026-03-22T16:58:55.150Z",
+        "id": "oQOL10ZVVKVor07P",
+        "name": "Profile Vectorizer",
+        "active": true,
+        "isArchived": false,
+        "nodes": [
+            {
+                "parameters": {},
+                "type": "n8n-nodes-base.manualTrigger",
+                "typeVersion": 1,
+                "position": [
+                    -560,
+                    2284
+                ],
+                "id": "992d193d-4d0c-46d5-aac2-87a0db90ca93",
+                "name": "When clicking ‘Execute workflow’"
+            },
+            {
+                "parameters": {
+                    "assignments": {
+                        "assignments": [
+                            {
+                                "id": "c28056be-3232-4e82-9c07-93e1f463bdfb",
+                                "name": "spreadsheetId",
+                                "value": "={{ $env.SPREADSHEET_ID }}",
+                                "type": "string"
+                            },
+                            {
+                                "id": "139e1894-a667-4063-b75a-95bec98e404c",
+                                "name": "version",
+                                "value": "=v1",
+                                "type": "string"
+                            }
+                        ]
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.set",
+                "typeVersion": 3.4,
+                "position": [
+                    -336,
+                    2188
+                ],
+                "id": "abda5200-35fb-4097-a31d-7193efbc4196",
+                "name": "Pipeline Variables"
+            },
+            {
+                "parameters": {
+                    "documentId": {
+                        "__rl": true,
+                        "value": "={{ $json.spreadsheetId }}",
+                        "mode": "id"
+                    },
+                    "sheetName": {
+                        "__rl": true,
+                        "value": 385470286,
+                        "mode": "list",
+                        "cachedResultName": "01_PersonalInfo",
+                        "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-PEE7fJheDxxJMlS1PAvUglBAGDt3cChbqCAkVUeLdY/edit#gid=385470286"
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.googleSheets",
+                "typeVersion": 4.7,
+                "position": [
+                    336,
+                    -144
+                ],
+                "id": "fcfb685f-774e-4497-868a-f947ccd34a86",
+                "name": "Read personal info",
+                "credentials": {
+                    "googleSheetsOAuth2Api": {
+                        "id": "oYswFLQWLJz0WnPK",
+                        "name": "Google Sheets account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "documentId": {
+                        "__rl": true,
+                        "value": "={{ $json.spreadsheetId }}",
+                        "mode": "id"
+                    },
+                    "sheetName": {
+                        "__rl": true,
+                        "value": 934655228,
+                        "mode": "list",
+                        "cachedResultName": "02_Education",
+                        "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-PEE7fJheDxxJMlS1PAvUglBAGDt3cChbqCAkVUeLdY/edit#gid=934655228"
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.googleSheets",
+                "typeVersion": 4.7,
+                "position": [
+                    -112,
+                    224
+                ],
+                "id": "3c86c176-9062-4163-b07b-d175bb09e96e",
+                "name": "Read Education",
+                "credentials": {
+                    "googleSheetsOAuth2Api": {
+                        "id": "oYswFLQWLJz0WnPK",
+                        "name": "Google Sheets account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "documentId": {
+                        "__rl": true,
+                        "value": "={{ $json.spreadsheetId }}",
+                        "mode": "id"
+                    },
+                    "sheetName": {
+                        "__rl": true,
+                        "value": 1579690124,
+                        "mode": "list",
+                        "cachedResultName": "03_WorkExperience",
+                        "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-PEE7fJheDxxJMlS1PAvUglBAGDt3cChbqCAkVUeLdY/edit#gid=1579690124"
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.googleSheets",
+                "typeVersion": 4.7,
+                "position": [
+                    -112,
+                    1204
+                ],
+                "id": "b17a0d6e-3850-41af-902c-6399717de177",
+                "name": "Read WorkExperience",
+                "credentials": {
+                    "googleSheetsOAuth2Api": {
+                        "id": "oYswFLQWLJz0WnPK",
+                        "name": "Google Sheets account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "documentId": {
+                        "__rl": true,
+                        "value": "={{ $json.spreadsheetId }}",
+                        "mode": "id"
+                    },
+                    "sheetName": {
+                        "__rl": true,
+                        "value": 1949082360,
+                        "mode": "list",
+                        "cachedResultName": "04_PersonalProjects",
+                        "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-PEE7fJheDxxJMlS1PAvUglBAGDt3cChbqCAkVUeLdY/edit#gid=1949082360"
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.googleSheets",
+                "typeVersion": 4.7,
+                "position": [
+                    -112,
+                    2188
+                ],
+                "id": "6ade4747-a3d4-439a-81e9-748a78614452",
+                "name": "Read Projects",
+                "credentials": {
+                    "googleSheetsOAuth2Api": {
+                        "id": "oYswFLQWLJz0WnPK",
+                        "name": "Google Sheets account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "documentId": {
+                        "__rl": true,
+                        "value": "={{ $json.spreadsheetId }}",
+                        "mode": "id"
+                    },
+                    "sheetName": {
+                        "__rl": true,
+                        "value": 442577924,
+                        "mode": "list",
+                        "cachedResultName": "05_Certifications",
+                        "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-PEE7fJheDxxJMlS1PAvUglBAGDt3cChbqCAkVUeLdY/edit#gid=442577924"
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.googleSheets",
+                "typeVersion": 4.7,
+                "position": [
+                    336,
+                    2580
+                ],
+                "id": "481c918e-2164-46c0-a35e-e893856c89a2",
+                "name": "Read Certifications",
+                "credentials": {
+                    "googleSheetsOAuth2Api": {
+                        "id": "oYswFLQWLJz0WnPK",
+                        "name": "Google Sheets account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "documentId": {
+                        "__rl": true,
+                        "value": "={{ $json.spreadsheetId }}",
+                        "mode": "id"
+                    },
+                    "sheetName": {
+                        "__rl": true,
+                        "value": 1873709157,
+                        "mode": "list",
+                        "cachedResultName": "06_SkillsMaster",
+                        "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-PEE7fJheDxxJMlS1PAvUglBAGDt3cChbqCAkVUeLdY/edit#gid=1873709157"
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.googleSheets",
+                "typeVersion": 4.7,
+                "position": [
+                    112,
+                    2772
+                ],
+                "id": "324ecab3-b243-4c04-810a-0c9b8422df02",
+                "name": "Read Skills",
+                "credentials": {
+                    "googleSheetsOAuth2Api": {
+                        "id": "oYswFLQWLJz0WnPK",
+                        "name": "Google Sheets account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "documentId": {
+                        "__rl": true,
+                        "value": "={{ $json.spreadsheetId }}",
+                        "mode": "id"
+                    },
+                    "sheetName": {
+                        "__rl": true,
+                        "value": 1774944626,
+                        "mode": "list",
+                        "cachedResultName": "07_LocationRules",
+                        "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-PEE7fJheDxxJMlS1PAvUglBAGDt3cChbqCAkVUeLdY/edit#gid=1774944626"
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.googleSheets",
+                "typeVersion": 4.7,
+                "position": [
+                    336,
+                    2964
+                ],
+                "id": "de6a3f6f-9ced-4e21-abc7-4ed04d6977c6",
+                "name": "Read LocationRules",
+                "credentials": {
+                    "googleSheetsOAuth2Api": {
+                        "id": "oYswFLQWLJz0WnPK",
+                        "name": "Google Sheets account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "jsCode": "const items = $input.all().map(item => item.json);\n\nvar personalInfo = {};\n\nfunction applyRow(data, row) {\n  const pathParts = row.col_4.split(\"_\");\n\n  let current = data;\n\n  pathParts.forEach((part, index) => {\n    const isArray = part.endsWith(\"[]\");\n    const key = isArray ? part.slice(0, -2) : part;\n    const isLast = index === pathParts.length - 1;\n\n    // Ensure structure exists\n    if (!current[key]) {\n      current[key] = isArray ? [] : {};\n    }\n\n    if (isLast) {\n      let value = row.col_2;\n\n      if (isArray) {\n        // Split values if final is array\n        const values = value.split(\"|\").map(v => v.trim());\n        current[key].push(...values);\n      } else {\n        current[key] = value;\n      }\n    } else {\n      if (isArray) {\n        // Ensure at least one object exists in array\n        if (current[key].length === 0) {\n          current[key].push({});\n        }\n        // Move into the last object in the array\n        current = current[key][current[key].length - 1];\n      } else {\n        current = current[key];\n      }\n    }\n  });\n\n  return data;\n}\n\nvar hobbiesStarted = false;\nvar hobbiesStartAt = 0;\n\nfor(var item of items){\n  if(item[\"row_number\"] < 5) continue;\n  \n  if(item[\"PERSONAL INFORMATION\"].includes(\"HOBBIES & INTERESTS\")){\n    hobbiesStarted = true;\n    hobbiesStartAt = item[\"row_number\"] + 2;\n    continue;\n  }\n\n  if(hobbiesStarted){\n    if(item[\"row_number\"] >= hobbiesStartAt){\n      var parameterName = item[\"col_4\"].replace(\"[]\",\"\");\n      if(!personalInfo[parameterName]) \n        personalInfo[parameterName] = [];\n      personalInfo[parameterName].push({\n        description: item[\"PERSONAL INFORMATION\"],\n        relevance: item[\"col_2\"],\n        inclusion: item[\"col_3\"]\n      });\n    }\n    continue;\n  }\n  \n  if(item[\"col_4\"].trim() == \"\") continue;\n  if(item[\"PERSONAL INFORMATION\"] == \"Field\") continue;\n  applyRow(personalInfo, item);\n}\n\nreturn [{ json: { personalInfo: personalInfo } }];"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    624,
+                    -144
+                ],
+                "id": "8720e28a-28ad-45bc-bb57-f40e4f45de82",
+                "name": "Process personal info sheet"
+            },
+            {
+                "parameters": {
+                    "jsCode": "var items = $input.all().map(item => item.json);\n\nvar headers = items.filter(item => item[\"row_number\"] == 5)[0];\n\nvar result = [];\n\nfunction applyRow(data, headers, row) {\n\n  Object.keys(headers).forEach(colKey => {\n       if(colKey == \"row_number\") return;\n      const pathParts = headers[colKey].split(\"_\");\n      let current = data;\n\n      pathParts.forEach((part, index) => {\n        const isArray = part.endsWith(\"[]\");\n        const key = isArray ? part.slice(0, -2) : part;\n        const isLast = index === pathParts.length - 1;\n    \n        // Ensure structure exists\n        if (!current[key]) {\n          current[key] = isArray ? [] : {};\n        }\n    \n        if (isLast) {\n          let value = row[colKey];\n    \n          if (isArray) {\n            // Split values if final is array\n            const values = value.split(\"|\").map(v => v.trim());\n            current[key].push(...values);\n          } else {\n            current[key] = value;\n          }\n        } else {\n          if (isArray) {\n            // Ensure at least one object exists in array\n            if (current[key].length === 0) {\n              current[key].push({});\n            }\n            // Move into the last object in the array\n            current = current[key][current[key].length - 1];\n          } else {\n            current = current[key];\n          }\n        }\n      });\n  });\n\n}\n\nfor(const item of items.filter(item => item[\"row_number\"] > 5)){\n  var education = {};\n   applyRow(education, headers, item);\n  result.push({json: education });\n}\n\nreturn result;"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    112,
+                    224
+                ],
+                "id": "aae0237c-2ddd-4ad7-97f1-f97b49b43f24",
+                "name": "Process education sheet"
+            },
+            {
+                "parameters": {
+                    "jsCode": "var items = $input.all().map(item => item.json);\n\nvar headers = items.filter(item => item[\"row_number\"] == 5)[0];\n\nvar result = [];\n\nfunction applyRow(data, headers, row) {\n\n  Object.keys(headers).forEach(colKey => {\n       if(colKey == \"row_number\") return;\n      const pathParts = headers[colKey].split(\"_\");\n\n    console.log([colKey, pathParts, row[colKey]]);\n    \n      let current = data;\n\n      pathParts.forEach((part, index) => {\n        const isArray = part.endsWith(\"[]\");\n        const key = isArray ? part.slice(0, -2) : part;\n        const isLast = index === pathParts.length - 1;\n    \n        // Ensure structure exists\n        if (!current[key]) {\n          current[key] = isArray ? [] : {};\n        }\n    \n        if (isLast) {\n          let value = row[colKey];\n    \n          if (isArray) {\n            // Split values if final is array\n            const values = value.split(\"|\").map(v => v.trim());\n            current[key].push(...values);\n          } else {\n            current[key] = value;\n          }\n        } else {\n          if (isArray) {\n            // Ensure at least one object exists in array\n            if (current[key].length === 0) {\n              current[key].push({});\n            }\n            // Move into the last object in the array\n            current = current[key][current[key].length - 1];\n          } else {\n            current = current[key];\n          }\n        }\n      });\n  });\n\n}\n\nfor(const item of items.filter(item => item[\"row_number\"] > 5 && item[\"col_2\"].trim() != \"\")){\n   var job = {};\n   applyRow(job, headers, item);\n  job.achievements = job.achievements.filter(a => a);\n  result.push({json: job});\n}\n\nreturn result;"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    112,
+                    1204
+                ],
+                "id": "7b86d363-4c57-4827-96c2-8d43d4d2bbdd",
+                "name": "Process workExperience sheet"
+            },
+            {
+                "parameters": {
+                    "jsCode": "var items = $input.all().map(item => item.json);\n\nvar headers = items.filter(item => item[\"row_number\"] == 5)[0];\n\nvar result = [];\n\nfunction applyRow(data, headers, row) {\n\n  Object.keys(headers).forEach(colKey => {\n       if(colKey == \"row_number\") return;\n      const pathParts = headers[colKey].split(\"_\");\n\n    console.log([colKey, pathParts, row[colKey]]);\n    \n      let current = data;\n\n      pathParts.forEach((part, index) => {\n        const isArray = part.endsWith(\"[]\");\n        const key = isArray ? part.slice(0, -2) : part;\n        const isLast = index === pathParts.length - 1;\n    \n        // Ensure structure exists\n        if (!current[key]) {\n          current[key] = isArray ? [] : {};\n        }\n    \n        if (isLast) {\n          let value = row[colKey];\n    \n          if (isArray) {\n            // Split values if final is array\n            const values = value.split(\"|\").map(v => v.trim());\n            current[key].push(...values);\n          } else {\n            current[key] = value;\n          }\n        } else {\n          if (isArray) {\n            // Ensure at least one object exists in array\n            if (current[key].length === 0) {\n              current[key].push({});\n            }\n            // Move into the last object in the array\n            current = current[key][current[key].length - 1];\n          } else {\n            current = current[key];\n          }\n        }\n      });\n  });\n\n}\n\nfor(const item of items.filter(item => item[\"row_number\"] > 5)){\n   var project = {};\n   applyRow(project, headers, item);\n  result.push({json: project});\n}\n\nreturn result;"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    112,
+                    2188
+                ],
+                "id": "1bbec35a-b21c-4751-af4b-727a17496e82",
+                "name": "Process projects sheet"
+            },
+            {
+                "parameters": {
+                    "jsCode": "var items = $input.all().map(item => item.json);\n\nvar headers = items.filter(item => item[\"row_number\"] == 5)[0];\n\nvar result = [];\n\nfunction applyRow(data, headers, row) {\n\n  Object.keys(headers).forEach(colKey => {\n       if(colKey == \"row_number\") return;\n      const pathParts = headers[colKey].split(\"_\");\n\n    console.log([colKey, pathParts, row[colKey]]);\n    \n      let current = data;\n\n      pathParts.forEach((part, index) => {\n        const isArray = part.endsWith(\"[]\");\n        const key = isArray ? part.slice(0, -2) : part;\n        const isLast = index === pathParts.length - 1;\n    \n        // Ensure structure exists\n        if (!current[key]) {\n          current[key] = isArray ? [] : {};\n        }\n    \n        if (isLast) {\n          let value = row[colKey];\n    \n          if (isArray) {\n            // Split values if final is array\n            const values = value.split(\"|\").map(v => v.trim());\n            current[key].push(...values);\n          } else {\n            current[key] = value;\n          }\n        } else {\n          if (isArray) {\n            // Ensure at least one object exists in array\n            if (current[key].length === 0) {\n              current[key].push({});\n            }\n            // Move into the last object in the array\n            current = current[key][current[key].length - 1];\n          } else {\n            current = current[key];\n          }\n        }\n      });\n  });\n\n}\n\nfor(const item of items.filter(item => item[\"row_number\"] > 5)){\n   var cert = {};\n   applyRow(cert, headers, item);\n  result.push(cert);\n}\n\nreturn [{json: {certifications: result}}];"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    624,
+                    2580
+                ],
+                "id": "f37b85ac-342f-4fdb-91cc-d03b4681df7b",
+                "name": "Process certifications sheet",
+                "alwaysOutputData": true
+            },
+            {
+                "parameters": {
+                    "jsCode": "var items = $input.all().map(item => item.json);\n\nvar headers = items.filter(item => item[\"row_number\"] == 5)[0];\n\nvar result = [];\n\nfunction applyRow(data, headers, row) {\n\n  Object.keys(headers).forEach(colKey => {\n       if(colKey == \"row_number\") return;\n      const pathParts = headers[colKey].split(\"_\");\n\n    console.log([colKey, pathParts, row[colKey]]);\n    \n      let current = data;\n\n      pathParts.forEach((part, index) => {\n        const isArray = part.endsWith(\"[]\");\n        const key = isArray ? part.slice(0, -2) : part;\n        const isLast = index === pathParts.length - 1;\n    \n        // Ensure structure exists\n        if (!current[key]) {\n          current[key] = isArray ? [] : {};\n        }\n    \n        if (isLast) {\n          let value = row[colKey];\n    \n          if (isArray) {\n            // Split values if final is array\n            const values = value.split(\"|\").map(v => v.trim());\n            current[key].push(...values);\n          } else {\n            current[key] = value;\n          }\n        } else {\n          if (isArray) {\n            // Ensure at least one object exists in array\n            if (current[key].length === 0) {\n              current[key].push({});\n            }\n            // Move into the last object in the array\n            current = current[key][current[key].length - 1];\n          } else {\n            current = current[key];\n          }\n        }\n      });\n  });\n\n}\n\nfunction checkIfAlreadyIncluded(item){\n   return result.some(r => {\n     return r.json.name.toLowerCase() == item[\"col_2\"];\n   })\n}\n\nfunction unify(skill){\n  skill.category = skill.category.toLowerCase().trim();\n  skill.proficiencyLevel = skill.proficiencyLevel.toLowerCase().trim();\n  return skill;\n}\n\nfor(const item of items.filter(item => item[\"row_number\"] > 5 && item[\"col_2\"].trim() != \"\" )){\n  if(!checkIfAlreadyIncluded(item)){\n   var skill = {};\n   applyRow(skill, headers, item);\n   result.push({json: unify(skill)});\n  }\n}\n\nreturn result;"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    336,
+                    2772
+                ],
+                "id": "3128110a-5196-4de1-8008-eb2736e22266",
+                "name": "Process skills sheet"
+            },
+            {
+                "parameters": {
+                    "jsCode": "var items = $input.all().map(item => item.json);\n\nvar headers = items.filter(item => item[\"row_number\"] == 5)[0];\n\nvar result = [];\n\nfunction applyRow(data, headers, row) {\n\n  Object.keys(headers).forEach(colKey => {\n       if(colKey == \"row_number\") return;\n      const pathParts = headers[colKey].split(\"_\");\n\n    console.log([colKey, pathParts, row[colKey]]);\n    \n      let current = data;\n\n      pathParts.forEach((part, index) => {\n        const isArray = part.endsWith(\"[]\");\n        const key = isArray ? part.slice(0, -2) : part;\n        const isLast = index === pathParts.length - 1;\n    \n        // Ensure structure exists\n        if (!current[key]) {\n          current[key] = isArray ? [] : {};\n        }\n    \n        if (isLast) {\n          let value = row[colKey];\n    \n          if (isArray) {\n            // Split values if final is array\n            const values = value.split(\"|\").map(v => v.trim());\n            current[key].push(...values);\n          } else {\n            current[key] = value;\n          }\n        } else {\n          if (isArray) {\n            // Ensure at least one object exists in array\n            if (current[key].length === 0) {\n              current[key].push({});\n            }\n            // Move into the last object in the array\n            current = current[key][current[key].length - 1];\n          } else {\n            current = current[key];\n          }\n        }\n      });\n  });\n\n}\n\nfor(const item of items.filter(item => item[\"row_number\"] > 5)){\n   var locationRule = {};\n   applyRow(locationRule, headers, item);\n  result.push(locationRule);\n}\n\nreturn [{json: {locationRules: result}}]"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    624,
+                    2964
+                ],
+                "id": "22b89edc-5192-4025-bd63-003a7d44bc59",
+                "name": "Process locationRules sheet"
+            },
+            {
+                "parameters": {
+                    "model": {
+                        "__rl": true,
+                        "mode": "list",
+                        "value": "claude-sonnet-4-5-20250929",
+                        "cachedResultName": "Claude Sonnet 4.5"
+                    },
+                    "options": {}
+                },
+                "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+                "typeVersion": 1.3,
+                "position": [
+                    568,
+                    464
+                ],
+                "id": "1a4d7cf4-e2e8-470f-b067-138710baa02d",
+                "name": "Anthropic Chat Model",
+                "credentials": {
+                    "anthropicApi": {
+                        "id": "uw2xlWVJZVXjn8Qy",
+                        "name": "Anthropic account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "jsonSchemaExample": "{\n  \"strengthSignal\": \"string\"\n}"
+                },
+                "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+                "typeVersion": 1.3,
+                "position": [
+                    696,
+                    464
+                ],
+                "id": "ac6fc6c0-dff0-42a4-ba54-2ab93661cb8c",
+                "name": "Structured Output Parser"
+            },
+            {
+                "parameters": {
+                    "model": {
+                        "__rl": true,
+                        "mode": "list",
+                        "value": "claude-sonnet-4-5-20250929",
+                        "cachedResultName": "Claude Sonnet 4.5"
+                    },
+                    "options": {}
+                },
+                "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+                "typeVersion": 1.3,
+                "position": [
+                    920,
+                    1724
+                ],
+                "id": "9d8ae902-dc82-4dbf-81ac-24c06fd64edc",
+                "name": "Anthropic Chat Model1",
+                "credentials": {
+                    "anthropicApi": {
+                        "id": "uw2xlWVJZVXjn8Qy",
+                        "name": "Anthropic account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "jsonSchemaExample": "[\n  {\n    \"achievement\": \"string\",\n    \"impactLevel\": \"string\",\n    \"hasMetric\": true,\n    \"metricValue\": \"string\",\n    \"skillTags\": [\"string\"]\n  }\n]"
+                },
+                "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+                "typeVersion": 1.3,
+                "position": [
+                    1048,
+                    1724
+                ],
+                "id": "b0088bbe-4a5d-481b-9f27-5c0e80d1f213",
+                "name": "Structured Output Parser1"
+            },
+            {
+                "parameters": {
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.splitInBatches",
+                "typeVersion": 3,
+                "position": [
+                    336,
+                    224
+                ],
+                "id": "5bd57f28-bc4b-449b-9bc8-841e00fb0a2c",
+                "name": "Loop Over Education Entries"
+            },
+            {
+                "parameters": {
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.splitInBatches",
+                "typeVersion": 3,
+                "position": [
+                    336,
+                    1204
+                ],
+                "id": "02f60e7e-21f6-4134-931e-a343e487acd5",
+                "name": "Loop Over Work Experience"
+            },
+            {
+                "parameters": {
+                    "jsCode": "var data = $('Loop Over Education Entries').all()[0];\nconsole.log(data);\ndata.json[\"strengthSignal\"] = $input.all()[0].json.output.strengthSignal;\nreturn data;"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    976,
+                    468
+                ],
+                "id": "7c862457-2325-4b8d-acdc-92012732a191",
+                "name": "Combine Education Data"
+            },
+            {
+                "parameters": {
+                    "promptType": "define",
+                    "text": "=Evaluate the following education background and return JSON in the rewuired format \"{\n  \"strengthSignal\": \"HIGH\" | \"MEDIUM\" | \"LOW\"\n}\":\n\nDegree Level: {{$json.degreeLevel}}\nField: {{$json.field}}\nInstitution: {{$json.institution}}\nGrade: {{$json.grade}}\nDissertation: {{$json.dissertationTitle}}\nModules: {{$json.keyModules}}\n\nReturn the strength signal.",
+                    "hasOutputParser": true,
+                    "options": {
+                        "systemMessage": "You are a strict JSON-only classification engine.\n\nYour task is to evaluate a candidate's education background and return a strength signal.\n\nYou must:\n- Analyze the provided education data carefully\n- Output ONLY valid JSON (no explanations, no extra text)\n- Always follow the exact schema\n\nClassification rules:\n\nReturn \"HIGH\" if:\n- Degree is relevant to technical or specialized field (e.g. Computer Science, Engineering, Data Science)\n- Recognized or formal higher education (Bachelor, Master, PhD or equivalent)\n- Strong academic indicators (good grade, thesis, relevant modules)\n\nReturn \"MEDIUM\" if:\n- Degree is somewhat relevant OR\n- Education is incomplete OR\n- Field is less directly related but still useful\n\nReturn \"LOW\" if:\n- Education is missing, irrelevant, or very weak\n\nOutput format (STRICT JSON):\n{\n  \"strengthSignal\": \"HIGH\" | \"MEDIUM\" | \"LOW\"\n}\n\nRules:\n- Do NOT include explanations\n- Do NOT include markdown\n- Do NOT include trailing commas\n- Do NOT output anything except JSON"
+                    }
+                },
+                "type": "@n8n/n8n-nodes-langchain.agent",
+                "typeVersion": 3.1,
+                "position": [
+                    560,
+                    240
+                ],
+                "id": "08020da8-aa39-44f5-9bae-c3846df7df84",
+                "name": "Strength Signal Calculator"
+            },
+            {
+                "parameters": {
+                    "promptType": "define",
+                    "text": "=Analyze the following job experience and suggest suitable roles.\n\nFor each role, also include a short instruction on how this experience should be presented when applying for THAT specific role.\n\nJob Title: {{$json.jobTitle}}\nCompany / Industry: {{$json.company}} ({{$json.industry}})\nDuration: {{$json.startDate}} - {{$json.endDate}}\n\nTech Stack:\n{{$json.techStack}}\n\nResponsibilities:\n{{$json.responsibilities}}\n\n{{$json.achievements.length > 0 ? \"Achievements:\" : \"\"}}\n{{$json.achievements.length > 0 ? $json.achievements : \"\"}}\n\nSoft Skills:\n{{$json.softSkills}}\n\nReturn suitable roles with role-specific tailoring instructions.",
+                    "hasOutputParser": true,
+                    "options": {
+                        "systemMessage": "You are a strict JSON-only career matching and CV tailoring engine.\n\nYour task is to:\n1. Analyze a single job experience\n2. Infer a list of standardized job roles the candidate is suited for\n3. Provide a single, role-specific CV framing instruction for each role\n\nYou must:\n- Base all reasoning ONLY on the provided data\n- Return 3–6 realistic, standardized job titles\n- Provide ONE tailored instruction per role, aligned with that role\n- Output ONLY valid JSON\n\n-------------------------------------\nFIELD DEFINITIONS\n-------------------------------------\n\n1. jobTitle:\n- Must be a standardized, widely used job title\n- Examples: \"Software Engineer\", \"Graphics Engineer\", \"Machine Learning Engineer\", \"Research Engineer\"\n- Do NOT invent niche or unusual titles\n\n2. matchPercentage:\n- Integer from 0 to 100\n- 90–100 → very strong direct match\n- 70–89 → strong transferable match\n- 50–69 → partial match\n\n3. seniorityLevel:\n- Must be one of:\n  \"JUNIOR\", \"MIDLEVEL\", \"SENIOR\", \"PRINCIPAL\"\n- Base on:\n  - experience duration\n  - complexity of work\n  - leadership signals\n\n4. tailorInstructions:\n- A single string\n- Must describe how this experience should be presented when applying for the SAME role as \"jobTitle\"\n- Must be concise (1–3 sentences)\n- Must include:\n  - what to emphasize\n  - which achievements or skills to highlight\n  - positioning strategy\n\n-------------------------------------\nRULES\n-------------------------------------\n\n- Output MUST be a JSON array\n- Do NOT include explanations\n- Do NOT include markdown\n- Do NOT include trailing commas\n- Do NOT hallucinate experience outside the provided data\n- Tailoring must be grounded in actual responsibilities and achievements\n- Prefer widely recognized job titles (LinkedIn/Indeed standard)\n\n-------------------------------------\nOUTPUT FORMAT\n-------------------------------------\n\n[\n  {\n    \"jobTitle\": \"string\",\n    \"matchPercentage\": number,\n    \"seniorityLevel\": \"JUNIOR\" | \"MIDLEVEL\" | \"SENIOR\" | \"PRINCIPAL\",\n    \"tailorInstructions\": \"string\"\n  }\n]"
+                    }
+                },
+                "type": "@n8n/n8n-nodes-langchain.agent",
+                "typeVersion": 3.1,
+                "position": [
+                    912,
+                    804
+                ],
+                "id": "e160318e-1374-49f1-b25a-f9733370963c",
+                "name": "Role Estimator"
+            },
+            {
+                "parameters": {
+                    "jsonSchemaExample": "[{  \n  \"jobTitle\": \"string\",\n  \"matchPercentage\": 50,\n  \"seniorityLevel\": \"string\",\n   \"tailorInstructions\": \"string\"\n}]"
+                },
+                "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+                "typeVersion": 1.3,
+                "position": [
+                    1048,
+                    1028
+                ],
+                "id": "5a2727d4-47ea-4228-a229-3967942286f0",
+                "name": "Structured Output Parser2"
+            },
+            {
+                "parameters": {
+                    "model": {
+                        "__rl": true,
+                        "mode": "list",
+                        "value": "claude-sonnet-4-5-20250929",
+                        "cachedResultName": "Claude Sonnet 4.5"
+                    },
+                    "options": {}
+                },
+                "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+                "typeVersion": 1.3,
+                "position": [
+                    920,
+                    1028
+                ],
+                "id": "6d6b5878-e30b-4812-9d51-db0fc328ea59",
+                "name": "Anthropic Chat Model2",
+                "credentials": {
+                    "anthropicApi": {
+                        "id": "uw2xlWVJZVXjn8Qy",
+                        "name": "Anthropic account"
+                    }
+                }
+            },
+            {
+                "parameters": {},
+                "type": "n8n-nodes-base.merge",
+                "typeVersion": 3.2,
+                "position": [
+                    1264,
+                    1180
+                ],
+                "id": "c1e41e4e-dc58-47b9-a2a9-26b868c7d8fa",
+                "name": "Merge"
+            },
+            {
+                "parameters": {
+                    "jsCode": "function getYearDifference(dateStr) {\n  const [month, year] = dateStr.split('/').map(Number);\n\n  // JS months are 0-based (0 = January)\n  const date = new Date(year, month - 1);\n\n  const now = new Date();\n\n  let diff = now.getFullYear() - date.getFullYear();\n\n  // Adjust if current month is before the given month\n  if (now.getMonth() < (month - 1)) {\n    diff--;\n  }\n\n  return diff;\n}\n\n\nvar items = $input.all();\n\nvar possiblePositions = items[0].json.output;\nvar achievements = items[1].json.output;\nvar workExperienceObject = $(\"Loop Over Work Experience\").all()[0].json;\n\nvar isCurrent = workExperienceObject.endDate.toUpperCase() == \"PRESENT\";\nvar yearsAgo = 0;\nif(!isCurrent){\n  yearsAgo = getYearDifference(workExperienceObject.endDate);\n}\n\nworkExperienceObject.achievements = achievements;\nworkExperienceObject.possiblePositions = possiblePositions;\nworkExperienceObject.isCurrent = isCurrent;\nworkExperienceObject.yearsAgo = yearsAgo;\n\nreturn [{ json: workExperienceObject }];"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    1488,
+                    1452
+                ],
+                "id": "94f138e2-5a41-404f-a756-4b8f269854d8",
+                "name": "Combine Work Experience and Calculate Additional Parameters"
+            },
+            {
+                "parameters": {
+                    "promptType": "define",
+                    "text": "=Analyze the following personal project:\n\nProject Name: {{$json.name}}\nType: {{$json.type}}\nDuration: {{$json.startDate}} - {{$json.endDate}}\nStatus: {{$json.status}}\n\nTech Stack:\n{{$json.techStack}}\n\nDescription:\n{{$json.narrative}}\n\nReturn the evaluation.",
+                    "hasOutputParser": true,
+                    "options": {
+                        "systemMessage": "You are a strict JSON-only evaluator of technical personal projects.\n\nYour task is to analyze a personal project and extract:\n- key strengths demonstrated\n- impact signals\n- an overall strength signal\n\nYou must:\n- Base all reasoning ONLY on the provided data\n- Be objective and consistent\n- Output ONLY valid JSON\n\n-------------------------------------\nFIELD DEFINITIONS\n-------------------------------------\n\n1. keyStrengthsDemonstrated:\n- Array of short phrases (3–8 items)\n- Can include both technical and soft skills\n- Examples:\n  \"system design\", \"API development\", \"automation\", \"problem solving\", \"ownership\", \"integration\", \"DevOps\"\n- Keep each item concise (1–3 words preferred)\n\n2. impactSignals:\n- Array of concrete signals indicating impact or value\n- Focus on:\n  - real-world usage (even personal)\n  - automation / time savings\n  - complexity of system\n  - integration of multiple systems\n  - scalability or robustness\n- Examples:\n  \"automates document classification\",\n  \"integrates multiple data sources\",\n  \"reduces manual effort\",\n  \"end-to-end system ownership\"\n\n3. strengthSignal:\n- One of:\n  \"HIGH\", \"MEDIUM\", \"LOW\"\n\nClassification rules:\n\nHIGH:\n- Complex system (multiple components, integrations, automation)\n- Clear real-world use\n- Strong ownership and end-to-end implementation\n- Demonstrates multiple relevant engineering skills\n\nMEDIUM:\n- Moderate complexity or partial implementation\n- Some practical use but limited scope\n- Demonstrates a few relevant skills\n\nLOW:\n- Simple or tutorial-like project\n- Limited real-world relevance\n- Minimal complexity or ownership\n\n-------------------------------------\nRULES\n-------------------------------------\n\n- Output MUST be valid JSON\n- Do NOT include explanations\n- Do NOT include markdown\n- Do NOT include trailing commas\n- Do NOT hallucinate missing information\n- Be conservative: only include strengths clearly supported by the data\n\n-------------------------------------\nOUTPUT FORMAT\n-------------------------------------\n\n{\n  \"keyStrengthsDemonstrated\": [\"string\"],\n  \"impactSignals\": [\"string\"],\n  \"strengthSignal\": \"HIGH\" | \"MEDIUM\" | \"LOW\"\n}"
+                    }
+                },
+                "type": "@n8n/n8n-nodes-langchain.agent",
+                "typeVersion": 3.1,
+                "position": [
+                    560,
+                    2084
+                ],
+                "id": "8781aca7-8573-4454-a595-8cb891f7e871",
+                "name": "AI Agent"
+            },
+            {
+                "parameters": {
+                    "model": {
+                        "__rl": true,
+                        "mode": "list",
+                        "value": "claude-sonnet-4-5-20250929",
+                        "cachedResultName": "Claude Sonnet 4.5"
+                    },
+                    "options": {}
+                },
+                "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+                "typeVersion": 1.3,
+                "position": [
+                    568,
+                    2308
+                ],
+                "id": "46a826f7-3dda-495d-8b6e-5f01fe8777e2",
+                "name": "Anthropic Chat Model3",
+                "credentials": {
+                    "anthropicApi": {
+                        "id": "uw2xlWVJZVXjn8Qy",
+                        "name": "Anthropic account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "jsonSchemaExample": "{\n  \"keyStrengthsDemonstrated\": [\"string\"],\n  \"impactSignals\": [\"string\"],\n  \"strengthSignal\": \"string\"\n}"
+                },
+                "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+                "typeVersion": 1.3,
+                "position": [
+                    696,
+                    2308
+                ],
+                "id": "d2e2f9f7-d877-4b06-8bd5-302376fd65c8",
+                "name": "Structured Output Parser3"
+            },
+            {
+                "parameters": {
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.splitInBatches",
+                "typeVersion": 3,
+                "position": [
+                    336,
+                    2188
+                ],
+                "id": "0db9a32f-0a19-492f-ae8f-e2b9333b13d4",
+                "name": "Loop Over Projects"
+            },
+            {
+                "parameters": {
+                    "jsCode": "var project = $(\"Loop Over Projects\").all()[0].json;\nvar additionalData = $input.all()[0].json.output;\nreturn [{json: {...project,...additionalData}}];"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    976,
+                    2288
+                ],
+                "id": "9e0ffc17-ed79-4d90-b634-88de58e4d962",
+                "name": "Prepare Project Data"
+            },
+            {
+                "parameters": {
+                    "jsCode": "var items = $input.all().map(x => x.json);\n\n/*\nfor each skill:\n\t\tadd recency: \"CURRENT|RECENT|HISTORICAL\"\n\t\tadd to each array, if 0-1 years back it is current, if it is 2-4 is recent, 5+ is historical\n*/\n\nvar currentMaxYearsAgo = 1;\nvar recentMaxYearsAgo = 2;\n\nfunction yearsAgo(item) {\n    return new Date().getFullYear() - parseInt(item.lastUsed, 10);\n}\n\nfunction isCurrent(item) {\n    return yearsAgo(item) <= currentMaxYearsAgo;\n}\n\nfunction isRecent(item) {\n    return yearsAgo(item) <= recentMaxYearsAgo;\n}\n\nvar result = {\n  \t\tbyProficiency: {},\n\t\tbyCategory: {},\n\t\tcurrent: [],\n\t\trecent: [],\n\t\thistorical: [],\n        all: []\n}\n\nfor(var item of items){\n    result.all.push(item);\n    if(!Object.hasOwn(result.byProficiency, item.proficiencyLevel)){\n      result.byProficiency[item.proficiencyLevel] = [];\n    }\n    result.byProficiency[item.proficiencyLevel].push(item);\n\n    if(!Object.hasOwn(result.byCategory, item.category)){\n      result.byCategory[item.category] = [];\n    }\n    result.byCategory[item.category].push(item);\n\n    if(isCurrent(item)){\n      item.recency = \"CURRENT\";\n      result.current.push(item);\n    }\n    else if(isRecent(item)){\n       item.recency = \"RECENT\";\n      result.recent.push(item);     \n    }\n    else {\n      item.recency = \"HISTORICAL\";\n      result.historical.push(item);    \n    } \n}\n\nreturn [{ json: {skills: result} }];\n"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    624,
+                    2772
+                ],
+                "id": "7225b9e4-7063-4486-9718-6ccee86eca2a",
+                "name": "Group skills"
+            },
+            {
+                "parameters": {
+                    "promptType": "define",
+                    "text": "=Analyze the following job experience and achievements.\n\nJob Title: {{$json.jobTitle}}\nCompany / Industry: {{$json.company}} ({{$json.industry}})\nDuration: {{$json.startDate}} - {{$json.endDate}}\n\nTech Stack:\n{{$json.techStack}}\n\nResponsibilities:\n{{$json.responsibilities}}\n\nAchievements:\n{{$json.achievements}}\n\nReturn structured JSON data for each achievement.",
+                    "hasOutputParser": true,
+                    "options": {
+                        "systemMessage": "You are a strict JSON-only extraction and classification engine.\n\nYour task is to analyze a list of professional achievements and return structured insights for EACH achievement.\n\nYou must:\n- Process every achievement independently\n- Return a JSON array with one object per achievement\n- Preserve the EXACT original achievement text\n- Output ONLY valid JSON (no explanations, no markdown, no comments)\n\nField definitions:\n\n1. impactLevel:\n- \"HIGH\" → Major, measurable, or organization-wide impact (e.g. large performance improvements, system redesigns, strategic contributions)\n- \"MEDIUM\" → Noticeable improvement or meaningful contribution, but limited scope\n- \"LOW\" → Minor or unclear impact\n\n2. hasMetric:\n- true → if the achievement contains quantifiable or clearly implied measurable results (time reduction, %, scale improvement, etc.)\n- false → otherwise\n\n3. metricValue:\n- Extract the metric if present (e.g. \"80%\", \"2x faster\", \"reduced from weeks to days\")\n- If no metric exists, return an empty string \"\"\n\n4. skillTags:\n- Provide a concise list of relevant skills required to achieve the result\n- Include both technical and soft skills when applicable\n- Use short phrases (e.g. \"distributed systems\", \"C++\", \"leadership\", \"system design\")\n\nOutput format (STRICT JSON):\n[\n  {\n    \"achievement\": \"string\",\n    \"impactLevel\": \"HIGH\" | \"MEDIUM\" | \"LOW\",\n    \"hasMetric\": true | false,\n    \"metricValue\": \"string\",\n    \"skillTags\": [\"string\"]\n  }\n]\n\nRules:\n- Do NOT omit any achievement\n- Do NOT modify achievement text\n- Do NOT include trailing commas\n- Do NOT output anything except JSON\n- If no achievements are listed, output an empty array"
+                    }
+                },
+                "type": "@n8n/n8n-nodes-langchain.agent",
+                "typeVersion": 3.1,
+                "position": [
+                    912,
+                    1500
+                ],
+                "id": "79f5c427-b508-4d80-9e60-81f728f90225",
+                "name": "Experience Achievement Evaluator"
+            },
+            {
+                "parameters": {
+                    "numberInputs": 7
+                },
+                "type": "n8n-nodes-base.merge",
+                "typeVersion": 3.2,
+                "position": [
+                    976,
+                    116
+                ],
+                "id": "b35eaa3f-431c-48dc-8dcf-61bbc8069a37",
+                "name": "Merge All Together"
+            },
+            {
+                "parameters": {
+                    "jsCode": "// ------- functions -----------------------------------\nfunction buildSuitedPositionsIndex(allJobs, threshold = 80) {\n\n  // Step 1: collect all position matches across all jobs, weighted by recency\n  const positionScores = {};\n\n  for (const job of allJobs) {\n    if (!job.possiblePositions) continue;\n\n    // Recency weight — linear decay over 10 years, floor at 0.2\n    const yearsAgo       = job.yearsAgo || 0;\n    const recencyWeight  = Math.max(0.2, 1 - (yearsAgo * 0.05));\n    // yearsAgo=0  → weight=1.0  (current job)\n    // yearsAgo=3  → weight=0.76\n    // yearsAgo=5  → weight=0.60\n    // yearsAgo=10 → weight=0.20\n\n    for (const match of job.possiblePositions) {\n      const key = match.jobTitle.toLowerCase().trim();\n\n      if (!positionScores[key]) {\n        positionScores[key] = {\n          position:       match.jobTitle,\n          weightedScores: [],\n          seniorityLevels: [],\n          tailorInstructions: [],\n          bestMatchJob:   null,\n          bestMatchScore: 0\n        };\n      }\n\n      const weightedScore = match.matchPercentage * recencyWeight;\n\n      positionScores[key].weightedScores.push(weightedScore);\n      positionScores[key].seniorityLevels.push(match.seniorityLevel);\n      positionScores[key].tailorInstructions.push({\n        job:          job.company + ' — ' + job.jobTitle,\n        instructions: match.tailorInstructions,\n        weight:       recencyWeight\n      });\n\n      // Track which job gives the strongest match for this position\n      if (weightedScore > positionScores[key].bestMatchScore) {\n        positionScores[key].bestMatchScore = weightedScore;\n        positionScores[key].bestMatchJob   = job.company + ' — ' + job.title;\n      }\n    }\n  }\n\n  // Step 2: aggregate scores per position\n  const aggregated = Object.values(positionScores).map(p => {\n    const avgWeightedScore = p.weightedScores.reduce((a, b) => a + b, 0)\n                           / p.weightedScores.length;\n\n    // Seniority: take the highest level seen across jobs\n    const seniorityRank = { 'JUNIOR': 1, 'MIDLEVEL': 2, 'SENIOR': 3, 'LEAD': 4, 'PRINCIPAL': 5 };\n    const highestSeniority = p.seniorityLevels\n      .sort((a, b) => (seniorityRank[b] || 0) - (seniorityRank[a] || 0))[0];\n\n    // Tailor instructions: take the one from the highest-weighted job\n    const bestInstructions = p.tailorInstructions\n      .sort((a, b) => b.weight - a.weight)[0]?.instructions || '';\n\n    return {\n      position:           p.position,\n      score:              Math.round(avgWeightedScore),\n      best_match_job:     p.bestMatchJob,\n      seniority_level:    highestSeniority,\n      tailor_instructions: bestInstructions,\n      evidence_count:     p.weightedScores.length  // how many jobs support this position\n    };\n  });\n  \n  // Step 3: apply threshold and sort\n  return aggregated\n    .filter(p => p.score >= threshold)\n    .sort((a, b) => b.score - a.score);\n}\n// -----------------------------------------------------\n\n\n\nvar items = $input.all().map(item => item.json);\nvar result = {\n  personalInfo: items[0].personalInfo,\n  education: items[1].education,\n  workExperience: items[2].workExperience,\n  projects: items[3].projects,\n  certifications: items[4].certifications,\n  skills: items[5].skills,\n  locationRules: items[6].locationRules,\n};\n\nresult.quantifiedAchievementIndex = result.workExperience.flatMap(we => we.achievements);\nresult.suitedPositionsIndex = buildSuitedPositionsIndex(result.workExperience);\n\nreturn [{json: result}];"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    1264,
+                    196
+                ],
+                "id": "538b8a64-fdf2-442e-b1d1-8491a3055c0c",
+                "name": "merge into object"
+            },
+            {
+                "parameters": {
+                    "conditions": {
+                        "options": {
+                            "caseSensitive": true,
+                            "leftValue": "",
+                            "typeValidation": "strict",
+                            "version": 3
+                        },
+                        "conditions": [
+                            {
+                                "id": "dee445a0-6e83-4d0e-b243-296ca8ebd469",
+                                "leftValue": "={{ $json.achievements }}",
+                                "rightValue": "",
+                                "operator": {
+                                    "type": "array",
+                                    "operation": "empty",
+                                    "singleValue": true
+                                }
+                            }
+                        ],
+                        "combinator": "and"
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.if",
+                "typeVersion": 2.3,
+                "position": [
+                    624,
+                    1328
+                ],
+                "id": "db516728-5ac1-4ec1-b718-381c3603322e",
+                "name": "If"
+            },
+            {
+                "parameters": {
+                    "jsCode": "return [{json: {output:[]}}];"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    976,
+                    1204
+                ],
+                "id": "343cb66c-48a2-438d-a45d-f028fb7e72f5",
+                "name": "output empty achievements"
+            },
+            {
+                "parameters": {
+                    "jsCode": "var items = $input.all().map(item => item.json);\n\nreturn [{json: {education: items}}];"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    624,
+                    48
+                ],
+                "id": "acfb9944-6b1d-4cb1-aab2-67f017d2fabb",
+                "name": "merge into usable object1"
+            },
+            {
+                "parameters": {
+                    "jsCode": "var items = $input.all().map(item => item.json);\n\nreturn [{json: {workExperience: items}}];"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    624,
+                    736
+                ],
+                "id": "c99b1eda-f672-4694-aa66-77560419e903",
+                "name": "merge into usable object2"
+            },
+            {
+                "parameters": {
+                    "jsCode": "var items = $input.all().map(item => item.json);\n\nreturn [{json: {projects: items}}];"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    624,
+                    1892
+                ],
+                "id": "cf973ebf-6d1d-4f50-9c7c-9c9016d3533b",
+                "name": "merge into usable object3"
+            },
+            {
+                "parameters": {
+                    "jsCode": "function parseDate(str) {\n  const [month, year] = str.split(\"/\").map(Number);\n  return new Date(year, month - 1);\n}\n\nfunction normalize(str) {\n  return str.toLowerCase().trim();\n}\n\nfunction getYearsBetween(startDate, endDate) {\n  const start = parseDate(startDate);\n  const end = endDate ? parseDate(endDate) : new Date();\n\n  let years = end.getFullYear() - start.getFullYear();\n\n  const m1 = start.getMonth();\n  const m2 = end.getMonth();\n\n  if (m2 < m1 || (m2 === m1 && end.getDate() < start.getDate())) {\n    years--;\n  }\n\n  return Math.max(0, years);\n}\n\nfunction getTotalYearsOfExperience(jobs){\n  if (!jobs || jobs.length === 0) return 0;\n\n  let earliestStart = null;\n  let latestEnd = null;\n\n  jobs.forEach(job => {\n    const start = parseDate(job.startDate);\n    const end = job.endDate ? parseDate(job.endDate) : new Date(); // handle current job\n\n    if (!earliestStart || start < earliestStart) {\n      earliestStart = start;\n    }\n\n    if (!latestEnd || end > latestEnd) {\n      latestEnd = end;\n    }\n  });\n\n  if (!earliestStart || !latestEnd) return 0;\n\n  let years = latestEnd.getFullYear() - earliestStart.getFullYear();\n\n  // Adjust if the last year isn't fully completed\n  const m1 = earliestStart.getMonth();\n  const m2 = latestEnd.getMonth();\n\n  if (m2 < m1 || (m2 === m1 && latestEnd.getDate() < earliestStart.getDate())) {\n    years--;\n  }\n  return years;\n}\n\nfunction deriveSeniority(totalYears, hasLeadership, maxTeamSize, selfAssessed) {\n  // Self-assessed override takes priority if filled in\n  if (selfAssessed && selfAssessed.trim().length > 0) return selfAssessed;\n\n  if (totalYears >= 12 && maxTeamSize >= 8)  return 'Principal';\n  if (totalYears >= 10 && hasLeadership)      return 'Staff';\n  if (totalYears >= 7  && hasLeadership)      return 'Lead';\n  if (totalYears >= 7)                        return 'Senior';\n  if (totalYears >= 3)                        return 'Mid';\n  return 'Junior';\n}\n\nfunction getPrimaryAndSecondaryDomains(workExperiences) {\n  const domainWeightIndex = {};\n\n  workExperiences.forEach(job => {\n    if (!job.industry || !job.startDate) return;\n\n    const domain = normalize(job.industry);\n    const years = getYearsBetween(job.startDate, job.endDate);\n\n    if (!domainWeightIndex[domain]) {\n      domainWeightIndex[domain] = 0;\n    }\n\n    domainWeightIndex[domain] += years;\n  });\n\n  // Convert to sortable array\n  const sortedDomains = Object.entries(domainWeightIndex)\n    .sort((a, b) => b[1] - a[1]);\n  \n  return {\n    primaryDomain: sortedDomains[0]?.[0] || null,\n    secondaryDomains: sortedDomains.slice(1).map(([domain]) => domain)\n  };\n}\n\nfunction getStrongestTechnicalAreas(skills){\n  \n  const proficiencyWeight = {\n  'expert':       4,\n  'advanced':     3,\n  'intermediate': 2,\n  'basic':        1\n};\n\nconst categoryScores = {};\nfor (const skill of skills) {\n  const cat    = skill['category'];\n  const weight = proficiencyWeight[skill['proficiencyLevel']] || 0;\n  // Also weight by recency\n  const recencyMultiplier = \n    skill.recency === 'CURRENT'    ? 1.0 :\n    skill.recency === 'RECENT'     ? 0.7 :\n                                     0.3;\n\n  categoryScores[cat] = (categoryScores[cat] || 0) + (weight * recencyMultiplier);\n}\n\n// Top 3-4 categories by score\nreturn Object.entries(categoryScores)\n  .filter(([cat]) => cat.toLowerCase() !== 'soft skill' && cat.toLowerCase() !== 'methodology')\n  .sort((a, b) => b[1] - a[1])\n  .slice(0, 4)\n  .map(([cat]) => cat);\n}\n\nfunction getStrongestSoftSkills(skills){\n    const proficiencyWeight = {\n      'expert':       4,\n      'advanced':     3,\n      'intermediate': 2,\n      'basic':        1\n    };\n  return skills\n  .filter(s => s['category'].toLowerCase().trim() === 'soft skill')\n  .map(s => ({\n    name:   s.name,\n    score:  (proficiencyWeight[s.proficiencyLevel.toLowerCase().trim()] || 0)\n            * (s.recency === 'CURRENT' ? 1.0 : s.recency === 'RECENT' ? 0.7 : 0.3)\n  }))\n  .sort((a, b) => b.score - a.score)\n  .slice(0, 5)\n  .map(s => s.name);\n}\n\nfunction getIndustryExperience(workExperience){\n  return [\n  ...new Set(\n    workExperience\n      .map(job => job.industry)\n      .filter(Boolean)\n  )\n];\n}\n\nfunction hasLeadershipExperience(workExperiences) {\n  let hasLeadershipExperience = false;\n  let maxTeamSizeManaged = 0;\n\n  workExperiences.forEach(job => {\n    const direct = Number(job.directReports) || 0;\n    const indirect = Number(job.indirectReports) || 0;\n    const teamSize = direct + indirect;\n\n    if (teamSize > 0) {\n      hasLeadershipExperience = true;\n      maxTeamSizeManaged = Math.max(maxTeamSizeManaged, teamSize);\n      return;\n    }\n\n    // --- Fallback detection (if no report numbers provided) ---\n    const title = (job.jobTitle || \"\").toLowerCase();\n    const softSkills = (job.softSkills || []).map(s => s.toLowerCase());\n\n    const leadershipKeywords = [\n      \"lead\",\n      \"manager\",\n      \"head\",\n      \"director\"\n    ];\n\n    const skillIndicators = [\n      \"team leadership\",\n      \"mentoring\",\n      \"hiring\",\n      \"people management\"\n    ];\n\n    const titleSuggestsLeadership = leadershipKeywords.some(k => title.includes(k));\n    const skillsSuggestLeadership = skillIndicators.some(skill => softSkills.includes(skill));\n\n    if (titleSuggestsLeadership || skillsSuggestLeadership) {\n      hasLeadershipExperience = true;\n    }\n  });\n\n  return {\n    hasLeadershipExperience,\n    maxTeamSizeManaged\n  };\n}\n\nfunction getCareerTrajectory(workExperience){\n  const jobsByDate = [...workExperience]\n  .sort((a, b) => parseDate(a.startDate) \n                - parseDate(b.startDate));\n\nconst everManaged      = jobsByDate.some(j => \n  parseInt(j.directReports) > 0);\n\nconst recentlyManaging = jobsByDate\n  .slice(-2)\n  .some(j => parseInt(j.directReports) > 0);\n\nreturn\n  !everManaged          ? 'IC-track' :\n  recentlyManaging      ? 'Management-track' :\n                          'Mixed';\n}\n\nvar item = $input.all()[0].json;\n\nvar totalYearsOfExperience = getTotalYearsOfExperience(item.workExperience);\nvar primaryAndSecondaryDomains = getPrimaryAndSecondaryDomains(item.workExperience);\nvar strongestTechnicalAreas = getStrongestTechnicalAreas(item.skills.all);\nvar strongestSoftSkills = getStrongestSoftSkills(item.skills.all);\nvar industryExperience = getIndustryExperience(item.workExperience);\nvar leadershipExperienceData = hasLeadershipExperience(item.workExperience);\nvar seniorityLevel = deriveSeniority(totalYearsOfExperience, leadershipExperienceData.hasLeadershipExperience, leadershipExperienceData.maxTeamSizeManaged, false);\nvar careerTrajectory = getCareerTrajectory(item.workExperience);\n\nvar careerSummary = {\n  totalYearsOfExperience: totalYearsOfExperience,\n    seniorityLevel: seniorityLevel,\n    primaryDomain: primaryAndSecondaryDomains.primaryDomain,\n    secondaryDomains: primaryAndSecondaryDomains.secondaryDomains,\n    strongestTechnicalAreas: strongestTechnicalAreas,\n    strongestSoftSkills: strongestSoftSkills,\n    industryExperience: industryExperience,\n    leadershipExperience: leadershipExperienceData.hasLeadershipExperience,\n    maxTeamSizeManaged: leadershipExperienceData.maxTeamSizeManaged,\n    //notable_companies: [], -- remove for now\n    careerTrajectory: careerTrajectory\n};\n\nitem[\"careerSummary\"] = careerSummary;\n\nreturn [{json: item}];"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    1488,
+                    196
+                ],
+                "id": "b6fa67f3-2f80-4c92-bb1b-6fc73113bdf7",
+                "name": "Create Career Summary"
+            },
+            {
+                "parameters": {
+                    "path": "9a1f61a8-dc05-479b-9c06-f9cc7cc201bb",
+                    "authentication": "headerAuth",
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.webhook",
+                "typeVersion": 2.1,
+                "position": [
+                    -560,
+                    2096
+                ],
+                "id": "b6410bde-a957-4dde-a114-93c7e6cbae52",
+                "name": "Webhook",
+                "webhookId": "9a1f61a8-dc05-479b-9c06-f9cc7cc201bb",
+                "credentials": {
+                    "httpHeaderAuth": {
+                        "id": "b5X9J05nJzBK82X6",
+                        "name": "Header Auth account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "operation": "appendOrUpdate",
+                    "documentId": {
+                        "__rl": true,
+                        "value": "={{ $('Pipeline Variables').item.json.spreadsheetId }}",
+                        "mode": "id"
+                    },
+                    "sheetName": {
+                        "__rl": true,
+                        "value": 786919382,
+                        "mode": "list",
+                        "cachedResultName": "09_ProfileVector",
+                        "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-PEE7fJheDxxJMlS1PAvUglBAGDt3cChbqCAkVUeLdY/edit#gid=786919382"
+                    },
+                    "columns": {
+                        "mappingMode": "autoMapInputData",
+                        "value": {},
+                        "matchingColumns": [
+                            "FileId"
+                        ],
+                        "schema": [
+                            {
+                                "id": "FileId",
+                                "displayName": "FileId",
+                                "required": false,
+                                "defaultMatch": false,
+                                "display": true,
+                                "type": "string",
+                                "canBeUsedToMatch": true,
+                                "removed": false
+                            },
+                            {
+                                "id": "FileName",
+                                "displayName": "FileName",
+                                "required": false,
+                                "defaultMatch": false,
+                                "display": true,
+                                "type": "string",
+                                "canBeUsedToMatch": true,
+                                "removed": false
+                            },
+                            {
+                                "id": "VectorVersion",
+                                "displayName": "VectorVersion",
+                                "required": false,
+                                "defaultMatch": false,
+                                "display": true,
+                                "type": "string",
+                                "canBeUsedToMatch": true,
+                                "removed": false
+                            },
+                            {
+                                "id": "Created",
+                                "displayName": "Created",
+                                "required": false,
+                                "defaultMatch": false,
+                                "display": true,
+                                "type": "string",
+                                "canBeUsedToMatch": true,
+                                "removed": false
+                            }
+                        ],
+                        "attemptToConvertTypes": false,
+                        "convertFieldsToString": false
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.googleSheets",
+                "typeVersion": 4.7,
+                "position": [
+                    2384,
+                    196
+                ],
+                "id": "843ab16b-c513-42c7-adea-b86a92358670",
+                "name": "Update Profile Vector",
+                "credentials": {
+                    "googleSheetsOAuth2Api": {
+                        "id": "oYswFLQWLJz0WnPK",
+                        "name": "Google Sheets account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "jsCode": "var item = $input.all()[0].json;\n\nvar result = {\nKey: \"Value\",\nlastUpdated: $now.toISO(),\nprofileVersionHash: $now.toMillis(),\nskillsCount: item.skills.all.length,\njobsCount: item.workExperience.length,\nprojectsCount: item.projects.length,\nyearsOfExperience: item.careerSummary.totalYearsOfExperience,\npersonalInfo: item.personalInfo,\neducation: item.education,\nworkExperience: item.workExperience,\nprojects: item.projects,\ncertifications: item.certifications,\nskills: item.skills,\nlocationRules: item.locationRules,\nquantifiedAchievementIndex: item.quantifiedAchievementIndex,\nsuitedPositionsIndex: item.suitedPositionIndex,\ncareerSummary: item.careerSummary\n};\n\nvar now = $now.toISO();\nvar version = 'v1';\nvar fileName = `profile_vector_${now}_${version}.json`;\n\nresult.metadata = {\n  version: 'v1',\n  generatedAt: now,\n  fileName: fileName\n}\n\nvar profileVectorJson = JSON.stringify(result, null, 2);\n\nreturn [{\n  json: {\n    profileVectorJson,\n    fileName,\n    version,\n    now\n  },\n  binary: {\n    data: {\n      data: Buffer.from(profileVectorJson, 'utf8').toString('base64'),\n      mimeType: 'application/json',\n      fileName: fileName\n    }\n  }\n}];"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    1712,
+                    196
+                ],
+                "id": "910678dd-42c8-49fa-9d91-98b386cd1d38",
+                "name": "Prepare Data"
+            },
+            {
+                "parameters": {
+                    "name": "={{ $json.fileName }}",
+                    "driveId": {
+                        "__rl": true,
+                        "mode": "list",
+                        "value": "My Drive"
+                    },
+                    "folderId": {
+                        "__rl": true,
+                        "value": "1AMwdKY4CPGrsfhZ3YWTnjTlsGn2fMaoc",
+                        "mode": "list",
+                        "cachedResultName": "vectors",
+                        "cachedResultUrl": "https://drive.google.com/drive/folders/1AMwdKY4CPGrsfhZ3YWTnjTlsGn2fMaoc"
+                    },
+                    "options": {}
+                },
+                "type": "n8n-nodes-base.googleDrive",
+                "typeVersion": 3,
+                "position": [
+                    1936,
+                    196
+                ],
+                "id": "0b6374ed-5a62-41ac-8a04-411e4000ccb2",
+                "name": "Upload file",
+                "credentials": {
+                    "googleDriveOAuth2Api": {
+                        "id": "zUSpRXM5p8MF5y3t",
+                        "name": "Google Drive account"
+                    }
+                }
+            },
+            {
+                "parameters": {
+                    "jsCode": "return [{\n  json: {\n    FileId: $input.first().json.id,\n    FileName: $('Prepare Data').first().json.fileName,\n    VectorVersion: $('Prepare Data').first().json.version,\n    Created:$('Prepare Data').first().json.now\n  }\n}]"
+                },
+                "type": "n8n-nodes-base.code",
+                "typeVersion": 2,
+                "position": [
+                    2160,
+                    196
+                ],
+                "id": "09d48ea8-915e-49f5-b0c3-a9f50ca123bd",
+                "name": "Prepare Excel Row"
+            },
+            {
+                "parameters": {
+                    "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+                    "text": "={{ 'Your profile vector has been created. The vector file name: ' +  $('Prepare Data').first().json.fileName }}",
+                    "additionalFields": {}
+                },
+                "type": "n8n-nodes-base.telegram",
+                "typeVersion": 1.2,
+                "position": [
+                    2608,
+                    196
+                ],
+                "id": "e467eb1b-fef8-4292-8346-fa3290bc26bc",
+                "name": "Send a text message",
+                "webhookId": "8698b919-1cfe-4bea-8752-781b4cc3be57",
+                "credentials": {
+                    "telegramApi": {
+                        "id": "lLreiZVfejCCUrC5",
+                        "name": "Career Manager Telegram Account"
+                    }
+                }
+            }
+        ],
+        "connections": {
+            "When clicking ‘Execute workflow’": {
+                "main": [
+                    [
+                        {
+                            "node": "Pipeline Variables",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Pipeline Variables": {
+                "main": [
+                    [
+                        {
+                            "node": "Read personal info",
+                            "type": "main",
+                            "index": 0
+                        },
+                        {
+                            "node": "Read Education",
+                            "type": "main",
+                            "index": 0
+                        },
+                        {
+                            "node": "Read WorkExperience",
+                            "type": "main",
+                            "index": 0
+                        },
+                        {
+                            "node": "Read Projects",
+                            "type": "main",
+                            "index": 0
+                        },
+                        {
+                            "node": "Read Certifications",
+                            "type": "main",
+                            "index": 0
+                        },
+                        {
+                            "node": "Read Skills",
+                            "type": "main",
+                            "index": 0
+                        },
+                        {
+                            "node": "Read LocationRules",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Read WorkExperience": {
+                "main": [
+                    [
+                        {
+                            "node": "Process workExperience sheet",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Read personal info": {
+                "main": [
+                    [
+                        {
+                            "node": "Process personal info sheet",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Read Education": {
+                "main": [
+                    [
+                        {
+                            "node": "Process education sheet",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Read Projects": {
+                "main": [
+                    [
+                        {
+                            "node": "Process projects sheet",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Read Certifications": {
+                "main": [
+                    [
+                        {
+                            "node": "Process certifications sheet",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Read Skills": {
+                "main": [
+                    [
+                        {
+                            "node": "Process skills sheet",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Read LocationRules": {
+                "main": [
+                    [
+                        {
+                            "node": "Process locationRules sheet",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Process education sheet": {
+                "main": [
+                    [
+                        {
+                            "node": "Loop Over Education Entries",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Anthropic Chat Model": {
+                "ai_languageModel": [
+                    [
+                        {
+                            "node": "Strength Signal Calculator",
+                            "type": "ai_languageModel",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Structured Output Parser": {
+                "ai_outputParser": [
+                    [
+                        {
+                            "node": "Strength Signal Calculator",
+                            "type": "ai_outputParser",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Process workExperience sheet": {
+                "main": [
+                    [
+                        {
+                            "node": "Loop Over Work Experience",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Anthropic Chat Model1": {
+                "ai_languageModel": [
+                    [
+                        {
+                            "node": "Experience Achievement Evaluator",
+                            "type": "ai_languageModel",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Structured Output Parser1": {
+                "ai_outputParser": [
+                    [
+                        {
+                            "node": "Experience Achievement Evaluator",
+                            "type": "ai_outputParser",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Loop Over Education Entries": {
+                "main": [
+                    [
+                        {
+                            "node": "merge into usable object1",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ],
+                    [
+                        {
+                            "node": "Strength Signal Calculator",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Loop Over Work Experience": {
+                "main": [
+                    [
+                        {
+                            "node": "merge into usable object2",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ],
+                    [
+                        {
+                            "node": "If",
+                            "type": "main",
+                            "index": 0
+                        },
+                        {
+                            "node": "Role Estimator",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Combine Education Data": {
+                "main": [
+                    [
+                        {
+                            "node": "Loop Over Education Entries",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Strength Signal Calculator": {
+                "main": [
+                    [
+                        {
+                            "node": "Combine Education Data",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Structured Output Parser2": {
+                "ai_outputParser": [
+                    [
+                        {
+                            "node": "Role Estimator",
+                            "type": "ai_outputParser",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Anthropic Chat Model2": {
+                "ai_languageModel": [
+                    [
+                        {
+                            "node": "Role Estimator",
+                            "type": "ai_languageModel",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Role Estimator": {
+                "main": [
+                    [
+                        {
+                            "node": "Merge",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Merge": {
+                "main": [
+                    [
+                        {
+                            "node": "Combine Work Experience and Calculate Additional Parameters",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Combine Work Experience and Calculate Additional Parameters": {
+                "main": [
+                    [
+                        {
+                            "node": "Loop Over Work Experience",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Process projects sheet": {
+                "main": [
+                    [
+                        {
+                            "node": "Loop Over Projects",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "AI Agent": {
+                "main": [
+                    [
+                        {
+                            "node": "Prepare Project Data",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Anthropic Chat Model3": {
+                "ai_languageModel": [
+                    [
+                        {
+                            "node": "AI Agent",
+                            "type": "ai_languageModel",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Structured Output Parser3": {
+                "ai_outputParser": [
+                    [
+                        {
+                            "node": "AI Agent",
+                            "type": "ai_outputParser",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Loop Over Projects": {
+                "main": [
+                    [
+                        {
+                            "node": "merge into usable object3",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ],
+                    [
+                        {
+                            "node": "AI Agent",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Prepare Project Data": {
+                "main": [
+                    [
+                        {
+                            "node": "Loop Over Projects",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Process skills sheet": {
+                "main": [
+                    [
+                        {
+                            "node": "Group skills",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Experience Achievement Evaluator": {
+                "main": [
+                    [
+                        {
+                            "node": "Merge",
+                            "type": "main",
+                            "index": 1
+                        }
+                    ]
+                ]
+            },
+            "Process personal info sheet": {
+                "main": [
+                    [
+                        {
+                            "node": "Merge All Together",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Process certifications sheet": {
+                "main": [
+                    [
+                        {
+                            "node": "Merge All Together",
+                            "type": "main",
+                            "index": 4
+                        }
+                    ]
+                ]
+            },
+            "Group skills": {
+                "main": [
+                    [
+                        {
+                            "node": "Merge All Together",
+                            "type": "main",
+                            "index": 5
+                        }
+                    ]
+                ]
+            },
+            "Process locationRules sheet": {
+                "main": [
+                    [
+                        {
+                            "node": "Merge All Together",
+                            "type": "main",
+                            "index": 6
+                        }
+                    ]
+                ]
+            },
+            "Merge All Together": {
+                "main": [
+                    [
+                        {
+                            "node": "merge into object",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "If": {
+                "main": [
+                    [
+                        {
+                            "node": "output empty achievements",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ],
+                    [
+                        {
+                            "node": "Experience Achievement Evaluator",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "output empty achievements": {
+                "main": [
+                    [
+                        {
+                            "node": "Merge",
+                            "type": "main",
+                            "index": 1
+                        }
+                    ]
+                ]
+            },
+            "merge into usable object1": {
+                "main": [
+                    [
+                        {
+                            "node": "Merge All Together",
+                            "type": "main",
+                            "index": 1
+                        }
+                    ]
+                ]
+            },
+            "merge into usable object2": {
+                "main": [
+                    [
+                        {
+                            "node": "Merge All Together",
+                            "type": "main",
+                            "index": 2
+                        }
+                    ]
+                ]
+            },
+            "merge into usable object3": {
+                "main": [
+                    [
+                        {
+                            "node": "Merge All Together",
+                            "type": "main",
+                            "index": 3
+                        }
+                    ]
+                ]
+            },
+            "merge into object": {
+                "main": [
+                    [
+                        {
+                            "node": "Create Career Summary",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Webhook": {
+                "main": [
+                    [
+                        {
+                            "node": "Pipeline Variables",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Create Career Summary": {
+                "main": [
+                    [
+                        {
+                            "node": "Prepare Data",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Prepare Data": {
+                "main": [
+                    [
+                        {
+                            "node": "Upload file",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Upload file": {
+                "main": [
+                    [
+                        {
+                            "node": "Prepare Excel Row",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Prepare Excel Row": {
+                "main": [
+                    [
+                        {
+                            "node": "Update Profile Vector",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            },
+            "Update Profile Vector": {
+                "main": [
+                    [
+                        {
+                            "node": "Send a text message",
+                            "type": "main",
+                            "index": 0
+                        }
+                    ]
+                ]
+            }
+        },
+        "settings": {
+            "executionOrder": "v1",
+            "binaryMode": "separate",
+            "availableInMCP": false
+        },
+        "staticData": null,
+        "meta": {
+            "templateCredsSetupCompleted": true
+        },
+        "pinData": {},
+        "versionId": "0157c39f-e601-4928-992f-2658ebf7418a",
+        "activeVersionId": "0157c39f-e601-4928-992f-2658ebf7418a",
+        "triggerCount": 1,
+        "shared": [
+            {
+                "updatedAt": "2026-03-22T16:59:23.518Z",
+                "createdAt": "2026-03-22T16:59:23.518Z",
+                "role": "workflow:owner",
+                "workflowId": "oQOL10ZVVKVor07P",
+                "projectId": "FlGQaEMmWQfoeLfg"
+            }
+        ],
+        "activeVersion": {
+            "updatedAt": "2026-03-25T21:28:11.320Z",
+            "createdAt": "2026-03-25T21:24:06.163Z",
+            "versionId": "0157c39f-e601-4928-992f-2658ebf7418a",
+            "workflowId": "oQOL10ZVVKVor07P",
+            "nodes": [
+                {
+                    "parameters": {},
+                    "type": "n8n-nodes-base.manualTrigger",
+                    "typeVersion": 1,
+                    "position": [
+                        -560,
+                        2284
+                    ],
+                    "id": "992d193d-4d0c-46d5-aac2-87a0db90ca93",
+                    "name": "When clicking ‘Execute workflow’"
+                },
+                {
+                    "parameters": {
+                        "assignments": {
+                            "assignments": [
+                                {
+                                    "id": "c28056be-3232-4e82-9c07-93e1f463bdfb",
+                                    "name": "spreadsheetId",
+                                    "value": "={{ $env.SPREADSHEET_ID }}",
+                                    "type": "string"
+                                },
+                                {
+                                    "id": "139e1894-a667-4063-b75a-95bec98e404c",
+                                    "name": "version",
+                                    "value": "=v1",
+                                    "type": "string"
+                                }
+                            ]
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.set",
+                    "typeVersion": 3.4,
+                    "position": [
+                        -336,
+                        2188
+                    ],
+                    "id": "abda5200-35fb-4097-a31d-7193efbc4196",
+                    "name": "Pipeline Variables"
+                },
+                {
+                    "parameters": {
+                        "documentId": {
+                            "__rl": true,
+                            "value": "={{ $json.spreadsheetId }}",
+                            "mode": "id"
+                        },
+                        "sheetName": {
+                            "__rl": true,
+                            "value": 385470286,
+                            "mode": "list",
+                            "cachedResultName": "01_PersonalInfo",
+                            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-PEE7fJheDxxJMlS1PAvUglBAGDt3cChbqCAkVUeLdY/edit#gid=385470286"
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.googleSheets",
+                    "typeVersion": 4.7,
+                    "position": [
+                        336,
+                        -144
+                    ],
+                    "id": "fcfb685f-774e-4497-868a-f947ccd34a86",
+                    "name": "Read personal info",
+                    "credentials": {
+                        "googleSheetsOAuth2Api": {
+                            "id": "oYswFLQWLJz0WnPK",
+                            "name": "Google Sheets account"
+                        }
+                    }
+                },
+                {
+                    "parameters": {
+                        "documentId": {
+                            "__rl": true,
+                            "value": "={{ $json.spreadsheetId }}",
+                            "mode": "id"
+                        },
+                        "sheetName": {
+                            "__rl": true,
+                            "value": 934655228,
+                            "mode": "list",
+                            "cachedResultName": "02_Education",
+                            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-PEE7fJheDxxJMlS1PAvUglBAGDt3cChbqCAkVUeLdY/edit#gid=934655228"
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.googleSheets",
+                    "typeVersion": 4.7,
+                    "position": [
+                        -112,
+                        224
+                    ],
+                    "id": "3c86c176-9062-4163-b07b-d175bb09e96e",
+                    "name": "Read Education",
+                    "credentials": {
+                        "googleSheetsOAuth2Api": {
+                            "id": "oYswFLQWLJz0WnPK",
+                            "name": "Google Sheets account"
+                        }
+                    }
+                },
+                {
+                    "parameters": {
+                        "documentId": {
+                            "__rl": true,
+                            "value": "={{ $json.spreadsheetId }}",
+                            "mode": "id"
+                        },
+                        "sheetName": {
+                            "__rl": true,
+                            "value": 1579690124,
+                            "mode": "list",
+                            "cachedResultName": "03_WorkExperience",
+                            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-PEE7fJheDxxJMlS1PAvUglBAGDt3cChbqCAkVUeLdY/edit#gid=1579690124"
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.googleSheets",
+                    "typeVersion": 4.7,
+                    "position": [
+                        -112,
+                        1204
+                    ],
+                    "id": "b17a0d6e-3850-41af-902c-6399717de177",
+                    "name": "Read WorkExperience",
+                    "credentials": {
+                        "googleSheetsOAuth2Api": {
+                            "id": "oYswFLQWLJz0WnPK",
+                            "name": "Google Sheets account"
+                        }
+                    }
+                },
+                {
+                    "parameters": {
+                        "documentId": {
+                            "__rl": true,
+                            "value": "={{ $json.spreadsheetId }}",
+                            "mode": "id"
+                        },
+                        "sheetName": {
+                            "__rl": true,
+                            "value": 1949082360,
+                            "mode": "list",
+                            "cachedResultName": "04_PersonalProjects",
+                            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-PEE7fJheDxxJMlS1PAvUglBAGDt3cChbqCAkVUeLdY/edit#gid=1949082360"
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.googleSheets",
+                    "typeVersion": 4.7,
+                    "position": [
+                        -112,
+                        2188
+                    ],
+                    "id": "6ade4747-a3d4-439a-81e9-748a78614452",
+                    "name": "Read Projects",
+                    "credentials": {
+                        "googleSheetsOAuth2Api": {
+                            "id": "oYswFLQWLJz0WnPK",
+                            "name": "Google Sheets account"
+                        }
+                    }
+                },
+                {
+                    "parameters": {
+                        "documentId": {
+                            "__rl": true,
+                            "value": "={{ $json.spreadsheetId }}",
+                            "mode": "id"
+                        },
+                        "sheetName": {
+                            "__rl": true,
+                            "value": 442577924,
+                            "mode": "list",
+                            "cachedResultName": "05_Certifications",
+                            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-PEE7fJheDxxJMlS1PAvUglBAGDt3cChbqCAkVUeLdY/edit#gid=442577924"
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.googleSheets",
+                    "typeVersion": 4.7,
+                    "position": [
+                        336,
+                        2580
+                    ],
+                    "id": "481c918e-2164-46c0-a35e-e893856c89a2",
+                    "name": "Read Certifications",
+                    "credentials": {
+                        "googleSheetsOAuth2Api": {
+                            "id": "oYswFLQWLJz0WnPK",
+                            "name": "Google Sheets account"
+                        }
+                    }
+                },
+                {
+                    "parameters": {
+                        "documentId": {
+                            "__rl": true,
+                            "value": "={{ $json.spreadsheetId }}",
+                            "mode": "id"
+                        },
+                        "sheetName": {
+                            "__rl": true,
+                            "value": 1873709157,
+                            "mode": "list",
+                            "cachedResultName": "06_SkillsMaster",
+                            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-PEE7fJheDxxJMlS1PAvUglBAGDt3cChbqCAkVUeLdY/edit#gid=1873709157"
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.googleSheets",
+                    "typeVersion": 4.7,
+                    "position": [
+                        112,
+                        2772
+                    ],
+                    "id": "324ecab3-b243-4c04-810a-0c9b8422df02",
+                    "name": "Read Skills",
+                    "credentials": {
+                        "googleSheetsOAuth2Api": {
+                            "id": "oYswFLQWLJz0WnPK",
+                            "name": "Google Sheets account"
+                        }
+                    }
+                },
+                {
+                    "parameters": {
+                        "documentId": {
+                            "__rl": true,
+                            "value": "={{ $json.spreadsheetId }}",
+                            "mode": "id"
+                        },
+                        "sheetName": {
+                            "__rl": true,
+                            "value": 1774944626,
+                            "mode": "list",
+                            "cachedResultName": "07_LocationRules",
+                            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-PEE7fJheDxxJMlS1PAvUglBAGDt3cChbqCAkVUeLdY/edit#gid=1774944626"
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.googleSheets",
+                    "typeVersion": 4.7,
+                    "position": [
+                        336,
+                        2964
+                    ],
+                    "id": "de6a3f6f-9ced-4e21-abc7-4ed04d6977c6",
+                    "name": "Read LocationRules",
+                    "credentials": {
+                        "googleSheetsOAuth2Api": {
+                            "id": "oYswFLQWLJz0WnPK",
+                            "name": "Google Sheets account"
+                        }
+                    }
+                },
+                {
+                    "parameters": {
+                        "jsCode": "const items = $input.all().map(item => item.json);\n\nvar personalInfo = {};\n\nfunction applyRow(data, row) {\n  const pathParts = row.col_4.split(\"_\");\n\n  let current = data;\n\n  pathParts.forEach((part, index) => {\n    const isArray = part.endsWith(\"[]\");\n    const key = isArray ? part.slice(0, -2) : part;\n    const isLast = index === pathParts.length - 1;\n\n    // Ensure structure exists\n    if (!current[key]) {\n      current[key] = isArray ? [] : {};\n    }\n\n    if (isLast) {\n      let value = row.col_2;\n\n      if (isArray) {\n        // Split values if final is array\n        const values = value.split(\"|\").map(v => v.trim());\n        current[key].push(...values);\n      } else {\n        current[key] = value;\n      }\n    } else {\n      if (isArray) {\n        // Ensure at least one object exists in array\n        if (current[key].length === 0) {\n          current[key].push({});\n        }\n        // Move into the last object in the array\n        current = current[key][current[key].length - 1];\n      } else {\n        current = current[key];\n      }\n    }\n  });\n\n  return data;\n}\n\nvar hobbiesStarted = false;\nvar hobbiesStartAt = 0;\n\nfor(var item of items){\n  if(item[\"row_number\"] < 5) continue;\n  \n  if(item[\"PERSONAL INFORMATION\"].includes(\"HOBBIES & INTERESTS\")){\n    hobbiesStarted = true;\n    hobbiesStartAt = item[\"row_number\"] + 2;\n    continue;\n  }\n\n  if(hobbiesStarted){\n    if(item[\"row_number\"] >= hobbiesStartAt){\n      var parameterName = item[\"col_4\"].replace(\"[]\",\"\");\n      if(!personalInfo[parameterName]) \n        personalInfo[parameterName] = [];\n      personalInfo[parameterName].push({\n        description: item[\"PERSONAL INFORMATION\"],\n        relevance: item[\"col_2\"],\n        inclusion: item[\"col_3\"]\n      });\n    }\n    continue;\n  }\n  \n  if(item[\"col_4\"].trim() == \"\") continue;\n  if(item[\"PERSONAL INFORMATION\"] == \"Field\") continue;\n  applyRow(personalInfo, item);\n}\n\nreturn [{ json: { personalInfo: personalInfo } }];"
+                    },
+                    "type": "n8n-nodes-base.code",
+                    "typeVersion": 2,
+                    "position": [
+                        624,
+                        -144
+                    ],
+                    "id": "8720e28a-28ad-45bc-bb57-f40e4f45de82",
+                    "name": "Process personal info sheet"
+                },
+                {
+                    "parameters": {
+                        "jsCode": "var items = $input.all().map(item => item.json);\n\nvar headers = items.filter(item => item[\"row_number\"] == 5)[0];\n\nvar result = [];\n\nfunction applyRow(data, headers, row) {\n\n  Object.keys(headers).forEach(colKey => {\n       if(colKey == \"row_number\") return;\n      const pathParts = headers[colKey].split(\"_\");\n      let current = data;\n\n      pathParts.forEach((part, index) => {\n        const isArray = part.endsWith(\"[]\");\n        const key = isArray ? part.slice(0, -2) : part;\n        const isLast = index === pathParts.length - 1;\n    \n        // Ensure structure exists\n        if (!current[key]) {\n          current[key] = isArray ? [] : {};\n        }\n    \n        if (isLast) {\n          let value = row[colKey];\n    \n          if (isArray) {\n            // Split values if final is array\n            const values = value.split(\"|\").map(v => v.trim());\n            current[key].push(...values);\n          } else {\n            current[key] = value;\n          }\n        } else {\n          if (isArray) {\n            // Ensure at least one object exists in array\n            if (current[key].length === 0) {\n              current[key].push({});\n            }\n            // Move into the last object in the array\n            current = current[key][current[key].length - 1];\n          } else {\n            current = current[key];\n          }\n        }\n      });\n  });\n\n}\n\nfor(const item of items.filter(item => item[\"row_number\"] > 5)){\n  var education = {};\n   applyRow(education, headers, item);\n  result.push({json: education });\n}\n\nreturn result;"
+                    },
+                    "type": "n8n-nodes-base.code",
+                    "typeVersion": 2,
+                    "position": [
+                        112,
+                        224
+                    ],
+                    "id": "aae0237c-2ddd-4ad7-97f1-f97b49b43f24",
+                    "name": "Process education sheet"
+                },
+                {
+                    "parameters": {
+                        "jsCode": "var items = $input.all().map(item => item.json);\n\nvar headers = items.filter(item => item[\"row_number\"] == 5)[0];\n\nvar result = [];\n\nfunction applyRow(data, headers, row) {\n\n  Object.keys(headers).forEach(colKey => {\n       if(colKey == \"row_number\") return;\n      const pathParts = headers[colKey].split(\"_\");\n\n    console.log([colKey, pathParts, row[colKey]]);\n    \n      let current = data;\n\n      pathParts.forEach((part, index) => {\n        const isArray = part.endsWith(\"[]\");\n        const key = isArray ? part.slice(0, -2) : part;\n        const isLast = index === pathParts.length - 1;\n    \n        // Ensure structure exists\n        if (!current[key]) {\n          current[key] = isArray ? [] : {};\n        }\n    \n        if (isLast) {\n          let value = row[colKey];\n    \n          if (isArray) {\n            // Split values if final is array\n            const values = value.split(\"|\").map(v => v.trim());\n            current[key].push(...values);\n          } else {\n            current[key] = value;\n          }\n        } else {\n          if (isArray) {\n            // Ensure at least one object exists in array\n            if (current[key].length === 0) {\n              current[key].push({});\n            }\n            // Move into the last object in the array\n            current = current[key][current[key].length - 1];\n          } else {\n            current = current[key];\n          }\n        }\n      });\n  });\n\n}\n\nfor(const item of items.filter(item => item[\"row_number\"] > 5 && item[\"col_2\"].trim() != \"\")){\n   var job = {};\n   applyRow(job, headers, item);\n  job.achievements = job.achievements.filter(a => a);\n  result.push({json: job});\n}\n\nreturn result;"
+                    },
+                    "type": "n8n-nodes-base.code",
+                    "typeVersion": 2,
+                    "position": [
+                        112,
+                        1204
+                    ],
+                    "id": "7b86d363-4c57-4827-96c2-8d43d4d2bbdd",
+                    "name": "Process workExperience sheet"
+                },
+                {
+                    "parameters": {
+                        "jsCode": "var items = $input.all().map(item => item.json);\n\nvar headers = items.filter(item => item[\"row_number\"] == 5)[0];\n\nvar result = [];\n\nfunction applyRow(data, headers, row) {\n\n  Object.keys(headers).forEach(colKey => {\n       if(colKey == \"row_number\") return;\n      const pathParts = headers[colKey].split(\"_\");\n\n    console.log([colKey, pathParts, row[colKey]]);\n    \n      let current = data;\n\n      pathParts.forEach((part, index) => {\n        const isArray = part.endsWith(\"[]\");\n        const key = isArray ? part.slice(0, -2) : part;\n        const isLast = index === pathParts.length - 1;\n    \n        // Ensure structure exists\n        if (!current[key]) {\n          current[key] = isArray ? [] : {};\n        }\n    \n        if (isLast) {\n          let value = row[colKey];\n    \n          if (isArray) {\n            // Split values if final is array\n            const values = value.split(\"|\").map(v => v.trim());\n            current[key].push(...values);\n          } else {\n            current[key] = value;\n          }\n        } else {\n          if (isArray) {\n            // Ensure at least one object exists in array\n            if (current[key].length === 0) {\n              current[key].push({});\n            }\n            // Move into the last object in the array\n            current = current[key][current[key].length - 1];\n          } else {\n            current = current[key];\n          }\n        }\n      });\n  });\n\n}\n\nfor(const item of items.filter(item => item[\"row_number\"] > 5)){\n   var project = {};\n   applyRow(project, headers, item);\n  result.push({json: project});\n}\n\nreturn result;"
+                    },
+                    "type": "n8n-nodes-base.code",
+                    "typeVersion": 2,
+                    "position": [
+                        112,
+                        2188
+                    ],
+                    "id": "1bbec35a-b21c-4751-af4b-727a17496e82",
+                    "name": "Process projects sheet"
+                },
+                {
+                    "parameters": {
+                        "jsCode": "var items = $input.all().map(item => item.json);\n\nvar headers = items.filter(item => item[\"row_number\"] == 5)[0];\n\nvar result = [];\n\nfunction applyRow(data, headers, row) {\n\n  Object.keys(headers).forEach(colKey => {\n       if(colKey == \"row_number\") return;\n      const pathParts = headers[colKey].split(\"_\");\n\n    console.log([colKey, pathParts, row[colKey]]);\n    \n      let current = data;\n\n      pathParts.forEach((part, index) => {\n        const isArray = part.endsWith(\"[]\");\n        const key = isArray ? part.slice(0, -2) : part;\n        const isLast = index === pathParts.length - 1;\n    \n        // Ensure structure exists\n        if (!current[key]) {\n          current[key] = isArray ? [] : {};\n        }\n    \n        if (isLast) {\n          let value = row[colKey];\n    \n          if (isArray) {\n            // Split values if final is array\n            const values = value.split(\"|\").map(v => v.trim());\n            current[key].push(...values);\n          } else {\n            current[key] = value;\n          }\n        } else {\n          if (isArray) {\n            // Ensure at least one object exists in array\n            if (current[key].length === 0) {\n              current[key].push({});\n            }\n            // Move into the last object in the array\n            current = current[key][current[key].length - 1];\n          } else {\n            current = current[key];\n          }\n        }\n      });\n  });\n\n}\n\nfor(const item of items.filter(item => item[\"row_number\"] > 5)){\n   var cert = {};\n   applyRow(cert, headers, item);\n  result.push(cert);\n}\n\nreturn [{json: {certifications: result}}];"
+                    },
+                    "type": "n8n-nodes-base.code",
+                    "typeVersion": 2,
+                    "position": [
+                        624,
+                        2580
+                    ],
+                    "id": "f37b85ac-342f-4fdb-91cc-d03b4681df7b",
+                    "name": "Process certifications sheet",
+                    "alwaysOutputData": true
+                },
+                {
+                    "parameters": {
+                        "jsCode": "var items = $input.all().map(item => item.json);\n\nvar headers = items.filter(item => item[\"row_number\"] == 5)[0];\n\nvar result = [];\n\nfunction applyRow(data, headers, row) {\n\n  Object.keys(headers).forEach(colKey => {\n       if(colKey == \"row_number\") return;\n      const pathParts = headers[colKey].split(\"_\");\n\n    console.log([colKey, pathParts, row[colKey]]);\n    \n      let current = data;\n\n      pathParts.forEach((part, index) => {\n        const isArray = part.endsWith(\"[]\");\n        const key = isArray ? part.slice(0, -2) : part;\n        const isLast = index === pathParts.length - 1;\n    \n        // Ensure structure exists\n        if (!current[key]) {\n          current[key] = isArray ? [] : {};\n        }\n    \n        if (isLast) {\n          let value = row[colKey];\n    \n          if (isArray) {\n            // Split values if final is array\n            const values = value.split(\"|\").map(v => v.trim());\n            current[key].push(...values);\n          } else {\n            current[key] = value;\n          }\n        } else {\n          if (isArray) {\n            // Ensure at least one object exists in array\n            if (current[key].length === 0) {\n              current[key].push({});\n            }\n            // Move into the last object in the array\n            current = current[key][current[key].length - 1];\n          } else {\n            current = current[key];\n          }\n        }\n      });\n  });\n\n}\n\nfunction checkIfAlreadyIncluded(item){\n   return result.some(r => {\n     return r.json.name.toLowerCase() == item[\"col_2\"];\n   })\n}\n\nfunction unify(skill){\n  skill.category = skill.category.toLowerCase().trim();\n  skill.proficiencyLevel = skill.proficiencyLevel.toLowerCase().trim();\n  return skill;\n}\n\nfor(const item of items.filter(item => item[\"row_number\"] > 5 && item[\"col_2\"].trim() != \"\" )){\n  if(!checkIfAlreadyIncluded(item)){\n   var skill = {};\n   applyRow(skill, headers, item);\n   result.push({json: unify(skill)});\n  }\n}\n\nreturn result;"
+                    },
+                    "type": "n8n-nodes-base.code",
+                    "typeVersion": 2,
+                    "position": [
+                        336,
+                        2772
+                    ],
+                    "id": "3128110a-5196-4de1-8008-eb2736e22266",
+                    "name": "Process skills sheet"
+                },
+                {
+                    "parameters": {
+                        "jsCode": "var items = $input.all().map(item => item.json);\n\nvar headers = items.filter(item => item[\"row_number\"] == 5)[0];\n\nvar result = [];\n\nfunction applyRow(data, headers, row) {\n\n  Object.keys(headers).forEach(colKey => {\n       if(colKey == \"row_number\") return;\n      const pathParts = headers[colKey].split(\"_\");\n\n    console.log([colKey, pathParts, row[colKey]]);\n    \n      let current = data;\n\n      pathParts.forEach((part, index) => {\n        const isArray = part.endsWith(\"[]\");\n        const key = isArray ? part.slice(0, -2) : part;\n        const isLast = index === pathParts.length - 1;\n    \n        // Ensure structure exists\n        if (!current[key]) {\n          current[key] = isArray ? [] : {};\n        }\n    \n        if (isLast) {\n          let value = row[colKey];\n    \n          if (isArray) {\n            // Split values if final is array\n            const values = value.split(\"|\").map(v => v.trim());\n            current[key].push(...values);\n          } else {\n            current[key] = value;\n          }\n        } else {\n          if (isArray) {\n            // Ensure at least one object exists in array\n            if (current[key].length === 0) {\n              current[key].push({});\n            }\n            // Move into the last object in the array\n            current = current[key][current[key].length - 1];\n          } else {\n            current = current[key];\n          }\n        }\n      });\n  });\n\n}\n\nfor(const item of items.filter(item => item[\"row_number\"] > 5)){\n   var locationRule = {};\n   applyRow(locationRule, headers, item);\n  result.push(locationRule);\n}\n\nreturn [{json: {locationRules: result}}]"
+                    },
+                    "type": "n8n-nodes-base.code",
+                    "typeVersion": 2,
+                    "position": [
+                        624,
+                        2964
+                    ],
+                    "id": "22b89edc-5192-4025-bd63-003a7d44bc59",
+                    "name": "Process locationRules sheet"
+                },
+                {
+                    "parameters": {
+                        "model": {
+                            "__rl": true,
+                            "mode": "list",
+                            "value": "claude-sonnet-4-5-20250929",
+                            "cachedResultName": "Claude Sonnet 4.5"
+                        },
+                        "options": {}
+                    },
+                    "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+                    "typeVersion": 1.3,
+                    "position": [
+                        568,
+                        464
+                    ],
+                    "id": "1a4d7cf4-e2e8-470f-b067-138710baa02d",
+                    "name": "Anthropic Chat Model",
+                    "credentials": {
+                        "anthropicApi": {
+                            "id": "uw2xlWVJZVXjn8Qy",
+                            "name": "Anthropic account"
+                        }
+                    }
+                },
+                {
+                    "parameters": {
+                        "jsonSchemaExample": "{\n  \"strengthSignal\": \"string\"\n}"
+                    },
+                    "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+                    "typeVersion": 1.3,
+                    "position": [
+                        696,
+                        464
+                    ],
+                    "id": "ac6fc6c0-dff0-42a4-ba54-2ab93661cb8c",
+                    "name": "Structured Output Parser"
+                },
+                {
+                    "parameters": {
+                        "model": {
+                            "__rl": true,
+                            "mode": "list",
+                            "value": "claude-sonnet-4-5-20250929",
+                            "cachedResultName": "Claude Sonnet 4.5"
+                        },
+                        "options": {}
+                    },
+                    "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+                    "typeVersion": 1.3,
+                    "position": [
+                        920,
+                        1724
+                    ],
+                    "id": "9d8ae902-dc82-4dbf-81ac-24c06fd64edc",
+                    "name": "Anthropic Chat Model1",
+                    "credentials": {
+                        "anthropicApi": {
+                            "id": "uw2xlWVJZVXjn8Qy",
+                            "name": "Anthropic account"
+                        }
+                    }
+                },
+                {
+                    "parameters": {
+                        "jsonSchemaExample": "[\n  {\n    \"achievement\": \"string\",\n    \"impactLevel\": \"string\",\n    \"hasMetric\": true,\n    \"metricValue\": \"string\",\n    \"skillTags\": [\"string\"]\n  }\n]"
+                    },
+                    "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+                    "typeVersion": 1.3,
+                    "position": [
+                        1048,
+                        1724
+                    ],
+                    "id": "b0088bbe-4a5d-481b-9f27-5c0e80d1f213",
+                    "name": "Structured Output Parser1"
+                },
+                {
+                    "parameters": {
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.splitInBatches",
+                    "typeVersion": 3,
+                    "position": [
+                        336,
+                        224
+                    ],
+                    "id": "5bd57f28-bc4b-449b-9bc8-841e00fb0a2c",
+                    "name": "Loop Over Education Entries"
+                },
+                {
+                    "parameters": {
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.splitInBatches",
+                    "typeVersion": 3,
+                    "position": [
+                        336,
+                        1204
+                    ],
+                    "id": "02f60e7e-21f6-4134-931e-a343e487acd5",
+                    "name": "Loop Over Work Experience"
+                },
+                {
+                    "parameters": {
+                        "jsCode": "var data = $('Loop Over Education Entries').all()[0];\nconsole.log(data);\ndata.json[\"strengthSignal\"] = $input.all()[0].json.output.strengthSignal;\nreturn data;"
+                    },
+                    "type": "n8n-nodes-base.code",
+                    "typeVersion": 2,
+                    "position": [
+                        976,
+                        468
+                    ],
+                    "id": "7c862457-2325-4b8d-acdc-92012732a191",
+                    "name": "Combine Education Data"
+                },
+                {
+                    "parameters": {
+                        "promptType": "define",
+                        "text": "=Evaluate the following education background and return JSON in the rewuired format \"{\n  \"strengthSignal\": \"HIGH\" | \"MEDIUM\" | \"LOW\"\n}\":\n\nDegree Level: {{$json.degreeLevel}}\nField: {{$json.field}}\nInstitution: {{$json.institution}}\nGrade: {{$json.grade}}\nDissertation: {{$json.dissertationTitle}}\nModules: {{$json.keyModules}}\n\nReturn the strength signal.",
+                        "hasOutputParser": true,
+                        "options": {
+                            "systemMessage": "You are a strict JSON-only classification engine.\n\nYour task is to evaluate a candidate's education background and return a strength signal.\n\nYou must:\n- Analyze the provided education data carefully\n- Output ONLY valid JSON (no explanations, no extra text)\n- Always follow the exact schema\n\nClassification rules:\n\nReturn \"HIGH\" if:\n- Degree is relevant to technical or specialized field (e.g. Computer Science, Engineering, Data Science)\n- Recognized or formal higher education (Bachelor, Master, PhD or equivalent)\n- Strong academic indicators (good grade, thesis, relevant modules)\n\nReturn \"MEDIUM\" if:\n- Degree is somewhat relevant OR\n- Education is incomplete OR\n- Field is less directly related but still useful\n\nReturn \"LOW\" if:\n- Education is missing, irrelevant, or very weak\n\nOutput format (STRICT JSON):\n{\n  \"strengthSignal\": \"HIGH\" | \"MEDIUM\" | \"LOW\"\n}\n\nRules:\n- Do NOT include explanations\n- Do NOT include markdown\n- Do NOT include trailing commas\n- Do NOT output anything except JSON"
+                        }
+                    },
+                    "type": "@n8n/n8n-nodes-langchain.agent",
+                    "typeVersion": 3.1,
+                    "position": [
+                        560,
+                        240
+                    ],
+                    "id": "08020da8-aa39-44f5-9bae-c3846df7df84",
+                    "name": "Strength Signal Calculator"
+                },
+                {
+                    "parameters": {
+                        "promptType": "define",
+                        "text": "=Analyze the following job experience and suggest suitable roles.\n\nFor each role, also include a short instruction on how this experience should be presented when applying for THAT specific role.\n\nJob Title: {{$json.jobTitle}}\nCompany / Industry: {{$json.company}} ({{$json.industry}})\nDuration: {{$json.startDate}} - {{$json.endDate}}\n\nTech Stack:\n{{$json.techStack}}\n\nResponsibilities:\n{{$json.responsibilities}}\n\n{{$json.achievements.length > 0 ? \"Achievements:\" : \"\"}}\n{{$json.achievements.length > 0 ? $json.achievements : \"\"}}\n\nSoft Skills:\n{{$json.softSkills}}\n\nReturn suitable roles with role-specific tailoring instructions.",
+                        "hasOutputParser": true,
+                        "options": {
+                            "systemMessage": "You are a strict JSON-only career matching and CV tailoring engine.\n\nYour task is to:\n1. Analyze a single job experience\n2. Infer a list of standardized job roles the candidate is suited for\n3. Provide a single, role-specific CV framing instruction for each role\n\nYou must:\n- Base all reasoning ONLY on the provided data\n- Return 3–6 realistic, standardized job titles\n- Provide ONE tailored instruction per role, aligned with that role\n- Output ONLY valid JSON\n\n-------------------------------------\nFIELD DEFINITIONS\n-------------------------------------\n\n1. jobTitle:\n- Must be a standardized, widely used job title\n- Examples: \"Software Engineer\", \"Graphics Engineer\", \"Machine Learning Engineer\", \"Research Engineer\"\n- Do NOT invent niche or unusual titles\n\n2. matchPercentage:\n- Integer from 0 to 100\n- 90–100 → very strong direct match\n- 70–89 → strong transferable match\n- 50–69 → partial match\n\n3. seniorityLevel:\n- Must be one of:\n  \"JUNIOR\", \"MIDLEVEL\", \"SENIOR\", \"PRINCIPAL\"\n- Base on:\n  - experience duration\n  - complexity of work\n  - leadership signals\n\n4. tailorInstructions:\n- A single string\n- Must describe how this experience should be presented when applying for the SAME role as \"jobTitle\"\n- Must be concise (1–3 sentences)\n- Must include:\n  - what to emphasize\n  - which achievements or skills to highlight\n  - positioning strategy\n\n-------------------------------------\nRULES\n-------------------------------------\n\n- Output MUST be a JSON array\n- Do NOT include explanations\n- Do NOT include markdown\n- Do NOT include trailing commas\n- Do NOT hallucinate experience outside the provided data\n- Tailoring must be grounded in actual responsibilities and achievements\n- Prefer widely recognized job titles (LinkedIn/Indeed standard)\n\n-------------------------------------\nOUTPUT FORMAT\n-------------------------------------\n\n[\n  {\n    \"jobTitle\": \"string\",\n    \"matchPercentage\": number,\n    \"seniorityLevel\": \"JUNIOR\" | \"MIDLEVEL\" | \"SENIOR\" | \"PRINCIPAL\",\n    \"tailorInstructions\": \"string\"\n  }\n]"
+                        }
+                    },
+                    "type": "@n8n/n8n-nodes-langchain.agent",
+                    "typeVersion": 3.1,
+                    "position": [
+                        912,
+                        804
+                    ],
+                    "id": "e160318e-1374-49f1-b25a-f9733370963c",
+                    "name": "Role Estimator"
+                },
+                {
+                    "parameters": {
+                        "jsonSchemaExample": "[{  \n  \"jobTitle\": \"string\",\n  \"matchPercentage\": 50,\n  \"seniorityLevel\": \"string\",\n   \"tailorInstructions\": \"string\"\n}]"
+                    },
+                    "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+                    "typeVersion": 1.3,
+                    "position": [
+                        1048,
+                        1028
+                    ],
+                    "id": "5a2727d4-47ea-4228-a229-3967942286f0",
+                    "name": "Structured Output Parser2"
+                },
+                {
+                    "parameters": {
+                        "model": {
+                            "__rl": true,
+                            "mode": "list",
+                            "value": "claude-sonnet-4-5-20250929",
+                            "cachedResultName": "Claude Sonnet 4.5"
+                        },
+                        "options": {}
+                    },
+                    "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+                    "typeVersion": 1.3,
+                    "position": [
+                        920,
+                        1028
+                    ],
+                    "id": "6d6b5878-e30b-4812-9d51-db0fc328ea59",
+                    "name": "Anthropic Chat Model2",
+                    "credentials": {
+                        "anthropicApi": {
+                            "id": "uw2xlWVJZVXjn8Qy",
+                            "name": "Anthropic account"
+                        }
+                    }
+                },
+                {
+                    "parameters": {},
+                    "type": "n8n-nodes-base.merge",
+                    "typeVersion": 3.2,
+                    "position": [
+                        1264,
+                        1180
+                    ],
+                    "id": "c1e41e4e-dc58-47b9-a2a9-26b868c7d8fa",
+                    "name": "Merge"
+                },
+                {
+                    "parameters": {
+                        "jsCode": "function getYearDifference(dateStr) {\n  const [month, year] = dateStr.split('/').map(Number);\n\n  // JS months are 0-based (0 = January)\n  const date = new Date(year, month - 1);\n\n  const now = new Date();\n\n  let diff = now.getFullYear() - date.getFullYear();\n\n  // Adjust if current month is before the given month\n  if (now.getMonth() < (month - 1)) {\n    diff--;\n  }\n\n  return diff;\n}\n\n\nvar items = $input.all();\n\nvar possiblePositions = items[0].json.output;\nvar achievements = items[1].json.output;\nvar workExperienceObject = $(\"Loop Over Work Experience\").all()[0].json;\n\nvar isCurrent = workExperienceObject.endDate.toUpperCase() == \"PRESENT\";\nvar yearsAgo = 0;\nif(!isCurrent){\n  yearsAgo = getYearDifference(workExperienceObject.endDate);\n}\n\nworkExperienceObject.achievements = achievements;\nworkExperienceObject.possiblePositions = possiblePositions;\nworkExperienceObject.isCurrent = isCurrent;\nworkExperienceObject.yearsAgo = yearsAgo;\n\nreturn [{ json: workExperienceObject }];"
+                    },
+                    "type": "n8n-nodes-base.code",
+                    "typeVersion": 2,
+                    "position": [
+                        1488,
+                        1452
+                    ],
+                    "id": "94f138e2-5a41-404f-a756-4b8f269854d8",
+                    "name": "Combine Work Experience and Calculate Additional Parameters"
+                },
+                {
+                    "parameters": {
+                        "promptType": "define",
+                        "text": "=Analyze the following personal project:\n\nProject Name: {{$json.name}}\nType: {{$json.type}}\nDuration: {{$json.startDate}} - {{$json.endDate}}\nStatus: {{$json.status}}\n\nTech Stack:\n{{$json.techStack}}\n\nDescription:\n{{$json.narrative}}\n\nReturn the evaluation.",
+                        "hasOutputParser": true,
+                        "options": {
+                            "systemMessage": "You are a strict JSON-only evaluator of technical personal projects.\n\nYour task is to analyze a personal project and extract:\n- key strengths demonstrated\n- impact signals\n- an overall strength signal\n\nYou must:\n- Base all reasoning ONLY on the provided data\n- Be objective and consistent\n- Output ONLY valid JSON\n\n-------------------------------------\nFIELD DEFINITIONS\n-------------------------------------\n\n1. keyStrengthsDemonstrated:\n- Array of short phrases (3–8 items)\n- Can include both technical and soft skills\n- Examples:\n  \"system design\", \"API development\", \"automation\", \"problem solving\", \"ownership\", \"integration\", \"DevOps\"\n- Keep each item concise (1–3 words preferred)\n\n2. impactSignals:\n- Array of concrete signals indicating impact or value\n- Focus on:\n  - real-world usage (even personal)\n  - automation / time savings\n  - complexity of system\n  - integration of multiple systems\n  - scalability or robustness\n- Examples:\n  \"automates document classification\",\n  \"integrates multiple data sources\",\n  \"reduces manual effort\",\n  \"end-to-end system ownership\"\n\n3. strengthSignal:\n- One of:\n  \"HIGH\", \"MEDIUM\", \"LOW\"\n\nClassification rules:\n\nHIGH:\n- Complex system (multiple components, integrations, automation)\n- Clear real-world use\n- Strong ownership and end-to-end implementation\n- Demonstrates multiple relevant engineering skills\n\nMEDIUM:\n- Moderate complexity or partial implementation\n- Some practical use but limited scope\n- Demonstrates a few relevant skills\n\nLOW:\n- Simple or tutorial-like project\n- Limited real-world relevance\n- Minimal complexity or ownership\n\n-------------------------------------\nRULES\n-------------------------------------\n\n- Output MUST be valid JSON\n- Do NOT include explanations\n- Do NOT include markdown\n- Do NOT include trailing commas\n- Do NOT hallucinate missing information\n- Be conservative: only include strengths clearly supported by the data\n\n-------------------------------------\nOUTPUT FORMAT\n-------------------------------------\n\n{\n  \"keyStrengthsDemonstrated\": [\"string\"],\n  \"impactSignals\": [\"string\"],\n  \"strengthSignal\": \"HIGH\" | \"MEDIUM\" | \"LOW\"\n}"
+                        }
+                    },
+                    "type": "@n8n/n8n-nodes-langchain.agent",
+                    "typeVersion": 3.1,
+                    "position": [
+                        560,
+                        2084
+                    ],
+                    "id": "8781aca7-8573-4454-a595-8cb891f7e871",
+                    "name": "AI Agent"
+                },
+                {
+                    "parameters": {
+                        "model": {
+                            "__rl": true,
+                            "mode": "list",
+                            "value": "claude-sonnet-4-5-20250929",
+                            "cachedResultName": "Claude Sonnet 4.5"
+                        },
+                        "options": {}
+                    },
+                    "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+                    "typeVersion": 1.3,
+                    "position": [
+                        568,
+                        2308
+                    ],
+                    "id": "46a826f7-3dda-495d-8b6e-5f01fe8777e2",
+                    "name": "Anthropic Chat Model3",
+                    "credentials": {
+                        "anthropicApi": {
+                            "id": "uw2xlWVJZVXjn8Qy",
+                            "name": "Anthropic account"
+                        }
+                    }
+                },
+                {
+                    "parameters": {
+                        "jsonSchemaExample": "{\n  \"keyStrengthsDemonstrated\": [\"string\"],\n  \"impactSignals\": [\"string\"],\n  \"strengthSignal\": \"string\"\n}"
+                    },
+                    "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+                    "typeVersion": 1.3,
+                    "position": [
+                        696,
+                        2308
+                    ],
+                    "id": "d2e2f9f7-d877-4b06-8bd5-302376fd65c8",
+                    "name": "Structured Output Parser3"
+                },
+                {
+                    "parameters": {
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.splitInBatches",
+                    "typeVersion": 3,
+                    "position": [
+                        336,
+                        2188
+                    ],
+                    "id": "0db9a32f-0a19-492f-ae8f-e2b9333b13d4",
+                    "name": "Loop Over Projects"
+                },
+                {
+                    "parameters": {
+                        "jsCode": "var project = $(\"Loop Over Projects\").all()[0].json;\nvar additionalData = $input.all()[0].json.output;\nreturn [{json: {...project,...additionalData}}];"
+                    },
+                    "type": "n8n-nodes-base.code",
+                    "typeVersion": 2,
+                    "position": [
+                        976,
+                        2288
+                    ],
+                    "id": "9e0ffc17-ed79-4d90-b634-88de58e4d962",
+                    "name": "Prepare Project Data"
+                },
+                {
+                    "parameters": {
+                        "jsCode": "var items = $input.all().map(x => x.json);\n\n/*\nfor each skill:\n\t\tadd recency: \"CURRENT|RECENT|HISTORICAL\"\n\t\tadd to each array, if 0-1 years back it is current, if it is 2-4 is recent, 5+ is historical\n*/\n\nvar currentMaxYearsAgo = 1;\nvar recentMaxYearsAgo = 2;\n\nfunction yearsAgo(item) {\n    return new Date().getFullYear() - parseInt(item.lastUsed, 10);\n}\n\nfunction isCurrent(item) {\n    return yearsAgo(item) <= currentMaxYearsAgo;\n}\n\nfunction isRecent(item) {\n    return yearsAgo(item) <= recentMaxYearsAgo;\n}\n\nvar result = {\n  \t\tbyProficiency: {},\n\t\tbyCategory: {},\n\t\tcurrent: [],\n\t\trecent: [],\n\t\thistorical: [],\n        all: []\n}\n\nfor(var item of items){\n    result.all.push(item);\n    if(!Object.hasOwn(result.byProficiency, item.proficiencyLevel)){\n      result.byProficiency[item.proficiencyLevel] = [];\n    }\n    result.byProficiency[item.proficiencyLevel].push(item);\n\n    if(!Object.hasOwn(result.byCategory, item.category)){\n      result.byCategory[item.category] = [];\n    }\n    result.byCategory[item.category].push(item);\n\n    if(isCurrent(item)){\n      item.recency = \"CURRENT\";\n      result.current.push(item);\n    }\n    else if(isRecent(item)){\n       item.recency = \"RECENT\";\n      result.recent.push(item);     \n    }\n    else {\n      item.recency = \"HISTORICAL\";\n      result.historical.push(item);    \n    } \n}\n\nreturn [{ json: {skills: result} }];\n"
+                    },
+                    "type": "n8n-nodes-base.code",
+                    "typeVersion": 2,
+                    "position": [
+                        624,
+                        2772
+                    ],
+                    "id": "7225b9e4-7063-4486-9718-6ccee86eca2a",
+                    "name": "Group skills"
+                },
+                {
+                    "parameters": {
+                        "promptType": "define",
+                        "text": "=Analyze the following job experience and achievements.\n\nJob Title: {{$json.jobTitle}}\nCompany / Industry: {{$json.company}} ({{$json.industry}})\nDuration: {{$json.startDate}} - {{$json.endDate}}\n\nTech Stack:\n{{$json.techStack}}\n\nResponsibilities:\n{{$json.responsibilities}}\n\nAchievements:\n{{$json.achievements}}\n\nReturn structured JSON data for each achievement.",
+                        "hasOutputParser": true,
+                        "options": {
+                            "systemMessage": "You are a strict JSON-only extraction and classification engine.\n\nYour task is to analyze a list of professional achievements and return structured insights for EACH achievement.\n\nYou must:\n- Process every achievement independently\n- Return a JSON array with one object per achievement\n- Preserve the EXACT original achievement text\n- Output ONLY valid JSON (no explanations, no markdown, no comments)\n\nField definitions:\n\n1. impactLevel:\n- \"HIGH\" → Major, measurable, or organization-wide impact (e.g. large performance improvements, system redesigns, strategic contributions)\n- \"MEDIUM\" → Noticeable improvement or meaningful contribution, but limited scope\n- \"LOW\" → Minor or unclear impact\n\n2. hasMetric:\n- true → if the achievement contains quantifiable or clearly implied measurable results (time reduction, %, scale improvement, etc.)\n- false → otherwise\n\n3. metricValue:\n- Extract the metric if present (e.g. \"80%\", \"2x faster\", \"reduced from weeks to days\")\n- If no metric exists, return an empty string \"\"\n\n4. skillTags:\n- Provide a concise list of relevant skills required to achieve the result\n- Include both technical and soft skills when applicable\n- Use short phrases (e.g. \"distributed systems\", \"C++\", \"leadership\", \"system design\")\n\nOutput format (STRICT JSON):\n[\n  {\n    \"achievement\": \"string\",\n    \"impactLevel\": \"HIGH\" | \"MEDIUM\" | \"LOW\",\n    \"hasMetric\": true | false,\n    \"metricValue\": \"string\",\n    \"skillTags\": [\"string\"]\n  }\n]\n\nRules:\n- Do NOT omit any achievement\n- Do NOT modify achievement text\n- Do NOT include trailing commas\n- Do NOT output anything except JSON\n- If no achievements are listed, output an empty array"
+                        }
+                    },
+                    "type": "@n8n/n8n-nodes-langchain.agent",
+                    "typeVersion": 3.1,
+                    "position": [
+                        912,
+                        1500
+                    ],
+                    "id": "79f5c427-b508-4d80-9e60-81f728f90225",
+                    "name": "Experience Achievement Evaluator"
+                },
+                {
+                    "parameters": {
+                        "numberInputs": 7
+                    },
+                    "type": "n8n-nodes-base.merge",
+                    "typeVersion": 3.2,
+                    "position": [
+                        976,
+                        116
+                    ],
+                    "id": "b35eaa3f-431c-48dc-8dcf-61bbc8069a37",
+                    "name": "Merge All Together"
+                },
+                {
+                    "parameters": {
+                        "jsCode": "// ------- functions -----------------------------------\nfunction buildSuitedPositionsIndex(allJobs, threshold = 80) {\n\n  // Step 1: collect all position matches across all jobs, weighted by recency\n  const positionScores = {};\n\n  for (const job of allJobs) {\n    if (!job.possiblePositions) continue;\n\n    // Recency weight — linear decay over 10 years, floor at 0.2\n    const yearsAgo       = job.yearsAgo || 0;\n    const recencyWeight  = Math.max(0.2, 1 - (yearsAgo * 0.05));\n    // yearsAgo=0  → weight=1.0  (current job)\n    // yearsAgo=3  → weight=0.76\n    // yearsAgo=5  → weight=0.60\n    // yearsAgo=10 → weight=0.20\n\n    for (const match of job.possiblePositions) {\n      const key = match.jobTitle.toLowerCase().trim();\n\n      if (!positionScores[key]) {\n        positionScores[key] = {\n          position:       match.jobTitle,\n          weightedScores: [],\n          seniorityLevels: [],\n          tailorInstructions: [],\n          bestMatchJob:   null,\n          bestMatchScore: 0\n        };\n      }\n\n      const weightedScore = match.matchPercentage * recencyWeight;\n\n      positionScores[key].weightedScores.push(weightedScore);\n      positionScores[key].seniorityLevels.push(match.seniorityLevel);\n      positionScores[key].tailorInstructions.push({\n        job:          job.company + ' — ' + job.jobTitle,\n        instructions: match.tailorInstructions,\n        weight:       recencyWeight\n      });\n\n      // Track which job gives the strongest match for this position\n      if (weightedScore > positionScores[key].bestMatchScore) {\n        positionScores[key].bestMatchScore = weightedScore;\n        positionScores[key].bestMatchJob   = job.company + ' — ' + job.title;\n      }\n    }\n  }\n\n  // Step 2: aggregate scores per position\n  const aggregated = Object.values(positionScores).map(p => {\n    const avgWeightedScore = p.weightedScores.reduce((a, b) => a + b, 0)\n                           / p.weightedScores.length;\n\n    // Seniority: take the highest level seen across jobs\n    const seniorityRank = { 'JUNIOR': 1, 'MIDLEVEL': 2, 'SENIOR': 3, 'LEAD': 4, 'PRINCIPAL': 5 };\n    const highestSeniority = p.seniorityLevels\n      .sort((a, b) => (seniorityRank[b] || 0) - (seniorityRank[a] || 0))[0];\n\n    // Tailor instructions: take the one from the highest-weighted job\n    const bestInstructions = p.tailorInstructions\n      .sort((a, b) => b.weight - a.weight)[0]?.instructions || '';\n\n    return {\n      position:           p.position,\n      score:              Math.round(avgWeightedScore),\n      best_match_job:     p.bestMatchJob,\n      seniority_level:    highestSeniority,\n      tailor_instructions: bestInstructions,\n      evidence_count:     p.weightedScores.length  // how many jobs support this position\n    };\n  });\n  \n  // Step 3: apply threshold and sort\n  return aggregated\n    .filter(p => p.score >= threshold)\n    .sort((a, b) => b.score - a.score);\n}\n// -----------------------------------------------------\n\n\n\nvar items = $input.all().map(item => item.json);\nvar result = {\n  personalInfo: items[0].personalInfo,\n  education: items[1].education,\n  workExperience: items[2].workExperience,\n  projects: items[3].projects,\n  certifications: items[4].certifications,\n  skills: items[5].skills,\n  locationRules: items[6].locationRules,\n};\n\nresult.quantifiedAchievementIndex = result.workExperience.flatMap(we => we.achievements);\nresult.suitedPositionsIndex = buildSuitedPositionsIndex(result.workExperience);\n\nreturn [{json: result}];"
+                    },
+                    "type": "n8n-nodes-base.code",
+                    "typeVersion": 2,
+                    "position": [
+                        1264,
+                        196
+                    ],
+                    "id": "538b8a64-fdf2-442e-b1d1-8491a3055c0c",
+                    "name": "merge into object"
+                },
+                {
+                    "parameters": {
+                        "conditions": {
+                            "options": {
+                                "caseSensitive": true,
+                                "leftValue": "",
+                                "typeValidation": "strict",
+                                "version": 3
+                            },
+                            "conditions": [
+                                {
+                                    "id": "dee445a0-6e83-4d0e-b243-296ca8ebd469",
+                                    "leftValue": "={{ $json.achievements }}",
+                                    "rightValue": "",
+                                    "operator": {
+                                        "type": "array",
+                                        "operation": "empty",
+                                        "singleValue": true
+                                    }
+                                }
+                            ],
+                            "combinator": "and"
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.if",
+                    "typeVersion": 2.3,
+                    "position": [
+                        624,
+                        1328
+                    ],
+                    "id": "db516728-5ac1-4ec1-b718-381c3603322e",
+                    "name": "If"
+                },
+                {
+                    "parameters": {
+                        "jsCode": "return [{json: {output:[]}}];"
+                    },
+                    "type": "n8n-nodes-base.code",
+                    "typeVersion": 2,
+                    "position": [
+                        976,
+                        1204
+                    ],
+                    "id": "343cb66c-48a2-438d-a45d-f028fb7e72f5",
+                    "name": "output empty achievements"
+                },
+                {
+                    "parameters": {
+                        "jsCode": "var items = $input.all().map(item => item.json);\n\nreturn [{json: {education: items}}];"
+                    },
+                    "type": "n8n-nodes-base.code",
+                    "typeVersion": 2,
+                    "position": [
+                        624,
+                        48
+                    ],
+                    "id": "acfb9944-6b1d-4cb1-aab2-67f017d2fabb",
+                    "name": "merge into usable object1"
+                },
+                {
+                    "parameters": {
+                        "jsCode": "var items = $input.all().map(item => item.json);\n\nreturn [{json: {workExperience: items}}];"
+                    },
+                    "type": "n8n-nodes-base.code",
+                    "typeVersion": 2,
+                    "position": [
+                        624,
+                        736
+                    ],
+                    "id": "c99b1eda-f672-4694-aa66-77560419e903",
+                    "name": "merge into usable object2"
+                },
+                {
+                    "parameters": {
+                        "jsCode": "var items = $input.all().map(item => item.json);\n\nreturn [{json: {projects: items}}];"
+                    },
+                    "type": "n8n-nodes-base.code",
+                    "typeVersion": 2,
+                    "position": [
+                        624,
+                        1892
+                    ],
+                    "id": "cf973ebf-6d1d-4f50-9c7c-9c9016d3533b",
+                    "name": "merge into usable object3"
+                },
+                {
+                    "parameters": {
+                        "jsCode": "function parseDate(str) {\n  const [month, year] = str.split(\"/\").map(Number);\n  return new Date(year, month - 1);\n}\n\nfunction normalize(str) {\n  return str.toLowerCase().trim();\n}\n\nfunction getYearsBetween(startDate, endDate) {\n  const start = parseDate(startDate);\n  const end = endDate ? parseDate(endDate) : new Date();\n\n  let years = end.getFullYear() - start.getFullYear();\n\n  const m1 = start.getMonth();\n  const m2 = end.getMonth();\n\n  if (m2 < m1 || (m2 === m1 && end.getDate() < start.getDate())) {\n    years--;\n  }\n\n  return Math.max(0, years);\n}\n\nfunction getTotalYearsOfExperience(jobs){\n  if (!jobs || jobs.length === 0) return 0;\n\n  let earliestStart = null;\n  let latestEnd = null;\n\n  jobs.forEach(job => {\n    const start = parseDate(job.startDate);\n    const end = job.endDate ? parseDate(job.endDate) : new Date(); // handle current job\n\n    if (!earliestStart || start < earliestStart) {\n      earliestStart = start;\n    }\n\n    if (!latestEnd || end > latestEnd) {\n      latestEnd = end;\n    }\n  });\n\n  if (!earliestStart || !latestEnd) return 0;\n\n  let years = latestEnd.getFullYear() - earliestStart.getFullYear();\n\n  // Adjust if the last year isn't fully completed\n  const m1 = earliestStart.getMonth();\n  const m2 = latestEnd.getMonth();\n\n  if (m2 < m1 || (m2 === m1 && latestEnd.getDate() < earliestStart.getDate())) {\n    years--;\n  }\n  return years;\n}\n\nfunction deriveSeniority(totalYears, hasLeadership, maxTeamSize, selfAssessed) {\n  // Self-assessed override takes priority if filled in\n  if (selfAssessed && selfAssessed.trim().length > 0) return selfAssessed;\n\n  if (totalYears >= 12 && maxTeamSize >= 8)  return 'Principal';\n  if (totalYears >= 10 && hasLeadership)      return 'Staff';\n  if (totalYears >= 7  && hasLeadership)      return 'Lead';\n  if (totalYears >= 7)                        return 'Senior';\n  if (totalYears >= 3)                        return 'Mid';\n  return 'Junior';\n}\n\nfunction getPrimaryAndSecondaryDomains(workExperiences) {\n  const domainWeightIndex = {};\n\n  workExperiences.forEach(job => {\n    if (!job.industry || !job.startDate) return;\n\n    const domain = normalize(job.industry);\n    const years = getYearsBetween(job.startDate, job.endDate);\n\n    if (!domainWeightIndex[domain]) {\n      domainWeightIndex[domain] = 0;\n    }\n\n    domainWeightIndex[domain] += years;\n  });\n\n  // Convert to sortable array\n  const sortedDomains = Object.entries(domainWeightIndex)\n    .sort((a, b) => b[1] - a[1]);\n  \n  return {\n    primaryDomain: sortedDomains[0]?.[0] || null,\n    secondaryDomains: sortedDomains.slice(1).map(([domain]) => domain)\n  };\n}\n\nfunction getStrongestTechnicalAreas(skills){\n  \n  const proficiencyWeight = {\n  'expert':       4,\n  'advanced':     3,\n  'intermediate': 2,\n  'basic':        1\n};\n\nconst categoryScores = {};\nfor (const skill of skills) {\n  const cat    = skill['category'];\n  const weight = proficiencyWeight[skill['proficiencyLevel']] || 0;\n  // Also weight by recency\n  const recencyMultiplier = \n    skill.recency === 'CURRENT'    ? 1.0 :\n    skill.recency === 'RECENT'     ? 0.7 :\n                                     0.3;\n\n  categoryScores[cat] = (categoryScores[cat] || 0) + (weight * recencyMultiplier);\n}\n\n// Top 3-4 categories by score\nreturn Object.entries(categoryScores)\n  .filter(([cat]) => cat.toLowerCase() !== 'soft skill' && cat.toLowerCase() !== 'methodology')\n  .sort((a, b) => b[1] - a[1])\n  .slice(0, 4)\n  .map(([cat]) => cat);\n}\n\nfunction getStrongestSoftSkills(skills){\n    const proficiencyWeight = {\n      'expert':       4,\n      'advanced':     3,\n      'intermediate': 2,\n      'basic':        1\n    };\n  return skills\n  .filter(s => s['category'].toLowerCase().trim() === 'soft skill')\n  .map(s => ({\n    name:   s.name,\n    score:  (proficiencyWeight[s.proficiencyLevel.toLowerCase().trim()] || 0)\n            * (s.recency === 'CURRENT' ? 1.0 : s.recency === 'RECENT' ? 0.7 : 0.3)\n  }))\n  .sort((a, b) => b.score - a.score)\n  .slice(0, 5)\n  .map(s => s.name);\n}\n\nfunction getIndustryExperience(workExperience){\n  return [\n  ...new Set(\n    workExperience\n      .map(job => job.industry)\n      .filter(Boolean)\n  )\n];\n}\n\nfunction hasLeadershipExperience(workExperiences) {\n  let hasLeadershipExperience = false;\n  let maxTeamSizeManaged = 0;\n\n  workExperiences.forEach(job => {\n    const direct = Number(job.directReports) || 0;\n    const indirect = Number(job.indirectReports) || 0;\n    const teamSize = direct + indirect;\n\n    if (teamSize > 0) {\n      hasLeadershipExperience = true;\n      maxTeamSizeManaged = Math.max(maxTeamSizeManaged, teamSize);\n      return;\n    }\n\n    // --- Fallback detection (if no report numbers provided) ---\n    const title = (job.jobTitle || \"\").toLowerCase();\n    const softSkills = (job.softSkills || []).map(s => s.toLowerCase());\n\n    const leadershipKeywords = [\n      \"lead\",\n      \"manager\",\n      \"head\",\n      \"director\"\n    ];\n\n    const skillIndicators = [\n      \"team leadership\",\n      \"mentoring\",\n      \"hiring\",\n      \"people management\"\n    ];\n\n    const titleSuggestsLeadership = leadershipKeywords.some(k => title.includes(k));\n    const skillsSuggestLeadership = skillIndicators.some(skill => softSkills.includes(skill));\n\n    if (titleSuggestsLeadership || skillsSuggestLeadership) {\n      hasLeadershipExperience = true;\n    }\n  });\n\n  return {\n    hasLeadershipExperience,\n    maxTeamSizeManaged\n  };\n}\n\nfunction getCareerTrajectory(workExperience){\n  const jobsByDate = [...workExperience]\n  .sort((a, b) => parseDate(a.startDate) \n                - parseDate(b.startDate));\n\nconst everManaged      = jobsByDate.some(j => \n  parseInt(j.directReports) > 0);\n\nconst recentlyManaging = jobsByDate\n  .slice(-2)\n  .some(j => parseInt(j.directReports) > 0);\n\nreturn\n  !everManaged          ? 'IC-track' :\n  recentlyManaging      ? 'Management-track' :\n                          'Mixed';\n}\n\nvar item = $input.all()[0].json;\n\nvar totalYearsOfExperience = getTotalYearsOfExperience(item.workExperience);\nvar primaryAndSecondaryDomains = getPrimaryAndSecondaryDomains(item.workExperience);\nvar strongestTechnicalAreas = getStrongestTechnicalAreas(item.skills.all);\nvar strongestSoftSkills = getStrongestSoftSkills(item.skills.all);\nvar industryExperience = getIndustryExperience(item.workExperience);\nvar leadershipExperienceData = hasLeadershipExperience(item.workExperience);\nvar seniorityLevel = deriveSeniority(totalYearsOfExperience, leadershipExperienceData.hasLeadershipExperience, leadershipExperienceData.maxTeamSizeManaged, false);\nvar careerTrajectory = getCareerTrajectory(item.workExperience);\n\nvar careerSummary = {\n  totalYearsOfExperience: totalYearsOfExperience,\n    seniorityLevel: seniorityLevel,\n    primaryDomain: primaryAndSecondaryDomains.primaryDomain,\n    secondaryDomains: primaryAndSecondaryDomains.secondaryDomains,\n    strongestTechnicalAreas: strongestTechnicalAreas,\n    strongestSoftSkills: strongestSoftSkills,\n    industryExperience: industryExperience,\n    leadershipExperience: leadershipExperienceData.hasLeadershipExperience,\n    maxTeamSizeManaged: leadershipExperienceData.maxTeamSizeManaged,\n    //notable_companies: [], -- remove for now\n    careerTrajectory: careerTrajectory\n};\n\nitem[\"careerSummary\"] = careerSummary;\n\nreturn [{json: item}];"
+                    },
+                    "type": "n8n-nodes-base.code",
+                    "typeVersion": 2,
+                    "position": [
+                        1488,
+                        196
+                    ],
+                    "id": "b6fa67f3-2f80-4c92-bb1b-6fc73113bdf7",
+                    "name": "Create Career Summary"
+                },
+                {
+                    "parameters": {
+                        "path": "9a1f61a8-dc05-479b-9c06-f9cc7cc201bb",
+                        "authentication": "headerAuth",
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.webhook",
+                    "typeVersion": 2.1,
+                    "position": [
+                        -560,
+                        2096
+                    ],
+                    "id": "b6410bde-a957-4dde-a114-93c7e6cbae52",
+                    "name": "Webhook",
+                    "webhookId": "9a1f61a8-dc05-479b-9c06-f9cc7cc201bb",
+                    "credentials": {
+                        "httpHeaderAuth": {
+                            "id": "b5X9J05nJzBK82X6",
+                            "name": "Header Auth account"
+                        }
+                    }
+                },
+                {
+                    "parameters": {
+                        "operation": "appendOrUpdate",
+                        "documentId": {
+                            "__rl": true,
+                            "value": "={{ $('Pipeline Variables').item.json.spreadsheetId }}",
+                            "mode": "id"
+                        },
+                        "sheetName": {
+                            "__rl": true,
+                            "value": 786919382,
+                            "mode": "list",
+                            "cachedResultName": "09_ProfileVector",
+                            "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1-PEE7fJheDxxJMlS1PAvUglBAGDt3cChbqCAkVUeLdY/edit#gid=786919382"
+                        },
+                        "columns": {
+                            "mappingMode": "autoMapInputData",
+                            "value": {},
+                            "matchingColumns": [
+                                "FileId"
+                            ],
+                            "schema": [
+                                {
+                                    "id": "FileId",
+                                    "displayName": "FileId",
+                                    "required": false,
+                                    "defaultMatch": false,
+                                    "display": true,
+                                    "type": "string",
+                                    "canBeUsedToMatch": true,
+                                    "removed": false
+                                },
+                                {
+                                    "id": "FileName",
+                                    "displayName": "FileName",
+                                    "required": false,
+                                    "defaultMatch": false,
+                                    "display": true,
+                                    "type": "string",
+                                    "canBeUsedToMatch": true,
+                                    "removed": false
+                                },
+                                {
+                                    "id": "VectorVersion",
+                                    "displayName": "VectorVersion",
+                                    "required": false,
+                                    "defaultMatch": false,
+                                    "display": true,
+                                    "type": "string",
+                                    "canBeUsedToMatch": true,
+                                    "removed": false
+                                },
+                                {
+                                    "id": "Created",
+                                    "displayName": "Created",
+                                    "required": false,
+                                    "defaultMatch": false,
+                                    "display": true,
+                                    "type": "string",
+                                    "canBeUsedToMatch": true,
+                                    "removed": false
+                                }
+                            ],
+                            "attemptToConvertTypes": false,
+                            "convertFieldsToString": false
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.googleSheets",
+                    "typeVersion": 4.7,
+                    "position": [
+                        2384,
+                        196
+                    ],
+                    "id": "843ab16b-c513-42c7-adea-b86a92358670",
+                    "name": "Update Profile Vector",
+                    "credentials": {
+                        "googleSheetsOAuth2Api": {
+                            "id": "oYswFLQWLJz0WnPK",
+                            "name": "Google Sheets account"
+                        }
+                    }
+                },
+                {
+                    "parameters": {
+                        "jsCode": "var item = $input.all()[0].json;\n\nvar result = {\nKey: \"Value\",\nlastUpdated: $now.toISO(),\nprofileVersionHash: $now.toMillis(),\nskillsCount: item.skills.all.length,\njobsCount: item.workExperience.length,\nprojectsCount: item.projects.length,\nyearsOfExperience: item.careerSummary.totalYearsOfExperience,\npersonalInfo: item.personalInfo,\neducation: item.education,\nworkExperience: item.workExperience,\nprojects: item.projects,\ncertifications: item.certifications,\nskills: item.skills,\nlocationRules: item.locationRules,\nquantifiedAchievementIndex: item.quantifiedAchievementIndex,\nsuitedPositionsIndex: item.suitedPositionIndex,\ncareerSummary: item.careerSummary\n};\n\nvar now = $now.toISO();\nvar version = 'v1';\nvar fileName = `profile_vector_${now}_${version}.json`;\n\nresult.metadata = {\n  version: 'v1',\n  generatedAt: now,\n  fileName: fileName\n}\n\nvar profileVectorJson = JSON.stringify(result, null, 2);\n\nreturn [{\n  json: {\n    profileVectorJson,\n    fileName,\n    version,\n    now\n  },\n  binary: {\n    data: {\n      data: Buffer.from(profileVectorJson, 'utf8').toString('base64'),\n      mimeType: 'application/json',\n      fileName: fileName\n    }\n  }\n}];"
+                    },
+                    "type": "n8n-nodes-base.code",
+                    "typeVersion": 2,
+                    "position": [
+                        1712,
+                        196
+                    ],
+                    "id": "910678dd-42c8-49fa-9d91-98b386cd1d38",
+                    "name": "Prepare Data"
+                },
+                {
+                    "parameters": {
+                        "name": "={{ $json.fileName }}",
+                        "driveId": {
+                            "__rl": true,
+                            "mode": "list",
+                            "value": "My Drive"
+                        },
+                        "folderId": {
+                            "__rl": true,
+                            "value": "1AMwdKY4CPGrsfhZ3YWTnjTlsGn2fMaoc",
+                            "mode": "list",
+                            "cachedResultName": "vectors",
+                            "cachedResultUrl": "https://drive.google.com/drive/folders/1AMwdKY4CPGrsfhZ3YWTnjTlsGn2fMaoc"
+                        },
+                        "options": {}
+                    },
+                    "type": "n8n-nodes-base.googleDrive",
+                    "typeVersion": 3,
+                    "position": [
+                        1936,
+                        196
+                    ],
+                    "id": "0b6374ed-5a62-41ac-8a04-411e4000ccb2",
+                    "name": "Upload file",
+                    "credentials": {
+                        "googleDriveOAuth2Api": {
+                            "id": "zUSpRXM5p8MF5y3t",
+                            "name": "Google Drive account"
+                        }
+                    }
+                },
+                {
+                    "parameters": {
+                        "jsCode": "return [{\n  json: {\n    FileId: $input.first().json.id,\n    FileName: $('Prepare Data').first().json.fileName,\n    VectorVersion: $('Prepare Data').first().json.version,\n    Created:$('Prepare Data').first().json.now\n  }\n}]"
+                    },
+                    "type": "n8n-nodes-base.code",
+                    "typeVersion": 2,
+                    "position": [
+                        2160,
+                        196
+                    ],
+                    "id": "09d48ea8-915e-49f5-b0c3-a9f50ca123bd",
+                    "name": "Prepare Excel Row"
+                },
+                {
+                    "parameters": {
+                        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+                        "text": "={{ 'Your profile vector has been created. The vector file name: ' +  $('Prepare Data').first().json.fileName }}",
+                        "additionalFields": {}
+                    },
+                    "type": "n8n-nodes-base.telegram",
+                    "typeVersion": 1.2,
+                    "position": [
+                        2608,
+                        196
+                    ],
+                    "id": "e467eb1b-fef8-4292-8346-fa3290bc26bc",
+                    "name": "Send a text message",
+                    "webhookId": "8698b919-1cfe-4bea-8752-781b4cc3be57",
+                    "credentials": {
+                        "telegramApi": {
+                            "id": "lLreiZVfejCCUrC5",
+                            "name": "Career Manager Telegram Account"
+                        }
+                    }
+                }
+            ],
+            "connections": {
+                "When clicking ‘Execute workflow’": {
+                    "main": [
+                        [
+                            {
+                                "node": "Pipeline Variables",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Pipeline Variables": {
+                    "main": [
+                        [
+                            {
+                                "node": "Read personal info",
+                                "type": "main",
+                                "index": 0
+                            },
+                            {
+                                "node": "Read Education",
+                                "type": "main",
+                                "index": 0
+                            },
+                            {
+                                "node": "Read WorkExperience",
+                                "type": "main",
+                                "index": 0
+                            },
+                            {
+                                "node": "Read Projects",
+                                "type": "main",
+                                "index": 0
+                            },
+                            {
+                                "node": "Read Certifications",
+                                "type": "main",
+                                "index": 0
+                            },
+                            {
+                                "node": "Read Skills",
+                                "type": "main",
+                                "index": 0
+                            },
+                            {
+                                "node": "Read LocationRules",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Read WorkExperience": {
+                    "main": [
+                        [
+                            {
+                                "node": "Process workExperience sheet",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Read personal info": {
+                    "main": [
+                        [
+                            {
+                                "node": "Process personal info sheet",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Read Education": {
+                    "main": [
+                        [
+                            {
+                                "node": "Process education sheet",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Read Projects": {
+                    "main": [
+                        [
+                            {
+                                "node": "Process projects sheet",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Read Certifications": {
+                    "main": [
+                        [
+                            {
+                                "node": "Process certifications sheet",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Read Skills": {
+                    "main": [
+                        [
+                            {
+                                "node": "Process skills sheet",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Read LocationRules": {
+                    "main": [
+                        [
+                            {
+                                "node": "Process locationRules sheet",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Process education sheet": {
+                    "main": [
+                        [
+                            {
+                                "node": "Loop Over Education Entries",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Anthropic Chat Model": {
+                    "ai_languageModel": [
+                        [
+                            {
+                                "node": "Strength Signal Calculator",
+                                "type": "ai_languageModel",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Structured Output Parser": {
+                    "ai_outputParser": [
+                        [
+                            {
+                                "node": "Strength Signal Calculator",
+                                "type": "ai_outputParser",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Process workExperience sheet": {
+                    "main": [
+                        [
+                            {
+                                "node": "Loop Over Work Experience",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Anthropic Chat Model1": {
+                    "ai_languageModel": [
+                        [
+                            {
+                                "node": "Experience Achievement Evaluator",
+                                "type": "ai_languageModel",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Structured Output Parser1": {
+                    "ai_outputParser": [
+                        [
+                            {
+                                "node": "Experience Achievement Evaluator",
+                                "type": "ai_outputParser",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Loop Over Education Entries": {
+                    "main": [
+                        [
+                            {
+                                "node": "merge into usable object1",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ],
+                        [
+                            {
+                                "node": "Strength Signal Calculator",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Loop Over Work Experience": {
+                    "main": [
+                        [
+                            {
+                                "node": "merge into usable object2",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ],
+                        [
+                            {
+                                "node": "If",
+                                "type": "main",
+                                "index": 0
+                            },
+                            {
+                                "node": "Role Estimator",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Combine Education Data": {
+                    "main": [
+                        [
+                            {
+                                "node": "Loop Over Education Entries",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Strength Signal Calculator": {
+                    "main": [
+                        [
+                            {
+                                "node": "Combine Education Data",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Structured Output Parser2": {
+                    "ai_outputParser": [
+                        [
+                            {
+                                "node": "Role Estimator",
+                                "type": "ai_outputParser",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Anthropic Chat Model2": {
+                    "ai_languageModel": [
+                        [
+                            {
+                                "node": "Role Estimator",
+                                "type": "ai_languageModel",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Role Estimator": {
+                    "main": [
+                        [
+                            {
+                                "node": "Merge",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Merge": {
+                    "main": [
+                        [
+                            {
+                                "node": "Combine Work Experience and Calculate Additional Parameters",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Combine Work Experience and Calculate Additional Parameters": {
+                    "main": [
+                        [
+                            {
+                                "node": "Loop Over Work Experience",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Process projects sheet": {
+                    "main": [
+                        [
+                            {
+                                "node": "Loop Over Projects",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "AI Agent": {
+                    "main": [
+                        [
+                            {
+                                "node": "Prepare Project Data",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Anthropic Chat Model3": {
+                    "ai_languageModel": [
+                        [
+                            {
+                                "node": "AI Agent",
+                                "type": "ai_languageModel",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Structured Output Parser3": {
+                    "ai_outputParser": [
+                        [
+                            {
+                                "node": "AI Agent",
+                                "type": "ai_outputParser",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Loop Over Projects": {
+                    "main": [
+                        [
+                            {
+                                "node": "merge into usable object3",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ],
+                        [
+                            {
+                                "node": "AI Agent",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Prepare Project Data": {
+                    "main": [
+                        [
+                            {
+                                "node": "Loop Over Projects",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Process skills sheet": {
+                    "main": [
+                        [
+                            {
+                                "node": "Group skills",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Experience Achievement Evaluator": {
+                    "main": [
+                        [
+                            {
+                                "node": "Merge",
+                                "type": "main",
+                                "index": 1
+                            }
+                        ]
+                    ]
+                },
+                "Process personal info sheet": {
+                    "main": [
+                        [
+                            {
+                                "node": "Merge All Together",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Process certifications sheet": {
+                    "main": [
+                        [
+                            {
+                                "node": "Merge All Together",
+                                "type": "main",
+                                "index": 4
+                            }
+                        ]
+                    ]
+                },
+                "Group skills": {
+                    "main": [
+                        [
+                            {
+                                "node": "Merge All Together",
+                                "type": "main",
+                                "index": 5
+                            }
+                        ]
+                    ]
+                },
+                "Process locationRules sheet": {
+                    "main": [
+                        [
+                            {
+                                "node": "Merge All Together",
+                                "type": "main",
+                                "index": 6
+                            }
+                        ]
+                    ]
+                },
+                "Merge All Together": {
+                    "main": [
+                        [
+                            {
+                                "node": "merge into object",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "If": {
+                    "main": [
+                        [
+                            {
+                                "node": "output empty achievements",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ],
+                        [
+                            {
+                                "node": "Experience Achievement Evaluator",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "output empty achievements": {
+                    "main": [
+                        [
+                            {
+                                "node": "Merge",
+                                "type": "main",
+                                "index": 1
+                            }
+                        ]
+                    ]
+                },
+                "merge into usable object1": {
+                    "main": [
+                        [
+                            {
+                                "node": "Merge All Together",
+                                "type": "main",
+                                "index": 1
+                            }
+                        ]
+                    ]
+                },
+                "merge into usable object2": {
+                    "main": [
+                        [
+                            {
+                                "node": "Merge All Together",
+                                "type": "main",
+                                "index": 2
+                            }
+                        ]
+                    ]
+                },
+                "merge into usable object3": {
+                    "main": [
+                        [
+                            {
+                                "node": "Merge All Together",
+                                "type": "main",
+                                "index": 3
+                            }
+                        ]
+                    ]
+                },
+                "merge into object": {
+                    "main": [
+                        [
+                            {
+                                "node": "Create Career Summary",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Webhook": {
+                    "main": [
+                        [
+                            {
+                                "node": "Pipeline Variables",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Create Career Summary": {
+                    "main": [
+                        [
+                            {
+                                "node": "Prepare Data",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Prepare Data": {
+                    "main": [
+                        [
+                            {
+                                "node": "Upload file",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Upload file": {
+                    "main": [
+                        [
+                            {
+                                "node": "Prepare Excel Row",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Prepare Excel Row": {
+                    "main": [
+                        [
+                            {
+                                "node": "Update Profile Vector",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                },
+                "Update Profile Vector": {
+                    "main": [
+                        [
+                            {
+                                "node": "Send a text message",
+                                "type": "main",
+                                "index": 0
+                            }
+                        ]
+                    ]
+                }
+            },
+            "authors": "",
+            "name": "Version 0157c39f",
+            "description": "",
+            "autosaved": true
+        },
+        "tags": []
+    }
+]
