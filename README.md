@@ -8,9 +8,11 @@ builds the profile vectors the job flow matches against.
 This repository is the public copy of these workflows. All private data, API keys and sample
 payloads were taken out before publishing.
 
-<!-- Screenshots of the n8n canvas go here once they exist, for example:
-![Job Application Pipeline](images/job-application.png)
--->
+[![Job Application Pipeline canvas](images/job-application-pipeline.png)](images/job-application-pipeline.png)
+
+The `job-application` flow from end to end: 169 nodes, starting at the form trigger on the
+left and ending with the rendered CV and cover letter on the right. The canvas is a wide
+strip, so open the image in a new tab if you want to read the node names.
 
 ## Highlights
 
@@ -29,6 +31,7 @@ payloads were taken out before publishing.
 
 ```
 README.md                 this file
+images/                   canvas screenshots used by this README
 ai-utility/               shared AI agent that picks its own model provider
 csv-reader/               sub-workflow that turns CSV files into JSON rows
 json-loader/              sub-workflow that loads a JSON file from Google Drive
